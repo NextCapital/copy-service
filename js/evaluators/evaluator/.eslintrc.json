@@ -23,7 +23,6 @@
       "consistent-return": "off",
       "function-paren-newline": "off",
       "import/extensions": ["error", "ignorePackages"],
-      "import/no-unresolved": ["error", { "ignore": ["@nextcapital/evaluator"] }],
       "no-console": ["error"],
       "no-continue": "off",
       "no-loop-func": "off",

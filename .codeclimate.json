@@ -1,0 +1,6 @@
+{
+  "exclude_patterns": [
+    "js/docs-template",
+    "**/*.test*"
+  ]
+}

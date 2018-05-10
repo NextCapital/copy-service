@@ -3,12 +3,12 @@ const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const webpack = require('webpack');
 
 const config = (mode) => ({
-  entry: './index.js',
+  entry: './Evaluator.js',
 
   output: {
     path: `${__dirname}/dist/`,
-    filename: `copy-service${mode === 'production' ? '.min' : ''}.js`,
-    library: 'copy-service',
+    filename: `evaluator${mode === 'production' ? '.min' : ''}.js`,
+    library: 'evaluator',
     libraryTarget: 'umd'
   },
 
@@ -48,7 +48,7 @@ const config = (mode) => ({
 const nodeConfig = (mode) => (
   _.merge({}, config(mode), {
     target: 'node',
-    output: { filename: `copy-service-node${mode === 'production' ? '.min' : ''}.js` }
+    output: { filename: `evaluator-node${mode === 'production' ? '.min' : ''}.js` }
   })
 );
 

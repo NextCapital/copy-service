@@ -1,0 +1,12 @@
+{
+  plugins: ["lodash"],
+  presets: [
+    ["es2015", { "modules": false }],
+    "stage-2"
+  ],
+  "env": {
+    "test": {
+      "plugins": ["transform-es2015-modules-commonjs"]
+    }
+  }
+}

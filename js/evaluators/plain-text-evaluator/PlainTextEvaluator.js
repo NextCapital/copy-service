@@ -46,12 +46,12 @@ class PlainTextEvaluator extends Evaluator {
     }
     // Build the copy at the referenced key and append it.
     else if (ast instanceof Reference) {
-      copy = this.evalAST('', this.astForKey(ast.key), substitutions);
+      copy = this.evalAST(this._getInitialResult(), getASTForKey(ast.key), getASTForKey, substitutions);
     }
     // Perform the substitution and append it.
     else if (ast instanceof Substitute) {
       const value = this._trySubstitution(substitutions, ast.key);
-      copy = (value == null) ? '' : value.toString();
+      copy = _.isNil(value) ? '' : value.toString();
     }
     // Check the decider provided in substitutions, pick the correct branch, evaluate that branch,
     // and append it.
@@ -65,20 +65,20 @@ class PlainTextEvaluator extends Evaluator {
         subtree = ast.right;
       }
 
-      copy = this.evalAST('', subtree, substitutions);
+      copy = this.evalAST(this._getInitialResult(), subtree, getASTForKey, substitutions);
     }
     // Evaluate the copy of the class, ignoring the function, and append the evaluated copy.
     else if (ast instanceof Functional) {
-      copy = this.evalAST('', ast.copy, substitutions);
+      copy = this.evalAST(this._getInitialResult(), ast.copy, getASTForKey, substitutions);
     }
     // Evaluate the copy, ignoring the HTML tags, and append the evaluated copy.
     else if (ast instanceof Formatting) {
-      copy = this.evalAST('', ast.copy, substitutions);
+      copy = this.evalAST(this._getInitialResult(), ast.copy, getASTForKey, substitutions);
     }
-
+    // Log error and stop evaluating
     else {
       this._handleError('Unknown node detected');
-      return '';
+      return this._getInitialResult();
     }
 
     // Continue recursing to evaluate the remaining ast with the appended copyPrefix.
@@ -89,7 +89,6 @@ class PlainTextEvaluator extends Evaluator {
   /**
    * Returns the default copy (usually an empty string).
    * @return {*}
-   * @abstract
    */
   static _getInitialResult() {
     return '';

@@ -21,18 +21,18 @@ describe('CopyService', () => {
         const copyService = new CopyService();
         expect(copyService).toEqual({
           _parsedCopy: {},
-          Evaluator: undefined
+          evaluator: undefined
         });
       });
     });
 
     describe('when options are passed', () => {
-      describe('Evaluator option', () => {
-        test('sets Evaluator', () => {
-          const Evaluator = 'some Evaluator';
+      describe('evaluator option', () => {
+        test('sets evaluator', () => {
+          const evaluator = 'some evaluator';
 
-          const copyService = new CopyService({ Evaluator });
-          expect(copyService.Evaluator).toBe(Evaluator);
+          const copyService = new CopyService({ evaluator });
+          expect(copyService.evaluator).toBe(evaluator);
         });
       });
 
@@ -68,6 +68,19 @@ describe('CopyService', () => {
 
   describe('registerCopy', () => {
     describe('when an empty copy config is passed', () => {
+      beforeEach(() => {
+        jest.spyOn(copyService, '_handleError').mockImplementation();
+      });
+
+      afterEach(() => {
+        copyService._handleError.mockRestore();
+      });
+
+      test('logs error', () => {
+        copyService.registerCopy();
+        expect(copyService._handleError).toBeCalledWith('Copy provided in wrong format.');
+      });
+
       test('does not modify _parsedCopy', () => {
         const parsedCopy = {};
         copyService._parsedCopy = parsedCopy;
@@ -119,29 +132,29 @@ describe('CopyService', () => {
 
   describe('getCopy', () => {
     describe('when a key with parsed copy is passed', () => {
-      test('calls Evaluator.evalAST with the AST for the key and any substitutions', () => {
+      test('calls evaluator.evalAST with the AST for the key and any substitutions', () => {
         const initialResult = 'some initialResult';
         const key = 'some key';
         const parsedCopy = { 'key': key };
         const substitutions = { some: 'substitutions' };
 
         copyService._parsedCopy = parsedCopy;
-        copyService.Evaluator = {
+        copyService.evaluator = {
           evalAST: jest.fn(),
           _getInitialResult: jest.fn().mockReturnValue(initialResult)
         };
 
         copyService.getCopy('key', substitutions);
-        expect(copyService.Evaluator.evalAST).toBeCalledWith(initialResult, key, substitutions);
+        expect(copyService.evaluator.evalAST).toBeCalledWith(initialResult, key, substitutions);
       });
 
-      test('returns result of Evaluator.evalAST', () => {
+      test('returns result of evaluator.evalAST', () => {
         const key = 'some key';
         const parsedCopy = { 'key': key };
         const evaluatedCopy = 'some evaluated copy';
 
         copyService._parsedCopy = parsedCopy;
-        copyService.Evaluator = {
+        copyService.evaluator = {
           evalAST: jest.fn().mockReturnValue(evaluatedCopy),
           _getInitialResult: jest.fn().mockReturnValue('')
         };
@@ -152,7 +165,7 @@ describe('CopyService', () => {
 
     describe('when an invalid key is passed', () => {
       beforeEach(() => {
-        copyService.Evaluator = {
+        copyService.evaluator = {
           evalAST: jest.fn(),
           _getInitialResult: jest.fn().mockReturnValue('')
         }

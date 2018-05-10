@@ -1,6 +1,11 @@
 import _ from 'lodash';
 
 /**
+ * An AST class.
+ * @typedef {Formatting|Functional|Newline|Reference|Substitute|Switch|Verbatim} AST
+ */
+
+/**
  * Provides an interface that can register copy, determine the existance of copy, and generate copy
  * recursively evaluated with substitutions.
  * @interface
@@ -9,12 +14,12 @@ class Evaluator {
   /**
    * Evaluates the AST with given substitutions
    * @param  {string} copyPrefix    The copy string being recursively built.
-   * @param  {Formatting|Functional|Newline|Reference|Substitute|Switch|Verbatim} ast
+   * @param  {AST} ast
    *                                The AST to be evaluated. This AST must be constructed by Parser.
    * @param  {function} getASTForKey Reference to the parsed copy from the copy service.
    * @param  {object} substitutions An object containing substitutions for keys specified in the
    *                                AST.
-   * @return {string}               The evaluated copy.
+   * @return {*}               The evaluated copy.
    */
   static evalAST() {
     this._handleError(

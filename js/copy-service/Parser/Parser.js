@@ -148,11 +148,9 @@ class Parser {
     let remainder = string;
     let withinArgs = false;
 
-    // Iterate through the string, transforming the string into an array of TOKENS
     while (remainder.length > 0) {
       let nonTextTokenFound = false;
 
-      // If one of the NON_TEXT_TOKENS are found, process it here
       _.forEach(this.NON_TEXT_TOKENS, (nonTextToken) => {
         if (
           !nonTextTokenFound &&
@@ -174,7 +172,6 @@ class Parser {
         }
       });
 
-      // Since a NON_TEXT_TOKEN was found processing is done and the loop can continue.
       if (nonTextTokenFound) {
         continue;
       }
@@ -224,15 +221,15 @@ class Parser {
    * Parses an array of tokens into an AST.
    * @param  {array} tokens
    * @param  {string} string The raw copy string that was tokenized.
-   * @return {Formatting|Functional|Newline|Reference|Substitute|Switch|Verbatim}
+   * @return {AST}
    * @throws If the string is not fully parsed.
    */
   static _parse(tokens, string) {
-    const {
-      ast, remainingTokens
-    } = this._parseTokens(tokens);
-
     try {
+      const {
+        ast, remainingTokens
+      } = this._parseTokens(tokens);
+
       if (_.isEmpty(remainingTokens)) {
         return ast;
       }
@@ -249,7 +246,7 @@ class Parser {
   /**
    * Returns a parsed text token.
    * @param  {array} tokens
-   * @return {object}       A parsed text token.
+   * @return {object} A parsed text token.
    * @throws If a text token is not found
    */
   static _getTextToken(tokens) {
@@ -327,7 +324,6 @@ class Parser {
     const tokensToParse = tokens.slice(1);
 
     if (token.type === this.TOKENS.NEWLINE) {
-      // Recursively process remaining tokens
       const parsed = this._parseTokens(tokensToParse);
       return {
         ast: new Newline({ sibling: parsed.ast }),
@@ -336,16 +332,11 @@ class Parser {
     }
 
     else if (token.type === this.TOKENS.SWITCH_START) {
-      // Recursively process left branch tokens
       const leftParsed = this._parseTokensRestricted(tokensToParse);
-      // Recursively process right branch tokens
       const rightParsed = this._parseTokensRestricted(leftParsed.tokens);
-      // Get the decider substitution key
       const deciderParsed = this._getTextToken(rightParsed.tokens);
 
-      // Ensure the switch statement is closed
       const closeParsedTokens = this._processCloseToken(deciderParsed.tokens);
-      // Recursively process remaining tokens
       const parsed = this._parseTokens(closeParsedTokens);
 
       return {
@@ -360,12 +351,8 @@ class Parser {
     }
 
     else if (token.type === this.TOKENS.SUB_START) {
-      // Get the substitution key
       const textParsed = this._getTextToken(tokensToParse);
-
-      // Ensure the substitution statement is closed
       const closeParsedTokens = this._processCloseToken(textParsed.tokens);
-      // Recursively process remaining tokens
       const parsed = this._parseTokens(closeParsedTokens);
 
       return {
@@ -378,12 +365,8 @@ class Parser {
     }
 
     else if (token.type === this.TOKENS.REF_START) {
-      // Get the referenced key text
       const textParsed = this._getTextToken(tokensToParse);
-
-      // Ensure the reference statement is closed
       const closeParsedTokens = this._processCloseToken(textParsed.tokens);
-      // Recursively process remaining tokens
       const parsed = this._parseTokens(closeParsedTokens);
 
       return {
@@ -396,12 +379,9 @@ class Parser {
     }
 
     else if (token.type === this.TOKENS.FUNC_START) {
-      // Recursively parse the first part of the statement.
       const firstParsed = this._parseTokensRestricted(tokensToParse);
-      // Get the function substitution key in the second part of the statement
       const textParsed = this._getTextToken(firstParsed.tokens);
 
-      // Build arguments from the third part of the statement
       let argumentsParsed, parsedOptionalArgumentsTokens;
       if (textParsed.tokens[0].type === this.TOKENS.CLOSE) {
         parsedOptionalArgumentsTokens = this._processCloseToken(textParsed.tokens);
@@ -410,7 +390,6 @@ class Parser {
         parsedOptionalArgumentsTokens = argumentsParsed.tokens;
       }
 
-      // Recursively process remaining tokens
       const parsed = this._parseTokens(parsedOptionalArgumentsTokens);
 
       return {
@@ -426,9 +405,7 @@ class Parser {
 
     else if (token.type === this.TOKENS.HTML_TAG_START) {
       const tag = token.tag;
-      // Recursively parse the copy, expecting it to end with a HTML_TAG_END
       const tagParsed = this._parseTokensRestricted(tokensToParse, this.TOKENS.HTML_TAG_END);
-      // Recursively process remaining tokens
       const parsed = this._parseTokens(tagParsed.tokens);
 
       return {
@@ -442,9 +419,7 @@ class Parser {
     }
 
     else if (token.type === this.TOKENS.TEXT) {
-      // Parse the text token
       const textParsed = this._getTextToken(tokens);
-      // Recursively process remaining tokens
       const parsed = this._parseTokens(textParsed.tokens);
 
       return {
@@ -470,7 +445,6 @@ class Parser {
    * @throws If an unsupported token is found.
    */
   static _parseTokensRestricted(tokens, expectedEndingToken = this.TOKENS.SWITCH_DELIM) {
-    // Throw error if expectedEndingToken is not found
     if (_.isEmpty(tokens)) {
       this._handleError(`Expected closing ${expectedEndingToken}`, { halt: true });
     }
@@ -486,7 +460,6 @@ class Parser {
     }
 
     else if (token.type === this.TOKENS.NEWLINE) {
-      // Recursively process remaining tokens with restriction
       const parsed = this._parseTokensRestricted(tokensToParse, expectedEndingToken);
       return {
         ast: new Newline({ sibling: parsed.ast }),
@@ -495,16 +468,11 @@ class Parser {
     }
 
     else if (token.type === this.TOKENS.SWITCH_START) {
-      // Recursively process the left branch tokens with restriction
       const leftParsed = this._parseTokensRestricted(tokensToParse);
-      // Recursively process the right branch tokens with restriction
       const rightParsed = this._parseTokensRestricted(leftParsed.tokens);
-      // Get the decider substitution key
       const deciderParsed = this._getTextToken(rightParsed.tokens);
 
-      // Ensure the switch statement is closed
       const closeParsedTokens = this._processCloseToken(deciderParsed.tokens);
-      // Recursively process remaining tokens with restriction
       const parsed = this._parseTokensRestricted(closeParsedTokens, expectedEndingToken);
 
       return {
@@ -519,12 +487,8 @@ class Parser {
     }
 
     else if (token.type === this.TOKENS.SUB_START) {
-      // Get the substitution key
       const textParsed = this._getTextToken(tokensToParse);
-
-      // Ensure the substitution statement is closed
       const closeParsedTokens = this._processCloseToken(textParsed.tokens);
-      // Recursively process remaining tokens with restriction
       const parsed = this._parseTokensRestricted(closeParsedTokens, expectedEndingToken);
 
       return {
@@ -537,12 +501,8 @@ class Parser {
     }
 
     else if (token.type === this.TOKENS.REF_START) {
-      // Get the referenced key text
       const textParsed = this._getTextToken(tokensToParse);
-
-      // Ensure the reference statement is closed
       const closeParsedTokens = this._processCloseToken(textParsed.tokens);
-      // Recursively process remaining tokens with restriction
       const parsed = this._parseTokensRestricted(closeParsedTokens, expectedEndingToken);
 
       return {
@@ -555,12 +515,9 @@ class Parser {
     }
 
     else if (token.type === this.TOKENS.FUNC_START) {
-      // Recursively parse the first part of the statement with restriction.
       const firstParsed = this._parseTokensRestricted(tokensToParse);
-      // Get the function substitution key in the second part of the statement
       const textParsed = this._getTextToken(firstParsed.tokens);
 
-      // Build arguments from the third part of the statement
       let argumentsParsed, parsedOptionalArgumentsTokens;
       if (textParsed.tokens[0].type === this.TOKENS.CLOSE) {
         parsedOptionalArgumentsTokens = this._processCloseToken(textParsed.tokens);
@@ -569,7 +526,6 @@ class Parser {
         parsedOptionalArgumentsTokens = argumentsParsed.tokens;
       }
 
-      // Recursively process remaining tokens with restriction
       const parsed = this._parseTokensRestricted(
         parsedOptionalArgumentsTokens, expectedEndingToken
       );
@@ -587,9 +543,7 @@ class Parser {
 
     else if (token.type === this.TOKENS.HTML_TAG_START) {
       const tag = token.tag;
-      // Recursively parse the copy, expecting it to end with a HTML_TAG_END
       const tagParsed = this._parseTokensRestricted(tokensToParse, this.TOKENS.HTML_TAG_END);
-      // Recursively process remaining tokens with restriction
       const parsed = this._parseTokensRestricted(tagParsed.tokens, expectedEndingToken);
 
       return {
@@ -603,9 +557,7 @@ class Parser {
     }
 
     else if (token.type === this.TOKENS.TEXT) {
-      // Parse the text token
       const textParsed = this._getTextToken(tokens);
-      // Recursively process remaining tokens with restriction
       const parsed = this._parseTokensRestricted(textParsed.tokens, expectedEndingToken);
 
       return {

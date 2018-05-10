@@ -2,21 +2,36 @@ import _ from 'lodash';
 
 import Parser from './Parser/Parser';
 
+/**
+ * An AST class.
+ * @typedef {Formatting|Functional|Newline|Reference|Substitute|Switch|Verbatim} AST
+ */
+
+/**
+ * Provides the ability to register, parse, and evaluate copy.
+ */
 class CopyService {
   constructor(options = {}) {
+    if (!options.evaluator) {
+      this._handleError('CopyService requires an evaluator', { halt: true });
+    }
+
     /**
      * The store of parsed copy.
      * @type {object}
      */
     this._parsedCopy = {};
 
-    this.registerCopy(options.copy);
+    if (options.copy) {
+      const copyAsArray = _.castArray(options.copy);
+      _.forEach(copyAsArray, (copy) => this.registerCopy(copy));
+    }
 
     /**
      * Evaluates the parsed copy.
      * @type {Evaluator}
      */
-    this.Evaluator = options.Evaluator;
+    this.evaluator = options.evaluator;
   }
 
   /**
@@ -24,7 +39,8 @@ class CopyService {
    * @param  {object} jsonCopyConfig A json object containing copy.
    */
   registerCopy(jsonCopyConfig) {
-    if (!jsonCopyConfig) {
+    if (!_.isPlainObject(jsonCopyConfig)) {
+      this._handleError('Copy provided in wrong format.');
       return;
     }
 
@@ -33,22 +49,24 @@ class CopyService {
 
   /**
    * Evaluates the copy AST at a given key using passed substitutions, returning a plain string of
-   * copy. The Evaluator will not include HTML tags and will not evaluate functions. Instead, it
+   * copy. The evaluator will not include HTML tags and will not evaluate functions. Instead, it
    * will simply return the copy of an Formatting or Functional classes.
    * @param  {string} key
-   * @param  {object} [substitutions] Substitutions to be used by the Evaluator when evaluating the
+   * @param  {object} [substitutions] Substitutions to be used by the evaluator when evaluating the
    *                                    AST.
    * @return {string} The evaluated plain-text copy string.
    */
   getCopy(key, substitutions) {
-    const ast = this._getAstForKey(key);
-    return this.Evaluator.evalAST(this.Evaluator._getInitialResult(), ast, substitutions);
+    const ast = this.getAstForKey(key);
+    return this.evaluator.evalAST(
+      this.evaluator._getInitialResult(), ast, this.getASTForKey, substitutions
+    );
   }
 
   /**
    * Recursivey builds all subkeys at which copy exists.
    * @param  {string} key
-   * @return {Object>} An object of the same structure where the value is the copy key path.
+   * @return {Object} An object of the same structure where the value is the copy key path.
    */
   buildSubkeys(key) {
     const subkeys = this.getSubkeys(key);
@@ -84,9 +102,9 @@ class CopyService {
   /**
    * Returns the AST at a given key. Logs error if key is not found in the parsed copy.
    * @param  {string} key
-   * @return {Formatting|Functional|Newline|Reference|Substitute|Switch|Verbatim}
+   * @return {AST}
    */
-  _getAstForKey(key) {
+  getAstForKey(key) {
     const result = _.get(this._parsedCopy, key);
 
     if (_.isUndefined(result)) {

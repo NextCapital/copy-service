@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import React from 'react';
 
 import Parser from '../Parser/Parser';
 
@@ -7,7 +8,7 @@ import Parser from '../Parser/Parser';
  * recursively evaluated with substitutions.
  * @interface
  */
-class Evaluator {
+class ReactEvaluator {
   /**
    * Evaluates the AST with given substitutions
    * @param  {string} copyPrefix    The copy string being recursively built.
@@ -18,10 +19,67 @@ class Evaluator {
    * @return {string}               The evaluated copy.
    * @abstract
    */
-  static evalAST() {
-    this._handleError(
-      'evalAST is abstract and must be implemented by the extending class', { halt: true }
-    );
+  static evalAST(copyPrefix, ast, getASTForKey, substitutions) {
+    if (!ast) {
+      return copyPrefix;
+    }
+
+    let copy;
+
+    if (ast instanceof Newline) {
+      copy = this._mergePrefixes(copyPrefix, <span><br /></span>);
+
+    } else if (ast instanceof Verbatim) {
+      copy = this._mergePrefixes(copyPrefix, <span>{ ast.text }</span>);
+
+    } else if (ast instanceof Reference) {
+      const referencedCopy = this.evalAST(this._getInitialResult(), getASTForKey(ast.key), getASTForKey, substitutions);
+      copy = this._mergePrefixes(copyPrefix, referencedCopy);
+
+    } else if (ast instanceof Substitute) {
+      const value = this._trySubstitution(substitutions, ast.key);
+
+      if (_.some(value)) {
+        const jsx = (<span>{ value.toString() }</span>);
+        copy = this._mergePrefixes(copyPrefix, jsx);
+      }
+    } else if (ast instanceof Switch) {
+      const decider = this._trySubstitution(substitutions, ast.key);
+      let subtree;
+
+      if (decider === 1 || decider === true) { // singular or true
+        subtree = ast.left;
+      } else { // zero, plural, or false
+        subtree = ast.right;
+      }
+
+      const switchJsx = this.evalAST(this._getInitialResult(), subtree, getASTForKey, substitutions);
+      copy = this._mergePrefixes(copyPrefix, switchJsx);
+
+    } else if (ast instanceof Functional) {
+      const method = _.get(substitutions, ast.key);
+      let jsx = this.evalAST(this._getInitialResult(), ast.copy, getASTForKey, substitutions);
+
+      if (method && _.isFunction(method)) {
+        jsx = (
+          <span>{ method(jsx, ...ast.args) }</span>
+        );
+      }
+
+      copy = this._mergePrefixes(copyPrefix, jsx);
+
+    } else if (ast instanceof Formatting) {
+      const jsx = this.evalAST(this._getInitialResult(), ast.copy, getASTForKey, substitutions);
+      const tag = React.createElement(ast.tag, {}, jsx.props.children);
+
+      copy = this._mergePrefixes(copyPrefix, <span>{ tag }</span>);
+
+    } else {
+      this._handleError('Unknown node detected');
+      return this._getInitialResult();
+    }
+
+    return this.evalAST(copyPrefix + copy, ast.sibling, getASTForKey, substitutions);
   }
   /* eslint-enable brace-style */
 
@@ -31,61 +89,50 @@ class Evaluator {
    * @abstract
    */
   static _getInitialResult() {
-    this._handleError(
-      '_getInitialResult is abstract and must be implemented by the extending class', { halt: true }
+    return (<span></span>);
+  }
+
+  static _mergePrefixes(left, right) {
+    if (!right) {
+      return left;
+    } else if (!left) {
+      return right;
+    }
+
+    let key = 0;
+    const addKeyToChild = (child) => {
+      if (!_.isString(child)) {
+        child = React.cloneElement(child, { key });
+        key++;
+      }
+
+      return child;
+    };
+
+    const keyedLeftChildren = React.Children.map(left.props.children, addKeyToChild);
+    const keyedRightChildren = React.Children.map(right.props.children, addKeyToChild);
+
+    if (!keyedLeftChildren) {
+      return right;
+    }
+
+    if (!keyedRightChildren) {
+      return left;
+    }
+
+    const allChildren = _.compact(
+      _.concat(
+        _.castArray(keyedLeftChildren),
+        _.castArray(keyedRightChildren)
+      )
     );
-  }
 
-  /**
-   * Retrieves the item at a key from a given substitutions object. Logs an error and returns empty
-   * string if no substitution is found.
-   * @param  {object} substitutions
-   * @param  {string} substitutionKey
-   * @return {*}
-   * @private
-   */
-  static _trySubstitution(substitutions, substitutionKey) {
-    const value = _.get(substitutions, substitutionKey);
-
-    if (_.isUndefined(value)) {
-      this._handleError(`No value for substitution at key ${substitutionKey} provided`);
-      return '';
-    }
-
-    return value;
-  }
-
-  /**
-   * When in dev mode, log errors to the console.
-   * @param {string} error            The error message to display
-   * @param {object} [options]
-   * @param {boolean} [options.halt]  Whether or not to throw a halting error.
-   * @private
-   */
-  static _handleError(error, options) {
-    const message = `Evaluator: ${error}`;
-    if (options.halt) {
-      throw new Error(message);
-    } else if (this._isInDevMode()) {
-      console.error(message); // eslint-disable-line no-console
-    }
-  }
-
-  /**
-   * Returns the global boolean DEV_MODE set via webpack.
-   * @return {boolean} DEV_MODE
-   */
-  static _isInDevMode() {
-    return DEV_MODE;
-  }
-
-  /**
-   * Evaluator is a singleton and will error when trying to create an instance.
-   * @throws {Error}
-   */
-  constructor() {
-    this.constructor._handleError('Evaluator is a singleton', { halt: true });
+    return (
+      <span>
+        { allChildren }
+      </span>
+    );
   }
 }
 
-export default Evaluator;
+export default ReactEvaluator;

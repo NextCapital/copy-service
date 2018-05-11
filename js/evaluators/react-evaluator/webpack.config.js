@@ -19,6 +19,10 @@ const config = (mode) => ({
     }]
   },
 
+  externals: {
+    'react': 'React'
+  },
+
   context: __dirname,
 
   target: 'web',

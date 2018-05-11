@@ -1,6 +1,15 @@
 import _ from 'lodash';
 
+import Evaluator from './Evaluator/Evaluator';
 import Parser from './Parser/Parser';
+
+import Formatting from './Formatting/Formatting';
+import Functional from './Functional/Functional';
+import Newline from './Newline/Newline';
+import Reference from './Reference/Reference';
+import Substitute from './Substitute/Substitute';
+import Switch from './Switch/Switch';
+import Verbatim from './Verbatim/Verbatim';
 
 import CopyService from './CopyService';
 
@@ -8,7 +17,7 @@ describe('CopyService', () => {
   let copyService;
 
   beforeEach(() => {
-    copyService = new CopyService();
+    copyService = new CopyService({ evaluator: Evaluator });
   });
 
   afterEach(() => {
@@ -17,19 +26,15 @@ describe('CopyService', () => {
 
   describe('constructor', () => {
     describe('when no options are passed', () => {
-      test('assigns default properties', () => {
-        const copyService = new CopyService();
-        expect(copyService).toEqual({
-          _parsedCopy: {},
-          evaluator: undefined
-        });
+      test('logs error', () => {
+        expect(() => new CopyService()).toThrow('CopyService: CopyService requires an evaluator');
       });
     });
 
     describe('when options are passed', () => {
       describe('evaluator option', () => {
         test('sets evaluator', () => {
-          const evaluator = 'some evaluator';
+          const evaluator = Evaluator;
 
           const copyService = new CopyService({ evaluator });
           expect(copyService.evaluator).toBe(evaluator);
@@ -52,14 +57,20 @@ describe('CopyService', () => {
         test('parses the passed copy', () => {
           const copy = { some: 'unparsed copy' };
 
-          const copyService = new CopyService({ copy });
+          const copyService = new CopyService({
+            copy,
+            evaluator: Evaluator
+          });
           expect(Parser.parseLeaves).toBeCalledWith(copy);
         });
 
         test('sets _parsedCopy with parsed copy', () => {
           const copy = { some: 'unparsed copy' };
 
-          const copyService = new CopyService({ copy });
+          const copyService = new CopyService({
+            copy,
+            evaluator: Evaluator
+          });
           expect(copyService._parsedCopy).toEqual(parsedCopy);
         });
       });
@@ -134,8 +145,7 @@ describe('CopyService', () => {
     describe('when a key with parsed copy is passed', () => {
       test('calls evaluator.evalAST with the AST for the key and any substitutions', () => {
         const initialResult = 'some initialResult';
-        const key = 'some key';
-        const parsedCopy = { 'key': key };
+        const parsedCopy = { 'key': new Verbatim({ text: 'some copy' }) };
         const substitutions = { some: 'substitutions' };
 
         copyService._parsedCopy = parsedCopy;
@@ -145,12 +155,13 @@ describe('CopyService', () => {
         };
 
         copyService.getCopy('key', substitutions);
-        expect(copyService.evaluator.evalAST).toBeCalledWith(initialResult, key, substitutions);
+        expect(copyService.evaluator.evalAST).toBeCalledWith(
+          initialResult, parsedCopy['key'], copyService.getASTForKey, substitutions
+        );
       });
 
       test('returns result of evaluator.evalAST', () => {
-        const key = 'some key';
-        const parsedCopy = { 'key': key };
+        const parsedCopy = { 'key': new Verbatim({ text: 'some copy' }) };
         const evaluatedCopy = 'some evaluated copy';
 
         copyService._parsedCopy = parsedCopy;

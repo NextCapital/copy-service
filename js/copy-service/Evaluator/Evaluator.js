@@ -1,13 +1,7 @@
 import _ from 'lodash';
 
 /**
- * An AST class.
- * @typedef {Formatting|Functional|Newline|Reference|Substitute|Switch|Verbatim} AST
- */
-
-/**
- * Provides an interface that can register copy, determine the existance of copy, and generate copy
- * recursively evaluated with substitutions.
+ * Provides an interface to recursively generate copy evaluated with substitutions.
  * @interface
  */
 class Evaluator {

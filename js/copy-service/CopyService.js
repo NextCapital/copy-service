@@ -1,5 +1,13 @@
 import _ from 'lodash';
 
+import Formatting from './Formatting/Formatting';
+import Functional from './Functional/Functional';
+import Newline from './Newline/Newline';
+import Reference from './Reference/Reference';
+import Substitute from './Substitute/Substitute';
+import Switch from './Switch/Switch';
+import Verbatim from './Verbatim/Verbatim';
+
 import Parser from './Parser/Parser';
 
 /**
@@ -11,6 +19,22 @@ import Parser from './Parser/Parser';
  * Provides the ability to register, parse, and evaluate copy.
  */
 class CopyService {
+  /**
+   * Determines if a passed object is an instance of an AST class
+   * @param  {AST|object}  object
+   * @return {Boolean}
+   */
+  static isAST(object) {
+    return _.isNil(object) ||
+      object instanceof Formatting ||
+      object instanceof Functional ||
+      object instanceof Newline ||
+      object instanceof Reference ||
+      object instanceof Substitute ||
+      object instanceof Switch ||
+      object instanceof Verbatim;
+  }
+
   constructor(options = {}) {
     if (!options.evaluator) {
       this._handleError('CopyService requires an evaluator', { halt: true });
@@ -44,7 +68,7 @@ class CopyService {
       return;
     }
 
-    _.merge(this._parsedCopy, Parser.parseLeaves(jsonCopyConfig));
+    this._mergeParsedCopy(this._parsedCopy, Parser.parseLeaves(jsonCopyConfig));
   }
 
   /**
@@ -107,12 +131,20 @@ class CopyService {
   getAstForKey(key) {
     const result = _.get(this._parsedCopy, key);
 
-    if (_.isUndefined(result)) {
+    if (_.isUndefined(result) || !this.constructor.isAST(result)) {
       this._handleError(`No AST found for copy key: ${key}`);
       return null;
     }
 
     return result;
+  }
+
+  _mergeParsedCopy(existingCopy, newCopy) {
+    _.mergeWith(existingCopy, newCopy, (oldValue, newValue) => {
+      if (this.constructor.isAST(newValue)) {
+        return newValue;
+      }
+    });
   }
 
   /**

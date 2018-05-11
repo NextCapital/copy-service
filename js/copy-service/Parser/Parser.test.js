@@ -348,6 +348,80 @@ describe('Parser', () => {
               expect(Parser.parseLeaves(initialTree)).toEqual(expectedTree);
             });
           });
+
+          describe('when the tree contains several pieces of complex copy', () => {
+            test('parses the tree\'s copy correctly', () => {
+              const initialTree = {
+                level1: '*{${level2.text}}{#{level1SubKey}}{decider}',
+                level2: {
+                  text: '^{some copy}{functionKey}',
+                  more: {
+                    text: '<b><i>#{moar}i like copy${level1}\n\non different lines</i></b>'
+                  }
+                }
+              };
+
+              const level1Parsed = new Switch({
+                left: new Reference({
+                  key: 'level2.text',
+                  sibling: null
+                }),
+                right: new Substitute({
+                  key: 'level1SubKey',
+                  sibling: null
+                }),
+                key: 'decider',
+                sibling: null
+              });
+
+              const level2TextParsed = new Functional({
+                key: 'functionKey',
+                copy: new Verbatim({
+                  text: 'some copy',
+                  sibling: null
+                }),
+                sibling: null
+              });
+
+              const moreTextParsed = new Formatting({
+                tag: 'b',
+                sibling: null,
+                copy: new Formatting({
+                  tag: 'i',
+                  sibling: null,
+                  copy: new Substitute({
+                    key: 'moar',
+                    sibling: new Verbatim({
+                      text: 'i like copy',
+                      sibling: new Reference({
+                        key: 'level1',
+                        sibling: new Newline({
+                          sibling: new Newline({
+                            sibling: new Verbatim({
+                              text: 'on different lines',
+                              sibling: null
+                            })
+                          })
+                        })
+                      })
+                    })
+                  })
+                })
+              });
+
+              const expectedTree = {
+                level1: level1Parsed,
+                level2: {
+                  text: level2TextParsed,
+                  more: {
+                    text: moreTextParsed
+                  }
+                }
+              };
+
+              expect(Parser.parseLeaves(initialTree)).toEqual(expectedTree);
+            });
+          });
         });
       });
 

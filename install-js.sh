@@ -12,16 +12,7 @@ else
 fi
 npm install || exit 1
 
-if cd evaluators/evaluator;
-then
-  echo -e "\n🏗  Installing npm dependencies in the evaluator package... 🏗"
-else
-  echo -e "\n⚠️  ${RED}Error:${NC} evaluators/evaluator not found!\n"
-  exit 1;
-fi
-npm install || exit 1
-
-if cd ../plain-text-evaluator;
+if cd evaluators/plain-text-evaluator;
 then
   echo -e "\n🏗  Installing npm dependencies in the plain-text-evaluator package... 🏗"
 else

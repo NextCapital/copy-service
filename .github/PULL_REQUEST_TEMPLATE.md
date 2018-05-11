@@ -6,7 +6,6 @@
 
 **Packages modified (add appropriate labels)**
 - [ ] copy-service
-- [ ] evaluator
 - [ ] plain-text-evaluator
 - [ ] react-evaluator
 

@@ -85,11 +85,10 @@ class ReactEvaluator {
 
   /**
    * Returns the default copy (usually an empty string).
-   * @return {*}
-   * @abstract
+   * @return {null}
    */
   static _getInitialResult() {
-    return (<span></span>);
+    return null;
   }
 
   static _mergePrefixes(left, right) {

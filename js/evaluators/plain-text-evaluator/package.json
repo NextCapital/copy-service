@@ -1,14 +1,16 @@
 {
-  "name": "@nextcapital/copy-service",
+  "name": "@nextcapital/plain-text-evaluator",
   "version": "1.0.0",
-  "description": "The base copy service that provides copy parsing and evaluating.",
-  "main": "dist/copy-service.min.js",
-  "files": ["dist/copy-service*"],
+  "description": "An Evaluator that returns plain text without formatting or evaluated functions.",
+  "main": "dist/plain-text-evaluator.min.js",
+  "files": [
+    "dist/plain-text-evaluator*"
+  ],
   "scripts": {
     "autopublish": "autopublish",
     "build": "webpack",
-    "docs": "jsdoc copy-service/*.js -c .jsdoc.json",
-    "lint": "eslint index.js copy-service/**/*.js",
+    "docs": "jsdoc PlainTextEvaluator.js -c .jsdoc.json",
+    "lint": "eslint PlainTextEvaluator.js PlainTextEvaluator.test.js",
     "prepare": "npm run build -- --silent",
     "test": "jest"
   },
@@ -27,18 +29,18 @@
   "jest": {
     "collectCoverage": true,
     "collectCoverageFrom": [
-      "copy-service/**/*.js"
+      "PlainTextEvaluator.js"
     ],
     "globals": {
       "DEV_MODE": true
     },
     "testMatch": [
-      "<rootDir>/copy-service/**/*.test.js"
+      "<rootDir>/PlainTextEvaluator.test.js"
     ],
     "testResultsProcessor": "./node_modules/jest-junit-reporter"
   },
   "devDependencies": {
-    "@nextcapital/evaluator": "1.0.0",
+    "@nextcapital/copy-service": "1.0.0",
     "autopublish": "0.0.8",
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.3",

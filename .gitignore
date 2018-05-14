@@ -1,3 +1,6 @@
 .DS_Store
+coverage/
+docs/
 dist/
 node_modules/
+test-report.xml

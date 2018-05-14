@@ -1,14 +1,16 @@
 {
-  "name": "@nextcapital/copy-service",
+  "name": "@nextcapital/react-evaluator",
   "version": "1.0.0",
-  "description": "The base copy service that provides copy parsing and evaluating.",
-  "main": "dist/copy-service.min.js",
-  "files": ["dist/copy-service*"],
+  "description": "An Evaluator that evaluates parsed copy into JSX.",
+  "main": "dist/react-evaluator.min.js",
+  "files": [
+    "dist/react-evaluator*"
+  ],
   "scripts": {
     "autopublish": "autopublish",
     "build": "webpack",
-    "docs": "jsdoc copy-service/*.js -c .jsdoc.json",
-    "lint": "eslint index.js copy-service/**/*.js",
+    "docs": "jsdoc ReactEvaluator.js -c .jsdoc.json",
+    "lint": "eslint ReactEvaluator.js ReactEvaluator.test.js",
     "prepare": "npm run build -- --silent",
     "test": "jest"
   },
@@ -27,18 +29,17 @@
   "jest": {
     "collectCoverage": true,
     "collectCoverageFrom": [
-      "copy-service/**/*.js"
+      "ReactEvaluator.js"
     ],
     "globals": {
       "DEV_MODE": true
     },
     "testMatch": [
-      "<rootDir>/copy-service/**/*.test.js"
+      "<rootDir>/ReactEvaluator.test.js"
     ],
     "testResultsProcessor": "./node_modules/jest-junit-reporter"
   },
   "devDependencies": {
-    "@nextcapital/evaluator": "1.0.0",
     "autopublish": "0.0.8",
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.3",
@@ -48,6 +49,7 @@
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "babel-preset-env": "^1.6.1",
     "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
@@ -61,5 +63,8 @@
   },
   "dependencies": {
     "lodash": "^4.17.10"
+  },
+  "peerDependencies": {
+    "react": "^15.5.4"
   }
 }

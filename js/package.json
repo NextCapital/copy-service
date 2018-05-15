@@ -1,9 +1,11 @@
 {
   "name": "@nextcapital/copy-service",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The base copy service that provides copy parsing and evaluating.",
   "main": "dist/copy-service.min.js",
-  "files": ["dist/copy-service*"],
+  "files": [
+    "dist/copy-service*"
+  ],
   "scripts": {
     "autopublish": "autopublish",
     "build": "webpack",
@@ -38,7 +40,6 @@
     "testResultsProcessor": "./node_modules/jest-junit-reporter"
   },
   "devDependencies": {
-    "@nextcapital/evaluator": "1.0.0",
     "autopublish": "0.0.8",
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.3",

@@ -1,5 +1,8 @@
 {
-    "extends": "airbnb-base",
+    "extends": [
+      "plugin:react/recommended",
+      "airbnb-base"
+    ],
 
     "env": {
       "es6": true,
@@ -17,6 +20,9 @@
         "jsx": true
       }
     },
+    "plugins": [
+      "react"
+    ],
 
     "rules": {
       "arrow-parens": ["error", "always"],
@@ -24,7 +30,7 @@
       "consistent-return": "off",
       "function-paren-newline": "off",
       "import/extensions": ["error", "ignorePackages"],
-      "import/no-unresolved": ["error", { "ignore": ["@nextcapital/Evaluator"] }],
+      "import/no-unresolved": ["error", { "ignore": ["@nextcapital/Evaluator", "react"] }],
       "no-console": ["error"],
       "no-continue": "off",
       "no-loop-func": "off",

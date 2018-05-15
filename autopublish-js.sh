@@ -10,7 +10,7 @@ else
   echo -e "\n⚠️  ${RED}Error:${NC} copy-service not found!\n"
   exit 1;
 fi
-npm run autopublish || exit 1
+npm run autopublish
 
 if cd evaluators/plain-text-evaluator;
 then
@@ -19,7 +19,7 @@ else
   echo -e "\n⚠️  ${RED}Error:${NC} evaluators/plain-text-evaluator not found!\n"
   exit 1;
 fi
-npm run autopublish || exit 1
+npm run autopublish
 
 if cd ../react-evaluator;
 then
@@ -28,4 +28,4 @@ else
   echo -e "\n⚠️  ${RED}Error:${NC} evaluators/react-evaluator not found!\n"
   exit 1;
 fi
-npm run autopublish || exit 1
+npm run autopublish

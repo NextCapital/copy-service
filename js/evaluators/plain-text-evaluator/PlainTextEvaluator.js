@@ -46,7 +46,9 @@ class PlainTextEvaluator extends Evaluator {
     }
     // Build the copy at the referenced key and append it.
     else if (ast instanceof Reference) {
-      copy = this.evalAST(this._getInitialResult(), getASTForKey(ast.key), getASTForKey, substitutions);
+      copy = this.evalAST(
+        this._getInitialResult(), getASTForKey(ast.key), getASTForKey, substitutions
+      );
     }
     // Perform the substitution and append it.
     else if (ast instanceof Substitute) {

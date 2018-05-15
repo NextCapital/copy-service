@@ -40,7 +40,6 @@
     "testResultsProcessor": "./node_modules/jest-junit-reporter"
   },
   "devDependencies": {
-    "@nextcapital/copy-service": "1.0.0",
     "autopublish": "0.0.8",
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.3",
@@ -62,6 +61,7 @@
     "webpack-cli": "^2.1.2"
   },
   "dependencies": {
+    "@nextcapital/copy-service": "1.0.1",
     "lodash": "^4.17.10"
   }
 }

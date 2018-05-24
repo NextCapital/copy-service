@@ -40,6 +40,8 @@ class CopyService {
       this._handleError('CopyService requires an evaluator', { halt: true });
     }
 
+    this.getAstForKey = this.getAstForKey.bind(this);
+
     /**
      * The store of parsed copy.
      * @type {object}

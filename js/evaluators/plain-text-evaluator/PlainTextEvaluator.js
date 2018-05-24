@@ -84,7 +84,7 @@ class PlainTextEvaluator extends Evaluator {
     }
 
     // Continue recursing to evaluate the remaining ast with the appended copyPrefix.
-    return this.evalAST(copyPrefix + copy, ast.sibling, substitutions);
+    return this.evalAST(copyPrefix + copy, ast.sibling, getASTForKey, substitutions);
   }
   /* eslint-enable brace-style */
 

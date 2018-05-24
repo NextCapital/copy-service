@@ -1,47 +1,6 @@
 {
-    "extends": [
-      "plugin:react/recommended",
-      "airbnb-base"
-    ],
-
-    "env": {
-      "es6": true,
-      "jest": true
-    },
-    "globals": {
-      "DEV_MODE": true
-    },
-    "parser": "babel-eslint",
-    "parserOptions": {
-      "ecmaVersion": 6,
-      "sourceType": "module",
-      "ecmaFeatures": {
-        "experimentalObjectRestSpread": true,
-        "jsx": true
-      }
-    },
-    "plugins": [
-      "react"
-    ],
-
-    "rules": {
-      "arrow-parens": ["error", "always"],
-      "comma-dangle": ["error", "never"],
-      "consistent-return": "off",
-      "function-paren-newline": "off",
-      "import/extensions": ["error", "ignorePackages"],
-      "import/no-unresolved": ["error", { "ignore": ["@nextcapital/Evaluator", "react"] }],
-      "no-console": ["error"],
-      "no-continue": "off",
-      "no-loop-func": "off",
-      "no-template-curly-in-string": "off",
-      "no-underscore-dangle": "off",
-      "object-curly-newline": ["error", {
-        "minProperties": 2,
-        "multiline": true
-      }],
-      "one-var": "off",
-      "one-var-declaration-per-line": "off",
-      "prefer-destructuring": "off"
-    }
+  "extends": [
+    "plugin:react/recommended",
+    "@nextcapital/eslint-config-js-linter"
+  ]
 }

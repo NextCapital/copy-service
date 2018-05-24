@@ -83,7 +83,7 @@ class CopyService {
   getCopy(key, substitutions) {
     const ast = this.getAstForKey(key);
     return this.evaluator.evalAST(
-      this.evaluator._getInitialResult(), ast, this.getASTForKey, substitutions
+      this.evaluator._getInitialResult(), ast, this.getAstForKey, substitutions
     );
   }
 

@@ -156,7 +156,7 @@ describe('CopyService', () => {
 
         copyService.getCopy('key', substitutions);
         expect(copyService.evaluator.evalAST).toBeCalledWith(
-          initialResult, parsedCopy['key'], copyService.getASTForKey, substitutions
+          initialResult, parsedCopy['key'], copyService.getAstForKey, substitutions
         );
       });
 

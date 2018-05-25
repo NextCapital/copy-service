@@ -35,6 +35,11 @@ const config = (mode) => ({
 
   cache: true,
 
+  externals: {
+    'lodash': '_',
+    '_': '_'
+  },
+
   plugins: [
     new LodashModuleReplacementPlugin({
       cloning: true,

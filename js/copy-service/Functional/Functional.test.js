@@ -14,6 +14,11 @@ describe('Functional', () => {
       expect(functional).toEqual(expect.objectContaining(options));
     });
 
+    test('defaults args to an empty array', () => {
+      const functional = new Functional({ key: 'some key' });
+      expect(functional.args).toEqual([]);
+    });
+
     test('does not set invalid options to the instance', () => {
       const options = {
         ast: 'some ast',

@@ -25,7 +25,7 @@ class Functional {
      * The string keys corresponding to argument substitutions.
      * @type {Array<string>}
      */
-    this.args = options.args;
+    this.args = options.args || [];
   }
 }
 

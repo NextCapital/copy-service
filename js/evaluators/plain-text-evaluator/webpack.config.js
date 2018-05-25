@@ -35,6 +35,12 @@ const config = (mode) => ({
 
   cache: true,
 
+  externals: {
+    '@nextcapital/copy-service': '@nextcapital/copy-service',
+    'lodash': '_',
+    '_': '_'
+  },
+
   plugins: [
     new LodashModuleReplacementPlugin({
       cloning: true,

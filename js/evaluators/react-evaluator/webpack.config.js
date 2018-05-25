@@ -19,10 +19,6 @@ const config = (mode) => ({
     }]
   },
 
-  externals: {
-    'react': 'React'
-  },
-
   context: __dirname,
 
   target: 'web',
@@ -38,6 +34,13 @@ const config = (mode) => ({
   bail: true,
 
   cache: true,
+
+  externals: {
+    '@nextcapital/copy-service': '@nextcapital/copy-service',
+    react: 'React',
+    'lodash': '_',
+    '_': '_'
+  },
 
   plugins: [
     new LodashModuleReplacementPlugin({

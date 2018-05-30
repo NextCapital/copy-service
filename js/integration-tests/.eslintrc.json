@@ -1,0 +1,6 @@
+{
+  "extends": [
+    "plugin:react/recommended",
+    "@nextcapital/eslint-config-js-linter"
+  ]
+}

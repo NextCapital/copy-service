@@ -1,0 +1,38 @@
+{
+  "noCopy": "",
+  "verbatim": {
+    "balance": "Balance",
+    "pluralTitle": "accounts",
+    "owner": "Account Owner",
+    "nameOnAccount": "name on account",
+    "list": {
+      "title": {
+        "primary": "accounts"
+      }
+    }
+  },
+  "substitutions": {
+    "title": "#{designObject.members.nickname.faceValue}",
+    "symbol": "$#{value}",
+    "min": "input value must be no earlier than #{value}"
+  },
+  "references": {
+    "title": "${verbatim.balance} and ${verbatim.pluralTitle}",
+    "owner": "${verbatim.owner}",
+    "symbol": "${substitutions.symbol}"
+  },
+  "decisions": {
+    "title": "*{Current}{Proposed}{designObject.current} asset",
+    "space": "contribution*{ rate}{}{relative}",
+    "nested": "*{${tags.nestedReference}}{#{sub}}{decider}"
+  },
+  "functions": {
+    "title": "^{learn more}{makeExternalLink}",
+    "args": "^{learn more}{func}[arg1, arg2]"
+  },
+  "tags": {
+    "title": "<b>Plan</b>",
+    "nested": "<b><i>Plan</i></b>",
+    "nestedReference": "<b><i>${references.symbol}</i></b>"
+  }
+}

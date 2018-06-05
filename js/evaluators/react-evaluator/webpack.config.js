@@ -37,9 +37,18 @@ const config = (mode) => ({
 
   externals: {
     '@nextcapital/copy-service': '@nextcapital/copy-service',
-    react: 'React',
-    'lodash': '_',
-    '_': '_'
+    'lodash': {
+      amd: 'lodash',
+      commonjs: 'lodash',
+      commonjs2: 'lodash',
+      root: '_'
+    },
+    'react': {
+      amd: 'react',
+      commonjs: 'react',
+      commonjs2: 'react',
+      root: 'React'
+    },
   },
 
   plugins: [

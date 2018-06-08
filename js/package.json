@@ -1,6 +1,6 @@
 {
   "name": "@nextcapital/copy-service",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "The base copy service that provides copy parsing and evaluating.",
   "main": "dist/copy-service.min.js",
   "files": [
@@ -9,7 +9,7 @@
   "scripts": {
     "autopublish": "autopublish",
     "build": "webpack",
-    "docs": "jsdoc copy-service/*.js -c .jsdoc.json",
+    "docs": "rm -rf docs/ && jsdoc copy-service/**/*.js -c .jsdoc.json",
     "lint": "eslint index.js copy-service/**/*.js",
     "prepare": "rm -rf dist && npm run build -- --silent",
     "test": "jest"

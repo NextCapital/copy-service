@@ -1,6 +1,6 @@
 {
   "name": "@nextcapital/copy-service",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "The base copy service that provides copy parsing and evaluating.",
   "main": "dist/copy-service.min.js",
   "files": [

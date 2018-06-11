@@ -122,7 +122,7 @@ class CopyService {
    * @return {boolean}
    */
   hasKey(key) {
-    return _.some(this.getSubkeys(key));
+    return !_.isNil(this.getSubkeys(key));
   }
 
   /**

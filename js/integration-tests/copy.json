@@ -21,6 +21,9 @@
     "owner": "${verbatim.owner}",
     "symbol": "${substitutions.symbol}"
   },
+  "referenceSubstitutions": {
+    "title": "%{substitution}"
+  },
   "decisions": {
     "title": "*{Current}{Proposed}{designObject.current} asset",
     "space": "contribution*{ rate}{}{relative}",

@@ -6,6 +6,7 @@ import {
   Functional,
   Newline,
   Reference,
+  RefSubstitute,
   Substitute,
   Switch,
   Verbatim
@@ -108,6 +109,39 @@ describe('ReactEvaluator', () => {
               const ast = new Substitute({ key: 'exists' });
 
               expect(getStaticMarkup(null, ast, getASTForKey)).toBe(`<span>${text}</span>`);
+            });
+          });
+        });
+
+        describe('when the AST is a RefSubstitute', () => {
+          beforeEach(() => {
+            jest.spyOn(ReactEvaluator, '_trySubstitution');
+          });
+
+          afterEach(() => {
+            ReactEvaluator._trySubstitution.mockRestore();
+          });
+
+          describe('when the substitution is not found', () => {
+            test('returns copy prefix', () => {
+              ReactEvaluator._trySubstitution.mockReturnValue(null);
+              const ast = new RefSubstitute({ key: 'does.not.exist' });
+
+              expect(ReactEvaluator.evalAST(null, ast, getASTForKey)).toBe(null);
+            });
+          });
+
+          describe('when the substitution is found', () => {
+            test('returns the evaluated copy of the referenced key', () => {
+              const referencedAST = new Verbatim({ text: 'some text' });
+              getASTForKey.mockReturnValue(referencedAST);
+
+              const key = 'some.key';
+              const ast = new RefSubstitute({ key });
+
+              expect(getStaticMarkup(null, ast, getASTForKey)).toBe(
+                `<span>${referencedAST.text}</span>`
+              );
             });
           });
         });

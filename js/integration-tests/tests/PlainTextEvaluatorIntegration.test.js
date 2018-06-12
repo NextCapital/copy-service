@@ -124,6 +124,16 @@ describe('CopyService - PlainTextEvaluator Integration Tests', () => {
       });
     });
 
+    describe('copy with copy key substitutions', () => {
+      describe('referenceSubstitutions.title', () => {
+        testCopy({
+          key: 'referenceSubstitutions.title',
+          substitutions: { substitution: 'verbatim.balance' },
+          expectedCopy: 'Balance'
+        });
+      });
+    });
+
     describe('copy with a decision branch', () => {
       describe('decisions.title', () => {
         describe('when the decider evaluates to true', () => {

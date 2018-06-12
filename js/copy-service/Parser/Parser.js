@@ -306,153 +306,34 @@ class Parser {
   }
 
   /* eslint-disable brace-style */
+
   /**
-   * Recrusively processes an array of tokens to build an AST.
-   * @param  {array} tokens
+   * Recursively processes an array of tokens to build an AST optionally expecting an ending token.
+   * @param {array} tokens
+   * @param {boolean} [isRestricted]
+   * @param {TOKENS} [expectedEndingToken]
    * @return {object} Contains the AST and any remaining tokens.
+   * @throws If an ending token is expected and not found.
    * @throws If an unsupported token is found.
    */
-  static _parseTokens(tokens) {
+  static _parseTokens(
+    tokens, isRestricted = false, expectedEndingToken = this.TOKENS.SWITCH_DELIM
+  ) {
     if (_.isEmpty(tokens)) {
-      return {
-        ast: null,
-        tokens
-      };
-    }
-
-    const token = _.first(tokens);
-    const tokensToParse = tokens.slice(1);
-
-    if (token.type === this.TOKENS.NEWLINE) {
-      const parsed = this._parseTokens(tokensToParse);
-      return {
-        ast: new Newline({ sibling: parsed.ast }),
-        tokens: parsed.tokens
-      };
-    }
-
-    else if (token.type === this.TOKENS.SWITCH_START) {
-      const leftParsed = this._parseTokensRestricted(tokensToParse);
-      const rightParsed = this._parseTokensRestricted(leftParsed.tokens);
-      const deciderParsed = this._getTextToken(rightParsed.tokens);
-
-      const closeParsedTokens = this._processCloseToken(deciderParsed.tokens);
-      const parsed = this._parseTokens(closeParsedTokens);
-
-      return {
-        ast: new Switch({
-          left: leftParsed.ast,
-          right: rightParsed.ast,
-          key: deciderParsed.text,
-          sibling: parsed.ast
-        }),
-        tokens: parsed.tokens
-      };
-    }
-
-    else if (token.type === this.TOKENS.SUB_START) {
-      const textParsed = this._getTextToken(tokensToParse);
-      const closeParsedTokens = this._processCloseToken(textParsed.tokens);
-      const parsed = this._parseTokens(closeParsedTokens);
-
-      return {
-        ast: new Substitute({
-          key: textParsed.text,
-          sibling: parsed.ast
-        }),
-        tokens: parsed.tokens
-      };
-    }
-
-    else if (token.type === this.TOKENS.REF_START) {
-      const textParsed = this._getTextToken(tokensToParse);
-      const closeParsedTokens = this._processCloseToken(textParsed.tokens);
-      const parsed = this._parseTokens(closeParsedTokens);
-
-      return {
-        ast: new Reference({
-          key: textParsed.text,
-          sibling: parsed.ast
-        }),
-        tokens: parsed.tokens
-      };
-    }
-
-    else if (token.type === this.TOKENS.FUNC_START) {
-      const firstParsed = this._parseTokensRestricted(tokensToParse);
-      const textParsed = this._getTextToken(firstParsed.tokens);
-
-      let argumentsParsed, parsedOptionalArgumentsTokens;
-      if (textParsed.tokens[0].type === this.TOKENS.CLOSE) {
-        parsedOptionalArgumentsTokens = this._processCloseToken(textParsed.tokens);
-      } else if (textParsed.tokens[0].type === this.TOKENS.ARGS_START) {
-        argumentsParsed = this._parseArguments(textParsed.tokens.slice(1));
-        parsedOptionalArgumentsTokens = argumentsParsed.tokens;
+      if (isRestricted) {
+        this._handleError(`Expected closing ${expectedEndingToken}`, { halt: true });
+      } else {
+        return {
+          ast: null,
+          tokens
+        };
       }
-
-      const parsed = this._parseTokens(parsedOptionalArgumentsTokens);
-
-      return {
-        ast: new Functional({
-          copy: firstParsed.ast,
-          key: textParsed.text,
-          args: _.get(argumentsParsed, 'args'),
-          sibling: parsed.ast
-        }),
-        tokens: parsed.tokens
-      };
-    }
-
-    else if (token.type === this.TOKENS.HTML_TAG_START) {
-      const tag = token.tag;
-      const tagParsed = this._parseTokensRestricted(tokensToParse, this.TOKENS.HTML_TAG_END);
-      const parsed = this._parseTokens(tagParsed.tokens);
-
-      return {
-        ast: new Formatting({
-          tag,
-          copy: tagParsed.ast,
-          sibling: parsed.ast
-        }),
-        tokens: parsed.tokens
-      };
-    }
-
-    else if (token.type === this.TOKENS.TEXT) {
-      const textParsed = this._getTextToken(tokens);
-      const parsed = this._parseTokens(textParsed.tokens);
-
-      return {
-        ast: new Verbatim({
-          text: textParsed.text,
-          sibling: parsed.ast
-        }),
-        tokens: parsed.tokens
-      };
-    }
-
-    this._handleError(`Unexpected token ${token.type}`, { halt: true });
-  }
-  /* eslint-enable brace-style */
-
-  /* eslint-disable brace-style */
-  /**
-   * Recrusively processes an array of tokens to build an AST, expecting an ending token.
-   * @param  {array} tokens
-   * @param  {TOKENS} expectedEndingToken The TOKEN to end parsing on.
-   * @return {object} Contains the AST and any remaining tokens.
-   * @throws If the ending token is not found.
-   * @throws If an unsupported token is found.
-   */
-  static _parseTokensRestricted(tokens, expectedEndingToken = this.TOKENS.SWITCH_DELIM) {
-    if (_.isEmpty(tokens)) {
-      this._handleError(`Expected closing ${expectedEndingToken}`, { halt: true });
     }
 
     const token = _.first(tokens);
     const tokensToParse = tokens.slice(1);
 
-    if (token.type === expectedEndingToken) {
+    if (isRestricted && token.type === expectedEndingToken) {
       return {
         ast: null,
         tokens: tokensToParse
@@ -460,7 +341,9 @@ class Parser {
     }
 
     else if (token.type === this.TOKENS.NEWLINE) {
-      const parsed = this._parseTokensRestricted(tokensToParse, expectedEndingToken);
+      const parsed = isRestricted ?
+        this._parseTokens(tokensToParse, true, expectedEndingToken) :
+        this._parseTokens(tokensToParse);
       return {
         ast: new Newline({ sibling: parsed.ast }),
         tokens: parsed.tokens
@@ -468,12 +351,14 @@ class Parser {
     }
 
     else if (token.type === this.TOKENS.SWITCH_START) {
-      const leftParsed = this._parseTokensRestricted(tokensToParse);
-      const rightParsed = this._parseTokensRestricted(leftParsed.tokens);
+      const leftParsed = this._parseTokens(tokensToParse, true);
+      const rightParsed = this._parseTokens(leftParsed.tokens, true);
       const deciderParsed = this._getTextToken(rightParsed.tokens);
 
       const closeParsedTokens = this._processCloseToken(deciderParsed.tokens);
-      const parsed = this._parseTokensRestricted(closeParsedTokens, expectedEndingToken);
+      const parsed = isRestricted ?
+        this._parseTokens(closeParsedTokens, true, expectedEndingToken) :
+        this._parseTokens(closeParsedTokens);
 
       return {
         ast: new Switch({
@@ -489,7 +374,9 @@ class Parser {
     else if (token.type === this.TOKENS.SUB_START) {
       const textParsed = this._getTextToken(tokensToParse);
       const closeParsedTokens = this._processCloseToken(textParsed.tokens);
-      const parsed = this._parseTokensRestricted(closeParsedTokens, expectedEndingToken);
+      const parsed = isRestricted ?
+        this._parseTokens(closeParsedTokens, true, expectedEndingToken) :
+        this._parseTokens(closeParsedTokens);
 
       return {
         ast: new Substitute({
@@ -503,7 +390,9 @@ class Parser {
     else if (token.type === this.TOKENS.REF_START) {
       const textParsed = this._getTextToken(tokensToParse);
       const closeParsedTokens = this._processCloseToken(textParsed.tokens);
-      const parsed = this._parseTokensRestricted(closeParsedTokens, expectedEndingToken);
+      const parsed = isRestricted ?
+        this._parseTokens(closeParsedTokens, true, expectedEndingToken) :
+        this._parseTokens(closeParsedTokens);
 
       return {
         ast: new Reference({
@@ -515,7 +404,7 @@ class Parser {
     }
 
     else if (token.type === this.TOKENS.FUNC_START) {
-      const firstParsed = this._parseTokensRestricted(tokensToParse);
+      const firstParsed = this._parseTokens(tokensToParse, true);
       const textParsed = this._getTextToken(firstParsed.tokens);
 
       let argumentsParsed, parsedOptionalArgumentsTokens;
@@ -526,9 +415,9 @@ class Parser {
         parsedOptionalArgumentsTokens = argumentsParsed.tokens;
       }
 
-      const parsed = this._parseTokensRestricted(
-        parsedOptionalArgumentsTokens, expectedEndingToken
-      );
+      const parsed = isRestricted ?
+        this._parseTokens(parsedOptionalArgumentsTokens, true, expectedEndingToken) :
+        this._parseTokens(parsedOptionalArgumentsTokens);
 
       return {
         ast: new Functional({
@@ -543,8 +432,10 @@ class Parser {
 
     else if (token.type === this.TOKENS.HTML_TAG_START) {
       const tag = token.tag;
-      const tagParsed = this._parseTokensRestricted(tokensToParse, this.TOKENS.HTML_TAG_END);
-      const parsed = this._parseTokensRestricted(tagParsed.tokens, expectedEndingToken);
+      const tagParsed = this._parseTokens(tokensToParse, true, this.TOKENS.HTML_TAG_END);
+      const parsed = isRestricted ?
+        this._parseTokens(tagParsed.tokens, true, expectedEndingToken) :
+        this._parseTokens(tagParsed.tokens);
 
       return {
         ast: new Formatting({
@@ -558,7 +449,9 @@ class Parser {
 
     else if (token.type === this.TOKENS.TEXT) {
       const textParsed = this._getTextToken(tokens);
-      const parsed = this._parseTokensRestricted(textParsed.tokens, expectedEndingToken);
+      const parsed = isRestricted ?
+        this._parseTokens(textParsed.tokens, true, expectedEndingToken) :
+        this._parseTokens(textParsed.tokens);
 
       return {
         ast: new Verbatim({
@@ -569,8 +462,12 @@ class Parser {
       };
     }
 
-    this._handleError(`Unexpected restricted token ${token.type}`, { halt: true });
+    const errorMessage = isRestricted ?
+      `Unexpected restricted token ${token.type}` :
+      `Unexpected token ${token.type}`;
+    this._handleError(errorMessage, { halt: true });
   }
+
   /* eslint-enable brace-style */
 
   /**

@@ -4,6 +4,7 @@ import Formatting from './Formatting/Formatting';
 import Functional from './Functional/Functional';
 import Newline from './Newline/Newline';
 import Reference from './Reference/Reference';
+import RefSubstitute from './RefSubstitute/RefSubstitute';
 import Substitute from './Substitute/Substitute';
 import Switch from './Switch/Switch';
 import Verbatim from './Verbatim/Verbatim';
@@ -12,7 +13,7 @@ import Parser from './Parser/Parser';
 
 /**
  * An AST class.
- * @typedef {Formatting|Functional|Newline|Reference|Substitute|Switch|Verbatim} AST
+ * @typedef {Formatting|Functional|Newline|Reference|RefSubstitute|Substitute|Switch|Verbatim} AST
  */
 
 /**
@@ -30,6 +31,7 @@ class CopyService {
       object instanceof Functional ||
       object instanceof Newline ||
       object instanceof Reference ||
+      object instanceof RefSubstitute ||
       object instanceof Substitute ||
       object instanceof Switch ||
       object instanceof Verbatim;

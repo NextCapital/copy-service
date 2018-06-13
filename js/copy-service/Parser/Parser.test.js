@@ -6,6 +6,7 @@ import Formatting from '../Formatting/Formatting';
 import Functional from '../Functional/Functional';
 import Newline from '../Newline/Newline';
 import Reference from '../Reference/Reference';
+import RefSubstitute from '../RefSubstitute/RefSubstitute';
 import Substitute from '../Substitute/Substitute';
 import Switch from '../Switch/Switch';
 import Verbatim from '../Verbatim/Verbatim';
@@ -77,6 +78,22 @@ describe('Parser', () => {
               };
               const expectedTree = {
                 substitution: new Substitute({
+                  key: 'hello',
+                  sibling: null
+                })
+              };
+
+              expect(Parser.parseLeaves(initialTree)).toEqual(expectedTree);
+            });
+          });
+
+          describe('when the tree contains a reference substitution', () => {
+            test('completes a parse with an AST containing a RefSubstitute node', () => {
+              const initialTree = {
+                substitution: '%{hello}'
+              };
+              const expectedTree = {
+                substitution: new RefSubstitute({
                   key: 'hello',
                   sibling: null
                 })

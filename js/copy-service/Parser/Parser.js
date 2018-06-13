@@ -4,6 +4,7 @@ import Formatting from '../Formatting/Formatting';
 import Functional from '../Functional/Functional';
 import Newline from '../Newline/Newline';
 import Reference from '../Reference/Reference';
+import RefSubstitute from '../RefSubstitute/RefSubstitute';
 import Substitute from '../Substitute/Substitute';
 import Switch from '../Switch/Switch';
 import Verbatim from '../Verbatim/Verbatim';
@@ -14,6 +15,7 @@ const TOKENS = {
   CLOSE: '}',
   REF_START: '${',
   SUB_START: '\#{', // eslint-disable-line no-useless-escape
+  REF_SUB_START: '%{',
   SWITCH_START: '*{',
   FUNC_START: '^{',
   HTML_TAG_START: '<',
@@ -396,6 +398,22 @@ class Parser {
 
       return {
         ast: new Reference({
+          key: textParsed.text,
+          sibling: parsed.ast
+        }),
+        tokens: parsed.tokens
+      };
+    }
+
+    else if (token.type === this.TOKENS.REF_SUB_START) {
+      const textParsed = this._getTextToken(tokensToParse);
+      const closeParsedTokens = this._processCloseToken(textParsed.tokens);
+      const parsed = isRestricted ?
+        this._parseTokens(closeParsedTokens, true, expectedEndingToken) :
+        this._parseTokens(closeParsedTokens);
+
+      return {
+        ast: new RefSubstitute({
           key: textParsed.text,
           sibling: parsed.ast
         }),

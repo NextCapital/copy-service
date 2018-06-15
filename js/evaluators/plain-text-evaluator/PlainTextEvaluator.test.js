@@ -3,6 +3,7 @@ import {
   Functional,
   Newline,
   Reference,
+  RefSubstitute,
   Substitute,
   Switch,
   Verbatim
@@ -97,6 +98,37 @@ describe('PlainTextEvaluator', () => {
               const ast = new Substitute({ key: 'exists' });
 
               expect(PlainTextEvaluator.evalAST('', ast, getASTForKey)).toBe(text);
+            });
+          });
+        });
+
+        describe('when the AST is a RefSubstitute', () => {
+          beforeEach(() => {
+            jest.spyOn(PlainTextEvaluator, '_trySubstitution');
+          });
+
+          afterEach(() => {
+            PlainTextEvaluator._trySubstitution.mockRestore();
+          });
+
+          describe('when the substitution is not found', () => {
+            test('returns empty string', () => {
+              PlainTextEvaluator._trySubstitution.mockReturnValue(null);
+              const ast = new RefSubstitute({ key: 'does.not.exist' });
+
+              expect(PlainTextEvaluator.evalAST('', ast, getASTForKey)).toBe('');
+            });
+          });
+
+          describe('when the substitution is found', () => {
+            test('returns the evaluated copy from the referenced key', () => {
+              const referencedAST = new Newline({});
+              getASTForKey.mockReturnValue(referencedAST);
+
+              const key = 'some.key';
+              const ast = new RefSubstitute({ key });
+
+              expect(PlainTextEvaluator.evalAST('', ast, getASTForKey)).toBe('\n');
             });
           });
         });

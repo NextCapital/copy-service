@@ -5,6 +5,7 @@ import {
   Functional,
   Newline,
   Reference,
+  RefSubstitute,
   Substitute,
   Switch,
   Verbatim,
@@ -54,6 +55,12 @@ class PlainTextEvaluator extends Evaluator {
     else if (ast instanceof Substitute) {
       const value = this._trySubstitution(substitutions, ast.key);
       copy = _.isNil(value) ? '' : value.toString();
+    }
+    else if (ast instanceof RefSubstitute) {
+      const copyKey = this._trySubstitution(substitutions, ast.key);
+      copy = this.evalAST(
+        this._getInitialResult(), getASTForKey(copyKey), getASTForKey, substitutions
+      );
     }
     // Check the decider provided in substitutions, pick the correct branch, evaluate that branch,
     // and append it.

@@ -1,6 +1,6 @@
 {
   "name": "@nextcapital/react-evaluator",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "An Evaluator that evaluates parsed copy into JSX.",
   "main": "dist/react-evaluator.min.js",
   "files": [
@@ -40,7 +40,7 @@
     "testResultsProcessor": "./node_modules/jest-junit-reporter"
   },
   "devDependencies": {
-    "@nextcapital/copy-service": "1.0.4",
+    "@nextcapital/copy-service": "1.1.0",
     "@nextcapital/eslint-config-js-linter": "1.0.0",
     "autopublish": "0.0.8",
     "babel-core": "^6.26.3",

@@ -6,6 +6,7 @@ import {
   Functional,
   Newline,
   Reference,
+  RefSubstitute,
   Substitute,
   Switch,
   Verbatim,
@@ -54,6 +55,12 @@ class ReactEvaluator extends Evaluator {
       } else {
         mergedCopy = copyPrefix;
       }
+    } else if (ast instanceof RefSubstitute) {
+      const copyKey = this._trySubstitution(substitutions, ast.key);
+      const referencedCopy = this.evalAST(
+        this._getInitialResult(), getASTForKey(copyKey), getASTForKey, substitutions
+      );
+      mergedCopy = this._mergePrefixes(copyPrefix, referencedCopy);
     } else if (ast instanceof Switch) {
       const decider = this._trySubstitution(substitutions, ast.key);
       let subtree;

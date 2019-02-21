@@ -6,39 +6,41 @@ import {
   RefSubstitute,
   Substitute,
   Switch,
-  Verbatim
-} from '@nextcapital/copy-service';
+  Verbatim,
+  Substitutions,
+  CopyService
+} from '../index.js';
 
 import PlainTextEvaluator from './PlainTextEvaluator';
 
 describe('PlainTextEvaluator', () => {
-  // Safety valve
-  afterEach(() => {
-    jest.restoreAllMocks();
+  let evaluator, copyService, substitutions;
+
+  beforeEach(() => {
+    copyService = new CopyService();
+    evaluator = new PlainTextEvaluator(copyService);
+
+    substitutions = new Substitutions({});
+    jest.spyOn(substitutions, 'get');
+    jest.spyOn(substitutions, 'getBoolean');
   });
 
   describe('getInitialResult', () => {
     test('returns empty string', () => {
-      expect(PlainTextEvaluator.getInitialResult()).toBe('');
+      expect(evaluator.getInitialResult()).toBe('');
     });
   });
 
   describe('evalAST', () => {
-    let getAstForKey;
-
     beforeEach(() => {
-      getAstForKey = jest.fn();
-    });
-
-    afterEach(() => {
-      getAstForKey = null;
+      jest.spyOn(copyService, 'getAstForKey');
     });
 
     describe('when no AST is passed', () => {
       test('returns copyPrefix', () => {
         const copyPrefix = 'hello';
 
-        expect(PlainTextEvaluator.evalAST(copyPrefix)).toBe(copyPrefix);
+        expect(evaluator.evalAST(copyPrefix, null)).toBe(copyPrefix);
       });
     });
 
@@ -48,7 +50,7 @@ describe('PlainTextEvaluator', () => {
           test('returns a newline character', () => {
             const ast = new Newline({});
 
-            expect(PlainTextEvaluator.evalAST('', ast)).toBe('\n');
+            expect(evaluator.evalAST('', ast)).toBe('\n');
           });
         });
 
@@ -57,139 +59,90 @@ describe('PlainTextEvaluator', () => {
             const text = 'some really cool text';
             const ast = new Verbatim({ text });
 
-            expect(PlainTextEvaluator.evalAST('', ast)).toBe(text);
+            expect(evaluator.evalAST('', ast)).toBe(text);
           });
         });
 
         describe('when the AST is a Reference', () => {
           test('returns the evaluated copy from the referenced key', () => {
             const referencedAST = new Newline({});
-            getAstForKey.mockReturnValue(referencedAST);
+            copyService.getAstForKey.mockReturnValue(referencedAST);
 
             const key = 'some.key';
             const ast = new Reference({ key });
 
-            expect(PlainTextEvaluator.evalAST('', ast, getAstForKey)).toBe('\n');
+            expect(evaluator.evalAST('', ast)).toBe('\n');
           });
         });
 
         describe('when the AST is a Substitute', () => {
-          beforeEach(() => {
-            jest.spyOn(PlainTextEvaluator, '_trySubstitution');
-          });
-
-          afterEach(() => {
-            PlainTextEvaluator._trySubstitution.mockRestore();
-          });
-
           describe('when the substitution is not found', () => {
             test('returns empty string', () => {
-              PlainTextEvaluator._trySubstitution.mockReturnValue(null);
+              substitutions.get.mockReturnValue(null);
               const ast = new Substitute({ key: 'does.not.exist' });
 
-              expect(PlainTextEvaluator.evalAST('', ast, getAstForKey)).toBe('');
+              expect(evaluator.evalAST('', ast, substitutions)).toBe('');
             });
           });
 
           describe('when the substitution is found', () => {
             test('returns the substitution as a string', () => {
               const text = 'substitution';
-              PlainTextEvaluator._trySubstitution.mockReturnValue(text);
+              substitutions.get.mockReturnValue(text);
               const ast = new Substitute({ key: 'exists' });
 
-              expect(PlainTextEvaluator.evalAST('', ast, getAstForKey)).toBe(text);
+              expect(evaluator.evalAST('', ast, substitutions)).toBe(text);
             });
           });
         });
 
         describe('when the AST is a RefSubstitute', () => {
-          beforeEach(() => {
-            jest.spyOn(PlainTextEvaluator, '_trySubstitution');
-          });
-
-          afterEach(() => {
-            PlainTextEvaluator._trySubstitution.mockRestore();
-          });
-
           describe('when the substitution is not found', () => {
             test('returns empty string', () => {
-              PlainTextEvaluator._trySubstitution.mockReturnValue(null);
+              substitutions.get.mockReturnValue(null);
               const ast = new RefSubstitute({ key: 'does.not.exist' });
 
-              expect(PlainTextEvaluator.evalAST('', ast, getAstForKey)).toBe('');
+              expect(evaluator.evalAST('', ast, substitutions)).toBe('');
             });
           });
 
           describe('when the substitution is found', () => {
             test('returns the evaluated copy from the referenced key', () => {
               const referencedAST = new Newline({});
-              getAstForKey.mockReturnValue(referencedAST);
+              copyService.getAstForKey.mockReturnValue(referencedAST);
 
               const key = 'some.key';
               const ast = new RefSubstitute({ key });
 
-              expect(PlainTextEvaluator.evalAST('', ast, getAstForKey)).toBe('\n');
+              expect(evaluator.evalAST('', ast, substitutions)).toBe('\n');
             });
           });
         });
 
         describe('when the AST is a Switch', () => {
-          beforeEach(() => {
-            jest.spyOn(PlainTextEvaluator, '_trySubstitution');
-          });
-
-          afterEach(() => {
-            PlainTextEvaluator._trySubstitution.mockRestore();
-          });
-
-          describe('when the decider is 1', () => {
-            test('returns the evaluated left AST of the Switch', () => {
-              PlainTextEvaluator._trySubstitution.mockReturnValue(1);
-              const ast = new Switch({
-                left: new Verbatim({ text: 'left text' }),
-                right: new Verbatim({ text: 'right text' }),
-                key: 'decider'
-              });
-
-              expect(PlainTextEvaluator.evalAST('', ast)).toBe(ast.left.text);
-            });
-          });
-
           describe('when the decider is true', () => {
             test('returns the evaluated left AST of the Switch', () => {
-              PlainTextEvaluator._trySubstitution.mockReturnValue(true);
+              substitutions.getBoolean.mockReturnValue(true);
               const ast = new Switch({
                 left: new Verbatim({ text: 'left text' }),
                 right: new Verbatim({ text: 'right text' }),
                 key: 'decider'
               });
 
-              expect(PlainTextEvaluator.evalAST('', ast)).toBe(ast.left.text);
+              expect(evaluator.evalAST('', ast, substitutions)).toBe(ast.left.text);
             });
           });
 
-          describe('when the decider is neither 1 nor true', () => {
+          describe('when the decider is false', () => {
             test('returns the evaluated right AST of the Switch', () => {
-              PlainTextEvaluator._trySubstitution.mockReturnValue(false);
+              substitutions.getBoolean.mockReturnValue(false);
               const ast = new Switch({
                 left: new Verbatim({ text: 'left text' }),
                 right: new Verbatim({ text: 'right text' }),
                 key: 'decider'
               });
 
-              expect(PlainTextEvaluator.evalAST('', ast)).toBe(ast.right.text);
-            });
-          });
-
-          describe('when the decider is null', () => {
-            test('returns the evaluated right AST of the Switch', () => {
-              const ast = new Switch({
-                left: new Verbatim({ text: 'left text' }),
-                right: new Verbatim({ text: 'right text' }),
-                key: 'decider'
-              });
-
-              expect(PlainTextEvaluator.evalAST('', ast)).toBe(ast.right.text);
+              expect(evaluator.evalAST('', ast, substitutions)).toBe(ast.right.text);
             });
           });
         });
@@ -201,7 +154,7 @@ describe('PlainTextEvaluator', () => {
               key: 'functionKey'
             });
 
-            expect(PlainTextEvaluator.evalAST('', ast)).toBe(ast.copy.text);
+            expect(evaluator.evalAST('', ast, substitutions)).toBe(ast.copy.text);
           });
         });
 
@@ -212,26 +165,22 @@ describe('PlainTextEvaluator', () => {
               tag: 'b'
             });
 
-            expect(PlainTextEvaluator.evalAST('', ast)).toBe(ast.copy.text);
+            expect(evaluator.evalAST('', ast, substitutions)).toBe(ast.copy.text);
           });
         });
 
         describe('when the AST is not a known AST class', () => {
           beforeEach(() => {
-            jest.spyOn(PlainTextEvaluator, '_handleError').mockImplementation();
-          });
-
-          afterEach(() => {
-            PlainTextEvaluator._handleError.mockRestore();
+            jest.spyOn(evaluator, '_handleError').mockImplementation();
           });
 
           test('logs error', () => {
-            PlainTextEvaluator.evalAST('', {});
-            expect(PlainTextEvaluator._handleError).toBeCalledWith('Unknown node detected');
+            evaluator.evalAST('', {});
+            expect(evaluator._handleError).toBeCalledWith('Unknown node detected');
           });
 
           test('returns empty string', () => {
-            expect(PlainTextEvaluator.evalAST('', {})).toBe('');
+            expect(evaluator.evalAST('', {})).toBe('');
           });
         });
       });
@@ -252,13 +201,14 @@ describe('PlainTextEvaluator', () => {
               }),
               key: 'initialDecider'
             });
-            const substitutions = {
+
+            const substitutions = new Substitutions({
               initialDecider: true,
               nestedLeft: false,
               nestedRight: true
-            };
+            });
 
-            expect(PlainTextEvaluator.evalAST('', ast, getAstForKey, substitutions)).toBe(
+            expect(evaluator.evalAST('', ast, substitutions)).toBe(
               ast.left.right.text
             );
           });

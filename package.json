@@ -8,9 +8,9 @@
   ],
   "scripts": {
     "autopublish": "autopublish",
-    "build": "webpack",
-    "docs": "rm -rf docs/ && jsdoc copy-service/**/*.js -c .jsdoc.json",
-    "lint": "eslint index.js copy-service/**/*.js",
+    "ci": "npm run lint && npm run test",
+    "docs": "rm -rf docs/ && jsdoc js/**/*.js -c .jsdoc.json",
+    "lint": "eslint js/**/*.{js,jsx}",
     "test": "jest"
   },
   "repository": {
@@ -25,23 +25,20 @@
   "publishConfig": {
     "registry": "https://npm.nextcapital.com"
   },
-  "jest": {
-    "collectCoverage": true,
-    "collectCoverageFrom": [
-      "js/**/*.js"
-    ],
-    "testMatch": [
-      "<rootDir>/js/**/*.test.js"
-    ],
-    "testResultsProcessor": "./node_modules/jest-junit-reporter"
+  "dependencies": {
+    "lodash": "^4.17.10"
   },
   "devDependencies": {
-    "@nextcapital/eslint-config-js-linter": "1.0.0",
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-proposal-class-properties": "^7.3.0",
+    "@babel/preset-env": "^7.3.1",
+    "@babel/preset-react": "^7.0.0",
+    "@nextcapital/eslint-config-js-linter": "^1.1.1",
     "autopublish": "0.0.8",
-    "babel-core": "^6.26.3",
-    "babel-eslint": "^8.2.3",
-    "babel-jest": "^22.4.3",
-    "babel-loader": "^7.1.4",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-eslint": "^10.0.1",
+    "babel-jest": "^23.6.0",
+    "babel-loader": "^8.0.5",
     "babel-plugin-lodash": "^3.3.2",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "babel-preset-env": "^1.6.1",
@@ -50,13 +47,12 @@
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.11.0",
-    "jest": "^22.4.3",
+    "eslint-plugin-react": "^7.12.4",
+    "jest": "^23.6.0",
     "jest-junit-reporter": "^1.1.0",
     "jsdoc": "^3.5.5",
-    "lodash": "^4.17.10",
-    "lodash-webpack-plugin": "^0.11.5",
-    "webpack": "^4.6.0",
-    "webpack-cli": "^2.1.2"
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4"
   },
   "peerDependencies": {
     "lodash": "^4.17.10"

@@ -59,6 +59,9 @@ class Evaluator {
     );
   }
 
+  /**
+   * Defers to ErrorHandler.handleError with the constructor name and any args.
+   */
   _handleError(...args) {
     ErrorHandler.handleError(this.constructor.name, ...args);
   }

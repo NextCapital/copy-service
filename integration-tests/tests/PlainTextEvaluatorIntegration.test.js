@@ -4,19 +4,11 @@ import PlainTextEvaluator from '../../js/PlainTextEvaluator';
 import copy from '../copy';
 
 describe('CopyService - PlainTextEvaluator Integration Tests', () => {
-  let copyService;
+  let copyService, evaluator;
 
   beforeEach(() => {
-    copyService = new CopyService({
-      copy,
-      evaluator: PlainTextEvaluator
-    });
-  });
-
-  afterEach(() => {
-    copyService = null;
-
-    jest.restoreAllMocks();
+    copyService = new CopyService({ copy });
+    evaluator = new PlainTextEvaluator(copyService);
   });
 
   const testCopy = ({
@@ -25,7 +17,7 @@ describe('CopyService - PlainTextEvaluator Integration Tests', () => {
     expectedCopy
   }) => {
     test('returns the expected copy', () => {
-      expect(copyService.getCopy(key, substitutions)).toBe(expectedCopy);
+      expect(evaluator.getCopy(key, substitutions)).toBe(expectedCopy);
     });
   };
 
@@ -205,7 +197,7 @@ describe('CopyService - PlainTextEvaluator Integration Tests', () => {
 
           test('does not call the passed function', () => {
             const passedFunction = jest.fn();
-            copyService.getCopy('functions.title', { makeExternalLink: passedFunction });
+            evaluator.getCopy('functions.title', { makeExternalLink: passedFunction });
             expect(passedFunction).not.toBeCalled();
           });
         });
@@ -231,7 +223,7 @@ describe('CopyService - PlainTextEvaluator Integration Tests', () => {
               arg2: 'arg2'
             };
 
-            copyService.getCopy('functions.args', substitutions);
+            evaluator.getCopy('functions.args', substitutions);
             expect(passedFunction).not.toBeCalled();
           });
         });

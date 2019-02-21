@@ -22,13 +22,12 @@ import {
 class ReactEvaluator extends Evaluator {
   /**
    * Evaluates the AST with given substitutions
-   * @param  {string} copyPrefix    The copy string being recursively built.
+   * @param  {string} copyPrefix The copy string being recursively built.
    * @param  {Formatting|Functional|Newline|Reference|Substitute|Switch|Verbatim} ast
-   *                                The AST to be evaluated. This AST must be constructed by Parser.
-   * @param  {Substitutions} substitutions An object containing substitutions for keys specified in the
-   *                                AST.
-   * @return {string}               The evaluated copy.
-   * @abstract
+   * The AST to be evaluated. This AST must be constructed by Parser.
+   * @param  {Substitutions} substitutions An object containing substitutions for keys specified in
+   * the AST.
+   * @return {JSX} The evaluated copy.
    */
   evalAST(copyPrefix, ast, substitutions) {
     if (!ast) {

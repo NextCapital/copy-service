@@ -7,19 +7,11 @@ import ReactEvaluator from '../../js/ReactEvaluator';
 import copy from '../copy';
 
 describe('CopyService - ReactEvaluator Integration Tests', () => {
-  let copyService;
+  let copyService, evaluator;
 
   beforeEach(() => {
-    copyService = new CopyService({
-      copy,
-      evaluator: ReactEvaluator
-    });
-  });
-
-  afterEach(() => {
-    copyService = null;
-
-    jest.restoreAllMocks();
+    copyService = new CopyService({ copy });
+    evaluator = new ReactEvaluator(copyService);
   });
 
   const getStaticMarkup = (jsx) => ReactDOMServer.renderToStaticMarkup(jsx);
@@ -30,7 +22,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
     expectedCopy
   }) => {
     test('returns the expected copy', () => {
-      const staticMarkup = getStaticMarkup(copyService.getCopy(key, substitutions));
+      const staticMarkup = getStaticMarkup(evaluator.getCopy(key, substitutions));
       expect(staticMarkup).toBe(expectedCopy);
     });
   };
@@ -38,7 +30,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
   describe('simple copy with no more than one formatting symbol', () => {
     describe('noCopy', () => {
       test('returns null', () => {
-        expect(copyService.getCopy('noCopy')).toBeNull();
+        expect(evaluator.getCopy('noCopy')).toBeNull();
       });
     });
 
@@ -204,7 +196,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
         describe('functions.title', () => {
           test('calls the passed function with the evaluated copy', () => {
             const passedFunction = jest.fn();
-            copyService.getCopy('functions.title', { makeExternalLink: passedFunction });
+            evaluator.getCopy('functions.title', { makeExternalLink: passedFunction });
             expect(passedFunction).toBeCalledWith(<span>learn more</span>);
           });
 
@@ -212,9 +204,8 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
             const funcResult = 'some result';
             const passedFunction = jest.fn().mockReturnValue(funcResult);
 
-
             const staticMarkup = getStaticMarkup(
-              copyService.getCopy('functions.title', { makeExternalLink: passedFunction })
+              evaluator.getCopy('functions.title', { makeExternalLink: passedFunction })
             );
             expect(staticMarkup).toBe(`<span>${funcResult}</span>`);
           });
@@ -230,7 +221,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
               arg1: 'arg1',
               arg2: 'arg2'
             };
-            copyService.getCopy('functions.args', substitutions);
+            evaluator.getCopy('functions.args', substitutions);
             expect(passedFunction).toBeCalledWith(
               <span>learn more</span>, substitutions.arg1, substitutions.arg2
             );
@@ -246,7 +237,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
             };
 
             const staticMarkup = getStaticMarkup(
-              copyService.getCopy('functions.args', substitutions)
+              evaluator.getCopy('functions.args', substitutions)
             );
             expect(staticMarkup).toBe(`<span>${funcResult}</span>`);
           });

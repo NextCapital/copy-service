@@ -1,15 +1,8 @@
 import _ from 'lodash';
 
-import Evaluator from './Evaluator/Evaluator';
 import Parser from './Parser/Parser';
 
-import Formatting from './Formatting/Formatting';
-import Functional from './Functional/Functional';
-import Newline from './Newline/Newline';
-import Reference from './Reference/Reference';
-import Substitute from './Substitute/Substitute';
-import Switch from './Switch/Switch';
-import Verbatim from './Verbatim/Verbatim';
+import ErrorHandler from './ErrorHandler/ErrorHandler';
 
 import CopyService from './CopyService';
 
@@ -17,30 +10,11 @@ describe('CopyService', () => {
   let copyService;
 
   beforeEach(() => {
-    copyService = new CopyService({ evaluator: Evaluator });
-  });
-
-  afterEach(() => {
-    copyService = null;
+    copyService = new CopyService();
   });
 
   describe('constructor', () => {
-    describe('when no options are passed', () => {
-      test('logs error', () => {
-        expect(() => new CopyService()).toThrow('CopyService: CopyService requires an evaluator');
-      });
-    });
-
     describe('when options are passed', () => {
-      describe('evaluator option', () => {
-        test('sets evaluator', () => {
-          const evaluator = Evaluator;
-
-          const copyService = new CopyService({ evaluator });
-          expect(copyService.evaluator).toBe(evaluator);
-        });
-      });
-
       describe('copy option', () => {
         let parsedCopy;
 
@@ -49,28 +23,11 @@ describe('CopyService', () => {
           jest.spyOn(Parser, 'parseLeaves').mockReturnValue(parsedCopy);
         });
 
-        afterEach(() => {
-          parsedCopy = null;
-          Parser.parseLeaves.mockRestore();
-        });
-
-        test('parses the passed copy', () => {
+        test('parses the passed copy and sets _parsedCopy', () => {
           const copy = { some: 'unparsed copy' };
 
-          const copyService = new CopyService({
-            copy,
-            evaluator: Evaluator
-          });
+          const copyService = new CopyService({ copy });
           expect(Parser.parseLeaves).toBeCalledWith(copy);
-        });
-
-        test('sets _parsedCopy with parsed copy', () => {
-          const copy = { some: 'unparsed copy' };
-
-          const copyService = new CopyService({
-            copy,
-            evaluator: Evaluator
-          });
           expect(copyService._parsedCopy).toEqual(parsedCopy);
         });
       });
@@ -80,16 +37,14 @@ describe('CopyService', () => {
   describe('registerCopy', () => {
     describe('when an empty copy config is passed', () => {
       beforeEach(() => {
-        jest.spyOn(copyService, '_handleError').mockImplementation();
-      });
-
-      afterEach(() => {
-        copyService._handleError.mockRestore();
+        jest.spyOn(ErrorHandler, 'handleError').mockImplementation();
       });
 
       test('logs error', () => {
         copyService.registerCopy();
-        expect(copyService._handleError).toBeCalledWith('Copy provided in wrong format.');
+        expect(ErrorHandler.handleError).toBeCalledWith(
+          'CopyService', 'Copy provided in wrong format.'
+        );
       });
 
       test('does not modify _parsedCopy', () => {
@@ -111,11 +66,6 @@ describe('CopyService', () => {
       beforeEach(() => {
         parsedCopy = { some: 'parsed copy' };
         jest.spyOn(Parser, 'parseLeaves').mockReturnValue(parsedCopy);
-      });
-
-      afterEach(() => {
-        parsedCopy = null;
-        Parser.parseLeaves.mockRestore();
       });
 
       test('calls Parser.parseLeaves with the unparsed copy', () => {
@@ -141,66 +91,6 @@ describe('CopyService', () => {
     });
   });
 
-  describe('getCopy', () => {
-    describe('when a key with parsed copy is passed', () => {
-      test('calls evaluator.evalAST with the AST for the key and any substitutions', () => {
-        const initialResult = 'some initialResult';
-        const parsedCopy = { 'key': new Verbatim({ text: 'some copy' }) };
-        const substitutions = { some: 'substitutions' };
-
-        copyService._parsedCopy = parsedCopy;
-        copyService.evaluator = {
-          evalAST: jest.fn(),
-          getInitialResult: jest.fn().mockReturnValue(initialResult)
-        };
-
-        copyService.getCopy('key', substitutions);
-        expect(copyService.evaluator.evalAST).toBeCalledWith(
-          initialResult, parsedCopy['key'], copyService.getAstForKey, substitutions
-        );
-      });
-
-      test('returns result of evaluator.evalAST', () => {
-        const parsedCopy = { 'key': new Verbatim({ text: 'some copy' }) };
-        const evaluatedCopy = 'some evaluated copy';
-
-        copyService._parsedCopy = parsedCopy;
-        copyService.evaluator = {
-          evalAST: jest.fn().mockReturnValue(evaluatedCopy),
-          getInitialResult: jest.fn().mockReturnValue('')
-        };
-
-        expect(copyService.getCopy('key')).toBe(evaluatedCopy);
-      });
-    });
-
-    describe('when an invalid key is passed', () => {
-      beforeEach(() => {
-        copyService.evaluator = {
-          evalAST: jest.fn(),
-          getInitialResult: jest.fn().mockReturnValue('')
-        }
-
-        jest.spyOn(copyService, '_handleError').mockImplementation();
-      });
-
-      afterEach(() => {
-        copyService._handleError.mockRestore();
-      });
-
-      test('logs error', () => {
-        const key = 'some.key.with.no.copy';
-        copyService.getCopy(key);
-        expect(copyService._handleError).toBeCalledWith(`No AST found for copy key: ${key}`);
-      });
-
-      test('returns undefined', () => {
-        const key = 'some.key.with.no.copy';
-        expect(copyService.getCopy(key)).toBeUndefined();
-      });
-    });
-  });
-
   describe('buildSubkeys', () => {
     let parsedCopy;
 
@@ -217,10 +107,6 @@ describe('CopyService', () => {
 
       copyService._parsedCopy = parsedCopy;
       jest.spyOn(copyService, 'getSubkeys');
-    });
-
-    afterEach(() => {
-      parsedCopy = null;
     });
 
     test('calls getSubkeys', () => {
@@ -269,100 +155,6 @@ describe('CopyService', () => {
         jest.spyOn(copyService, 'getSubkeys').mockReturnValue();
         expect(copyService.hasKey('key')).toBe(false);
       });
-    });
-  });
-
-  describe('_handleError', () => {
-    describe('when options.halt is true', () => {
-      describe('when in dev mode', () => {
-        beforeEach(() => {
-          jest.spyOn(copyService, '_isInDevMode').mockReturnValue(true);
-        });
-
-        afterEach(() => {
-          copyService._isInDevMode.mockRestore();
-        });
-
-        test('throws error', () => {
-          const error = 'some error';
-          expect(() => copyService._handleError(error, { halt: true })).toThrow(`CopyService: ${error}`);
-        });
-      });
-
-      describe('when not in dev mode', () => {
-        beforeEach(() => {
-          jest.spyOn(copyService, '_isInDevMode').mockReturnValue(false);
-        });
-
-        afterEach(() => {
-          copyService._isInDevMode.mockRestore();
-        });
-
-        test('throws error', () => {
-          const error = 'some error';
-          expect(() => copyService._handleError(error, { halt: true })).toThrow(`CopyService: ${error}`);
-        });
-      });
-    });
-
-    describe('when options.halt is falsy', () => {
-      beforeEach(() => {
-        jest.spyOn(console, 'error').mockImplementation();
-      });
-
-      afterEach(() => {
-        console.error.mockRestore();
-      });
-
-      describe('when in dev mode', () => {
-        beforeEach(() => {
-          jest.spyOn(copyService, '_isInDevMode').mockReturnValue(true);
-        });
-
-        afterEach(() => {
-          copyService._isInDevMode.mockRestore();
-        });
-
-        test('does not throw error', () => {
-          const error = 'some error';
-          expect(() => copyService._handleError(error)).not.toThrow();
-        });
-
-        test('logs error to console', () => {
-          const error = 'some error';
-
-          copyService._handleError(error);
-          expect(console.error).toBeCalledWith(`CopyService: ${error}`);
-        });
-      });
-
-      describe('when not in dev mode', () => {
-        beforeEach(() => {
-          jest.spyOn(copyService, '_isInDevMode').mockReturnValue(false);
-        });
-
-        afterEach(() => {
-          copyService._isInDevMode.mockRestore();
-        });
-
-        test('does not throw error', () => {
-          const error = 'some error';
-          expect(() => copyService._handleError(error)).not.toThrow();
-        });
-
-        test('does not log error to console', () => {
-          const error = 'some error';
-
-          copyService._handleError(error);
-          expect(console.error).not.toBeCalled();
-        });
-      });
-    });
-  });
-
-  describe('_isInDevMode', () => {
-    test('returns DEV_MODE', () => {
-      expect(copyService._isInDevMode()).toBe(global.DEV_MODE);
     });
   });
 });

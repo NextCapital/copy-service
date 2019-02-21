@@ -1,3 +1,85 @@
 {
-  "extends": "@nextcapital/eslint-config-js-linter"
+  "env": {
+    "browser": true,
+    "es6": true,
+    "jest": true,
+    "node": true
+  },
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "rules": {
+    "no-bitwise": 2,
+    "curly": 2,
+    "eqeqeq": [2, "allow-null"],
+    "strict": [
+      2,
+      "global"
+    ],
+    "wrap-iife": [
+      2,
+      "any"
+    ],
+    "indent": [
+      2,
+      2,
+      {
+        "SwitchCase": 1
+      }
+    ],
+    "no-use-before-define": 2,
+    "max-len": [
+      2,
+      {
+        "code": 100,
+        "ignoreComments": false,
+        "ignoreTrailingComments": true,
+        "ignoreStrings": true
+      }
+    ],
+    "no-multi-str": 2,
+    "new-cap": 2,
+    "no-caller": 2,
+    "no-empty": 2,
+    "no-extra-semi": 2,
+    "no-irregular-whitespace": 2,
+    "no-new": 2,
+    "quotes": [
+      2,
+      "single"
+    ],
+    "no-undef": 2,
+    "no-unused-vars": [2, {
+      "ignoreRestSiblings": true
+    }],
+    "semi": 2,
+    "no-var": 2,
+    "keyword-spacing": 2,
+    "space-before-blocks": 2,
+    "eol-last": 1,
+    "key-spacing": 1,
+    "no-lonely-if": 1,
+    "no-multiple-empty-lines": 1,
+    "no-spaced-func": 1,
+    "object-curly-spacing": [1, "always"],
+    "no-const-assign": 2,
+    "prefer-const": 1,
+    "prefer-arrow-callback": 1,
+    "react/display-name": 0
+  },
+  "plugins": [
+    "react"
+  ],
+  "extends": ["plugin:react/recommended"],
+  "settings": {
+    "react": {
+      "pragma": "React",
+      "version": "detect"
+    }
+  }
 }

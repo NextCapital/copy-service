@@ -20,21 +20,21 @@ describe('ReactEvaluator', () => {
     jest.restoreAllMocks();
   });
 
-  describe('_getInitialResult', () => {
+  describe('getInitialResult', () => {
     test('returns null', () => {
-      expect(ReactEvaluator._getInitialResult()).toBeNull();
+      expect(ReactEvaluator.getInitialResult()).toBeNull();
     });
   });
 
   describe('evalAST', () => {
-    let getASTForKey;
+    let getAstForKey;
 
     beforeEach(() => {
-      getASTForKey = jest.fn();
+      getAstForKey = jest.fn();
     });
 
     afterEach(() => {
-      getASTForKey = null;
+      getAstForKey = null;
     });
 
     const getStaticMarkup = (copyPrefix, ast, getAST, substitutions) => (
@@ -73,12 +73,12 @@ describe('ReactEvaluator', () => {
         describe('when the AST is a Reference', () => {
           test('returns the evaluated copy of the referenced key', () => {
             const referencedAST = new Verbatim({ text: 'some text' });
-            getASTForKey.mockReturnValue(referencedAST);
+            getAstForKey.mockReturnValue(referencedAST);
 
             const key = 'some.key';
             const ast = new Reference({ key });
 
-            expect(getStaticMarkup(null, ast, getASTForKey)).toBe(
+            expect(getStaticMarkup(null, ast, getAstForKey)).toBe(
               `<span>${referencedAST.text}</span>`
             );
           });
@@ -98,7 +98,7 @@ describe('ReactEvaluator', () => {
               ReactEvaluator._trySubstitution.mockReturnValue(null);
               const ast = new Substitute({ key: 'does.not.exist' });
 
-              expect(ReactEvaluator.evalAST(null, ast, getASTForKey)).toBe(null);
+              expect(ReactEvaluator.evalAST(null, ast, getAstForKey)).toBe(null);
             });
           });
 
@@ -108,7 +108,7 @@ describe('ReactEvaluator', () => {
               ReactEvaluator._trySubstitution.mockReturnValue(text);
               const ast = new Substitute({ key: 'exists' });
 
-              expect(getStaticMarkup(null, ast, getASTForKey)).toBe(`<span>${text}</span>`);
+              expect(getStaticMarkup(null, ast, getAstForKey)).toBe(`<span>${text}</span>`);
             });
           });
         });
@@ -127,19 +127,19 @@ describe('ReactEvaluator', () => {
               ReactEvaluator._trySubstitution.mockReturnValue(null);
               const ast = new RefSubstitute({ key: 'does.not.exist' });
 
-              expect(ReactEvaluator.evalAST(null, ast, getASTForKey)).toBe(null);
+              expect(ReactEvaluator.evalAST(null, ast, getAstForKey)).toBe(null);
             });
           });
 
           describe('when the substitution is found', () => {
             test('returns the evaluated copy of the referenced key', () => {
               const referencedAST = new Verbatim({ text: 'some text' });
-              getASTForKey.mockReturnValue(referencedAST);
+              getAstForKey.mockReturnValue(referencedAST);
 
               const key = 'some.key';
               const ast = new RefSubstitute({ key });
 
-              expect(getStaticMarkup(null, ast, getASTForKey)).toBe(
+              expect(getStaticMarkup(null, ast, getAstForKey)).toBe(
                 `<span>${referencedAST.text}</span>`
               );
             });
@@ -217,7 +217,7 @@ describe('ReactEvaluator', () => {
                 args: ['arg1', 'arg2']
               });
 
-              ReactEvaluator.evalAST(null, ast, getASTForKey, { func });
+              ReactEvaluator.evalAST(null, ast, getAstForKey, { func });
               expect(func).toBeCalledWith(<span>{ ast.copy.text }</span>, 'arg1', 'arg2');
             });
 
@@ -231,7 +231,7 @@ describe('ReactEvaluator', () => {
               });
 
               expect(
-                getStaticMarkup(ReactEvaluator.evalAST(null, ast, getASTForKey, { func }))
+                getStaticMarkup(ReactEvaluator.evalAST(null, ast, getAstForKey, { func }))
               ).toBe(`<span>${funcText}</span>`);
             });
           });
@@ -244,7 +244,7 @@ describe('ReactEvaluator', () => {
                 args: ['arg1', 'arg2']
               });
 
-              expect(getStaticMarkup(ReactEvaluator.evalAST(null, ast, getASTForKey))).toBe(
+              expect(getStaticMarkup(ReactEvaluator.evalAST(null, ast, getAstForKey))).toBe(
                 `<span>${ast.copy.text}</span>`
               );
             });
@@ -258,7 +258,7 @@ describe('ReactEvaluator', () => {
               copy: new Verbatim({ text: 'some copy' })
             });
 
-            expect(getStaticMarkup(ReactEvaluator.evalAST(null, ast, getASTForKey))).toBe(
+            expect(getStaticMarkup(ReactEvaluator.evalAST(null, ast, getAstForKey))).toBe(
               `<span><i>${ast.copy.text}</i></span>`
             );
           });
@@ -306,7 +306,7 @@ describe('ReactEvaluator', () => {
               nestedRight: true
             };
 
-            expect(getStaticMarkup(null, ast, getASTForKey, substitutions)).toBe(
+            expect(getStaticMarkup(null, ast, getAstForKey, substitutions)).toBe(
               `<span>${ast.left.right.text}</span>`
             );
           });

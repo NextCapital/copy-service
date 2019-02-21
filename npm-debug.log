@@ -1,0 +1,51 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node',
+1 verbose cli   '/Users/piercej/code/nextcapital/projects/copy-service/node_modules/.bin/npm',
+1 verbose cli   'run',
+1 verbose cli   'build',
+1 verbose cli   '--',
+1 verbose cli   '--silent' ]
+2 info using npm@3.10.10
+3 info using node@v8.11.4
+4 warn invalid config loglevel="notice"
+5 verbose run-script [ 'prebuild', 'build', 'postbuild' ]
+6 info lifecycle @nextcapital/copy-service@1.1.0~prebuild: @nextcapital/copy-service@1.1.0
+7 silly lifecycle @nextcapital/copy-service@1.1.0~prebuild: no script for prebuild, continuing
+8 info lifecycle @nextcapital/copy-service@1.1.0~build: @nextcapital/copy-service@1.1.0
+9 verbose lifecycle @nextcapital/copy-service@1.1.0~build: unsafe-perm in lifecycle true
+10 verbose lifecycle @nextcapital/copy-service@1.1.0~build: PATH: /Users/piercej/code/nextcapital/projects/copy-service/node_modules/npm/bin/node-gyp-bin:/Users/piercej/code/nextcapital/projects/copy-service/node_modules/.bin:/usr/local/lib/node_modules/npm/node_modules/npm-lifecycle/node-gyp-bin:/Users/piercej/code/nextcapital/projects/copy-service/node_modules/.bin:/Users/piercej/.rvm/gems/ruby-2.2.4/bin:/Users/piercej/.rvm/gems/ruby-2.2.4@global/bin:/Users/piercej/.rvm/rubies/ruby-2.2.4/bin:/Users/piercej/.rvm/bin:/usr/local/opt/mongodb@3.2/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+11 verbose lifecycle @nextcapital/copy-service@1.1.0~build: CWD: /Users/piercej/code/nextcapital/projects/copy-service
+12 silly lifecycle @nextcapital/copy-service@1.1.0~build: Args: [ '-c', 'webpack "--silent"' ]
+13 silly lifecycle @nextcapital/copy-service@1.1.0~build: Returned: code: 2  signal: null
+14 info lifecycle @nextcapital/copy-service@1.1.0~build: Failed to exec build script
+15 verbose stack Error: @nextcapital/copy-service@1.1.0 build: `webpack "--silent"`
+15 verbose stack Exit status 2
+15 verbose stack     at EventEmitter.<anonymous> (/Users/piercej/code/nextcapital/projects/copy-service/node_modules/npm/lib/utils/lifecycle.js:255:16)
+15 verbose stack     at emitTwo (events.js:126:13)
+15 verbose stack     at EventEmitter.emit (events.js:214:7)
+15 verbose stack     at ChildProcess.<anonymous> (/Users/piercej/code/nextcapital/projects/copy-service/node_modules/npm/lib/utils/spawn.js:40:14)
+15 verbose stack     at emitTwo (events.js:126:13)
+15 verbose stack     at ChildProcess.emit (events.js:214:7)
+15 verbose stack     at maybeClose (internal/child_process.js:925:16)
+15 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:209:5)
+16 verbose pkgid @nextcapital/copy-service@1.1.0
+17 verbose cwd /Users/piercej/code/nextcapital/projects/copy-service
+18 error Darwin 17.7.0
+19 error argv "/usr/local/bin/node" "/Users/piercej/code/nextcapital/projects/copy-service/node_modules/.bin/npm" "run" "build" "--" "--silent"
+20 error node v8.11.4
+21 error npm  v3.10.10
+22 error code ELIFECYCLE
+23 error @nextcapital/copy-service@1.1.0 build: `webpack "--silent"`
+23 error Exit status 2
+24 error Failed at the @nextcapital/copy-service@1.1.0 build script 'webpack "--silent"'.
+24 error Make sure you have the latest version of node.js and npm installed.
+24 error If you do, this is most likely a problem with the @nextcapital/copy-service package,
+24 error not with npm itself.
+24 error Tell the author that this fails on your system:
+24 error     webpack "--silent"
+24 error You can get information on how to open an issue for this project with:
+24 error     npm bugs @nextcapital/copy-service
+24 error Or if that isn't available, you can get their info via:
+24 error     npm owner ls @nextcapital/copy-service
+24 error There is likely additional logging output above.
+25 verbose exit [ 1, true ]

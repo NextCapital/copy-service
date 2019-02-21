@@ -17,21 +17,21 @@ describe('PlainTextEvaluator', () => {
     jest.restoreAllMocks();
   });
 
-  describe('_getInitialResult', () => {
+  describe('getInitialResult', () => {
     test('returns empty string', () => {
-      expect(PlainTextEvaluator._getInitialResult()).toBe('');
+      expect(PlainTextEvaluator.getInitialResult()).toBe('');
     });
   });
 
   describe('evalAST', () => {
-    let getASTForKey;
+    let getAstForKey;
 
     beforeEach(() => {
-      getASTForKey = jest.fn();
+      getAstForKey = jest.fn();
     });
 
     afterEach(() => {
-      getASTForKey = null;
+      getAstForKey = null;
     });
 
     describe('when no AST is passed', () => {
@@ -64,12 +64,12 @@ describe('PlainTextEvaluator', () => {
         describe('when the AST is a Reference', () => {
           test('returns the evaluated copy from the referenced key', () => {
             const referencedAST = new Newline({});
-            getASTForKey.mockReturnValue(referencedAST);
+            getAstForKey.mockReturnValue(referencedAST);
 
             const key = 'some.key';
             const ast = new Reference({ key });
 
-            expect(PlainTextEvaluator.evalAST('', ast, getASTForKey)).toBe('\n');
+            expect(PlainTextEvaluator.evalAST('', ast, getAstForKey)).toBe('\n');
           });
         });
 
@@ -87,7 +87,7 @@ describe('PlainTextEvaluator', () => {
               PlainTextEvaluator._trySubstitution.mockReturnValue(null);
               const ast = new Substitute({ key: 'does.not.exist' });
 
-              expect(PlainTextEvaluator.evalAST('', ast, getASTForKey)).toBe('');
+              expect(PlainTextEvaluator.evalAST('', ast, getAstForKey)).toBe('');
             });
           });
 
@@ -97,7 +97,7 @@ describe('PlainTextEvaluator', () => {
               PlainTextEvaluator._trySubstitution.mockReturnValue(text);
               const ast = new Substitute({ key: 'exists' });
 
-              expect(PlainTextEvaluator.evalAST('', ast, getASTForKey)).toBe(text);
+              expect(PlainTextEvaluator.evalAST('', ast, getAstForKey)).toBe(text);
             });
           });
         });
@@ -116,19 +116,19 @@ describe('PlainTextEvaluator', () => {
               PlainTextEvaluator._trySubstitution.mockReturnValue(null);
               const ast = new RefSubstitute({ key: 'does.not.exist' });
 
-              expect(PlainTextEvaluator.evalAST('', ast, getASTForKey)).toBe('');
+              expect(PlainTextEvaluator.evalAST('', ast, getAstForKey)).toBe('');
             });
           });
 
           describe('when the substitution is found', () => {
             test('returns the evaluated copy from the referenced key', () => {
               const referencedAST = new Newline({});
-              getASTForKey.mockReturnValue(referencedAST);
+              getAstForKey.mockReturnValue(referencedAST);
 
               const key = 'some.key';
               const ast = new RefSubstitute({ key });
 
-              expect(PlainTextEvaluator.evalAST('', ast, getASTForKey)).toBe('\n');
+              expect(PlainTextEvaluator.evalAST('', ast, getAstForKey)).toBe('\n');
             });
           });
         });
@@ -258,7 +258,7 @@ describe('PlainTextEvaluator', () => {
               nestedRight: true
             };
 
-            expect(PlainTextEvaluator.evalAST('', ast, getASTForKey, substitutions)).toBe(
+            expect(PlainTextEvaluator.evalAST('', ast, getAstForKey, substitutions)).toBe(
               ast.left.right.text
             );
           });

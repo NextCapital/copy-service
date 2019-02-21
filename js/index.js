@@ -8,7 +8,9 @@ import Switch from './copy-service/Switch/Switch';
 import Verbatim from './copy-service/Verbatim/Verbatim';
 
 import Evaluator from './copy-service/Evaluator/Evaluator';
+import Substitutions from './copy-service/Substitutions/Substitutions';
 
+import ErrorHandler from './copy-service/ErrorHandler/ErrorHandler';
 import CopyService from './copy-service/CopyService';
 
 export {
@@ -22,6 +24,10 @@ export {
   Verbatim,
 
   Evaluator,
+  Substitutions,
 
+  ErrorHandler,
   CopyService
 };
+
+export default CopyService;

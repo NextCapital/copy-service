@@ -12,7 +12,7 @@ npm adduser --registry https://npm.nextcapital.com
 Then:
 
 ```
-npm install --save @nextcapital/copy-service @nextcapital/plain-text-evaluator @nextcapital/react-evaluator
+npm install --save @nextcapital/copy-service
 ```
 
 ## Copy Keys
@@ -55,6 +55,8 @@ Example (a substitution object passed to `getCopy`):
 ```
 
 The valid `substitutionKey` paths for these attributes are `value` and `nested.displayValue`.
+
+NOTE: If your substitutions are computationally expensive, you can pass in a function that returns them. The function won't be called unless one is actually needed, and it will only be called once if there are multiple substitutions used within a single copy key.
 
 See the generated documentation for more detail on method signatures.
 
@@ -201,18 +203,23 @@ Example:
 ## Registering copy
 
 ```javascript
-import { CopyService } from '@nextcapital/copy-service';
-import ReactEvaluator from '@nextcapital/react-evaluator';
+import CopyService from '@nextcapital/copy-service';
+import PlainTextEvaluator from '@nextcapital/copy-service/js/PlainTextEvaluator';
+import ReactEvaluator from '@nextcapital/copy-service/js/ReactEvaluator';
 
 import copy from './copy.json';
 
-const reactCopyService = new CopyService({ evaluator: ReactEvaluator });
-reactCopyService.registerCopy(copy);
+const copyService = new CopyService();
+copyService.registerCopy(copy);
+
+// one copy service can be used by multiple evaluators
+const reactEvaluator = new ReactEvaluator(copyService);
+const textEvaluator = new PlainTextEvaluator(copyService);
 ```
 
 ## Getting copy
 
 ```javascript
-// Assumes reactCopyService as set up above
-const copy = reactCopyService.getCopy('some.copy.key', { some: 'substitutions' });
+// Assumes reactEvaluator as set up above
+const copy = reactEvaluator.getCopy('some.copy.key', { some: 'substitutions' });
 ```

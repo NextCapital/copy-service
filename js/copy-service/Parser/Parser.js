@@ -9,6 +9,8 @@ import Substitute from '../Substitute/Substitute';
 import Switch from '../Switch/Switch';
 import Verbatim from '../Verbatim/Verbatim';
 
+import ErrorHandler from '../ErrorHandler/ErrorHandler';
+
 const TOKENS = {
   TEXT: 'text',
   SWITCH_DELIM: '}{',
@@ -75,30 +77,6 @@ class Parser {
   ));
 
   /**
-   * When in dev mode, log errors to the console.
-   * @param {string} error            The error message to display
-   * @param {object} [options]
-   * @param {boolean} [options.halt]  Whether or not to throw a halting error.
-   * @private
-   */
-  static _handleError(error, options) {
-    const message = `Parser: ${error}`;
-    if (options.halt) {
-      throw new Error(message);
-    } else if (this._isInDevMode()) {
-      console.error(message); // eslint-disable-line no-console
-    }
-  }
-
-  /**
-   * Returns the global boolean DEV_MODE.
-   * @return {boolean} DEV_MODE
-   */
-  static _isInDevMode() {
-    return DEV_MODE;
-  }
-
-  /**
    * Transforms raw copy into ASTs.
    * @param  {object} tree
    * @return {object}
@@ -112,7 +90,11 @@ class Parser {
         const tokens = this._tokenize(node);
         astTree[key] = this._parse(tokens, node);
       } else {
-        this._handleError('Values can only be other objects or strings', { halt: true });
+        ErrorHandler.handleError(
+          'Parser',
+          'Values can only be other objects or strings',
+          { halt: true }
+        );
       }
     });
     return astTree;
@@ -130,7 +112,8 @@ class Parser {
     // eslint-disable-next-line no-cond-assign
     while (tag = this.HTML_REGEX.exec(string)) {
       if (!_.includes(this.ALLOWED_HTML_TAGS, tag[1])) {
-        this._handleError(
+        ErrorHandler.handleError(
+          'Parser',
           `Unknown HTML tag '${tag[0]}' found in formatting`,
           { halt: true }
         );
@@ -236,9 +219,14 @@ class Parser {
         return ast;
       }
 
-      this._handleError(`Incomplete parse for: ${string}`, { halt: true });
+      ErrorHandler.handleError(
+        'Parser',
+        `Incomplete parse for: ${string}`,
+        { halt: true }
+      );
     } catch (error) {
-      this._handleError(
+      ErrorHandler.handleError(
+        'Parser',
         `Failed to parse string: ${string}\nReason: ${error.message}`,
         { halt: true }
       );
@@ -260,7 +248,11 @@ class Parser {
       };
     }
 
-    this._handleError('Expected text value', { halt: true });
+    ErrorHandler.handleError(
+      'Parser',
+      'Expected text value',
+      { halt: true }
+    );
   }
 
   /**
@@ -275,7 +267,11 @@ class Parser {
       return tokens.slice(1);
     }
 
-    this._handleError(`Expected close character ${this.TOKENS.CLOSE}`, { halt: true });
+    ErrorHandler.handleError(
+      'Parser',
+      `Expected close character ${this.TOKENS.CLOSE}`,
+      { halt: true }
+    );
   }
 
   /**
@@ -298,7 +294,11 @@ class Parser {
     } else if (token.type === this.TOKENS.ARGS_END) {
       tokensToReturn = textParsed.tokens.slice(1);
     } else {
-      this._handleError(`Unexpected token ${token.type} in arguments`, { halt: true });
+      ErrorHandler.handleError(
+        'Parser',
+        `Unexpected token ${token.type} in arguments`,
+        { halt: true }
+      );
     }
 
     return {
@@ -323,7 +323,11 @@ class Parser {
   ) {
     if (_.isEmpty(tokens)) {
       if (isRestricted) {
-        this._handleError(`Expected closing ${expectedEndingToken}`, { halt: true });
+        ErrorHandler.handleError(
+          'Parser',
+          `Expected closing ${expectedEndingToken}`,
+          { halt: true }
+        );
       } else {
         return {
           ast: null,
@@ -483,7 +487,7 @@ class Parser {
     const errorMessage = isRestricted ?
       `Unexpected restricted token ${token.type}` :
       `Unexpected token ${token.type}`;
-    this._handleError(errorMessage, { halt: true });
+    ErrorHandler.handleError('Parser', errorMessage, { halt: true });
   }
 
   /* eslint-enable brace-style */
@@ -493,7 +497,7 @@ class Parser {
    * @throws {Error}
    */
   constructor() {
-    this.constructor._handleError('Parser is a singleton', { halt: true });
+    ErrorHandler.handleError('Parser', 'Parser is a singleton', { halt: true });
   }
 }
 

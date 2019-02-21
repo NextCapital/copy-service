@@ -151,7 +151,7 @@ describe('CopyService', () => {
         copyService._parsedCopy = parsedCopy;
         copyService.evaluator = {
           evalAST: jest.fn(),
-          _getInitialResult: jest.fn().mockReturnValue(initialResult)
+          getInitialResult: jest.fn().mockReturnValue(initialResult)
         };
 
         copyService.getCopy('key', substitutions);
@@ -167,7 +167,7 @@ describe('CopyService', () => {
         copyService._parsedCopy = parsedCopy;
         copyService.evaluator = {
           evalAST: jest.fn().mockReturnValue(evaluatedCopy),
-          _getInitialResult: jest.fn().mockReturnValue('')
+          getInitialResult: jest.fn().mockReturnValue('')
         };
 
         expect(copyService.getCopy('key')).toBe(evaluatedCopy);
@@ -178,7 +178,7 @@ describe('CopyService', () => {
       beforeEach(() => {
         copyService.evaluator = {
           evalAST: jest.fn(),
-          _getInitialResult: jest.fn().mockReturnValue('')
+          getInitialResult: jest.fn().mockReturnValue('')
         }
 
         jest.spyOn(copyService, '_handleError').mockImplementation();

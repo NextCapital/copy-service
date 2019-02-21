@@ -1,5 +1,5 @@
-import { CopyService } from '@nextcapital/copy-service';
-import PlainTextEvaluator from '@nextcapital/plain-text-evaluator';
+import CopyService from '../../js/index.js';
+import PlainTextEvaluator from '../../js/PlainTextEvaluator';
 
 import copy from '../copy';
 

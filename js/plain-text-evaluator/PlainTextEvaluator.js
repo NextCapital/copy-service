@@ -11,7 +11,7 @@ import {
   Verbatim,
 
   Evaluator
-} from '@nextcapital/copy-service';
+} from '../index.js';
 
 /**
  * Provides an interface that can register copy, determine the existance of copy, and generate copy
@@ -25,12 +25,11 @@ class PlainTextEvaluator extends Evaluator {
    * @param  {string} copyPrefix    The copy string being recursively built.
    * @param  {Formatting|Functional|Newline|Reference|Substitute|Switch|Verbatim} ast
    *                                The AST to be evaluated. This AST must be constructed by Parser.
-   * @param  {function} getASTForKey Reference to the parsed copy from the copy service.
    * @param  {object} substitutions An object containing substitutions for keys specified in the
    *                                AST.
    * @return {string}               The evaluated copy.
    */
-  static evalAST(copyPrefix, ast, getASTForKey, substitutions) {
+  evalAST(copyPrefix, ast, substitutions) {
     if (!ast) {
       return copyPrefix;
     }
@@ -48,50 +47,50 @@ class PlainTextEvaluator extends Evaluator {
     // Build the copy at the referenced key and append it.
     else if (ast instanceof Reference) {
       copy = this.evalAST(
-        this._getInitialResult(), getASTForKey(ast.key), getASTForKey, substitutions
+        this.getInitialResult(), this.copyService.getAstForKey(ast.key), substitutions
       );
     }
     // Perform the substitution and append it.
     else if (ast instanceof Substitute) {
-      const value = this._trySubstitution(substitutions, ast.key);
+      const value = substitutions.get(ast.key);
       copy = _.isNil(value) ? '' : value.toString();
     }
     else if (ast instanceof RefSubstitute) {
-      const copyKey = this._trySubstitution(substitutions, ast.key);
+      const copyKey = substitutions.get(ast.key);
       copy = this.evalAST(
-        this._getInitialResult(), getASTForKey(copyKey), getASTForKey, substitutions
+        this.getInitialResult(), this.copyService.getAstForKey(copyKey), substitutions
       );
     }
     // Check the decider provided in substitutions, pick the correct branch, evaluate that branch,
     // and append it.
     else if (ast instanceof Switch) {
-      const decider = this._trySubstitution(substitutions, ast.key);
+      const decider = substitutions.getBoolean(ast.key);
       let subtree;
 
-      if (decider === 1 || decider === true) { // singular or true
+      if (decider) { // singular or truthy
         subtree = ast.left;
-      } else { // zero, plural, or false
+      } else { // zero, plural, or falsy
         subtree = ast.right;
       }
 
-      copy = this.evalAST(this._getInitialResult(), subtree, getASTForKey, substitutions);
+      copy = this.evalAST(this.getInitialResult(), subtree, substitutions);
     }
     // Evaluate the copy of the class, ignoring the function, and append the evaluated copy.
     else if (ast instanceof Functional) {
-      copy = this.evalAST(this._getInitialResult(), ast.copy, getASTForKey, substitutions);
+      copy = this.evalAST(this.getInitialResult(), ast.copy, substitutions);
     }
     // Evaluate the copy, ignoring the HTML tags, and append the evaluated copy.
     else if (ast instanceof Formatting) {
-      copy = this.evalAST(this._getInitialResult(), ast.copy, getASTForKey, substitutions);
+      copy = this.evalAST(this.getInitialResult(), ast.copy, substitutions);
     }
     // Log error and stop evaluating
     else {
       this._handleError('Unknown node detected');
-      return this._getInitialResult();
+      return this.getInitialResult();
     }
 
     // Continue recursing to evaluate the remaining ast with the appended copyPrefix.
-    return this.evalAST(copyPrefix + copy, ast.sibling, getASTForKey, substitutions);
+    return this.evalAST(copyPrefix + copy, ast.sibling, substitutions);
   }
   /* eslint-enable brace-style */
 
@@ -99,7 +98,7 @@ class PlainTextEvaluator extends Evaluator {
    * Returns the default copy (usually an empty string).
    * @return {*}
    */
-  static _getInitialResult() {
+  getInitialResult() {
     return '';
   }
 }

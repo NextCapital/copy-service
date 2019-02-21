@@ -12,7 +12,7 @@ import {
   Verbatim,
 
   Evaluator
-} from '@nextcapital/copy-service';
+} from '../index.js';
 
 /**
  * Provides an interface that can register copy, determine the existance of copy, and generate copy
@@ -25,12 +25,12 @@ class ReactEvaluator extends Evaluator {
    * @param  {string} copyPrefix    The copy string being recursively built.
    * @param  {Formatting|Functional|Newline|Reference|Substitute|Switch|Verbatim} ast
    *                                The AST to be evaluated. This AST must be constructed by Parser.
-   * @param  {object} substitutions An object containing substitutions for keys specified in the
+   * @param  {Substitutions} substitutions An object containing substitutions for keys specified in the
    *                                AST.
    * @return {string}               The evaluated copy.
    * @abstract
    */
-  static evalAST(copyPrefix, ast, getASTForKey, substitutions) {
+  evalAST(copyPrefix, ast, substitutions) {
     if (!ast) {
       return copyPrefix;
     }
@@ -43,11 +43,11 @@ class ReactEvaluator extends Evaluator {
       mergedCopy = this._mergePrefixes(copyPrefix, <span>{ ast.text }</span>);
     } else if (ast instanceof Reference) {
       const referencedCopy = this.evalAST(
-        this._getInitialResult(), getASTForKey(ast.key), getASTForKey, substitutions
+        this.getInitialResult(), this.copyService.getAstForKey(ast.key), substitutions
       );
       mergedCopy = this._mergePrefixes(copyPrefix, referencedCopy);
     } else if (ast instanceof Substitute) {
-      const value = this._trySubstitution(substitutions, ast.key);
+      const value = substitutions.get(ast.key);
 
       if (!_.isNil(value)) {
         const jsx = (<span>{ value.toString() }</span>);
@@ -56,28 +56,28 @@ class ReactEvaluator extends Evaluator {
         mergedCopy = copyPrefix;
       }
     } else if (ast instanceof RefSubstitute) {
-      const copyKey = this._trySubstitution(substitutions, ast.key);
+      const copyKey = substitutions.get(ast.key);
       const referencedCopy = this.evalAST(
-        this._getInitialResult(), getASTForKey(copyKey), getASTForKey, substitutions
+        this.getInitialResult(), this.copyService.getAstForKey(copyKey), substitutions
       );
       mergedCopy = this._mergePrefixes(copyPrefix, referencedCopy);
     } else if (ast instanceof Switch) {
-      const decider = this._trySubstitution(substitutions, ast.key);
+      const decider = substitutions.getBoolean(ast.key);
       let subtree;
 
-      if (decider === 1 || decider === true) { // singular or true
+      if (decider) { // singular or truthy
         subtree = ast.left;
-      } else { // zero, plural, or false
+      } else { // zero, plural, or falsy
         subtree = ast.right;
       }
 
       const switchJsx = this.evalAST(
-        this._getInitialResult(), subtree, getASTForKey, substitutions
+        this.getInitialResult(), subtree, substitutions
       );
       mergedCopy = this._mergePrefixes(copyPrefix, switchJsx);
     } else if (ast instanceof Functional) {
-      const method = this._trySubstitution(substitutions, ast.key);
-      let jsx = this.evalAST(this._getInitialResult(), ast.copy, getASTForKey, substitutions);
+      const method = substitutions.get(ast.key);
+      let jsx = this.evalAST(this.getInitialResult(), ast.copy, substitutions);
 
       if (method && _.isFunction(method)) {
         jsx = (
@@ -87,15 +87,16 @@ class ReactEvaluator extends Evaluator {
 
       mergedCopy = this._mergePrefixes(copyPrefix, jsx);
     } else if (ast instanceof Formatting) {
-      const jsx = this.evalAST(this._getInitialResult(), ast.copy, getASTForKey, substitutions);
+      const jsx = this.evalAST(this.getInitialResult(), ast.copy, substitutions);
       const tag = React.createElement(ast.tag, {}, jsx.props.children);
 
       mergedCopy = this._mergePrefixes(copyPrefix, <span>{ tag }</span>);
     } else {
       this._handleError('Unknown node detected');
-      return this._getInitialResult();
+      return this.getInitialResult();
     }
-    return this.evalAST(mergedCopy, ast.sibling, getASTForKey, substitutions);
+
+    return this.evalAST(mergedCopy, ast.sibling, substitutions);
   }
   /* eslint-enable brace-style */
 
@@ -103,11 +104,11 @@ class ReactEvaluator extends Evaluator {
    * Returns the default copy (usually an empty string).
    * @return {null}
    */
-  static _getInitialResult() {
+  getInitialResult() {
     return null;
   }
 
-  static _mergePrefixes(left, right) {
+  _mergePrefixes(left, right) {
     if (!right) {
       return left;
     } else if (!left) {

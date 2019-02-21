@@ -19,10 +19,10 @@ describe('Evaluator', () => {
     });
   });
 
-  describe('_getInitialResult', () => {
+  describe('getInitialResult', () => {
     test('throws error', () => {
-      expect(() => Evaluator._getInitialResult()).toThrow(
-        '_getInitialResult is abstract and must be implemented by the extending class'
+      expect(() => Evaluator.getInitialResult()).toThrow(
+        'getInitialResult is abstract and must be implemented by the extending class'
       );
     });
   });

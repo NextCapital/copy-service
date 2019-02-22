@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import Substitutions from '../Substitutions/Substitutions';
 import ErrorHandler from '../ErrorHandler/ErrorHandler';
 

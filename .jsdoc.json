@@ -11,6 +11,6 @@
     "encoding": "utf8",
     "private": true,
     "recurse": true,
-    "template": "./docs-template"
+    "template": "node_modules/@pixi/jsdoc-template"
   }
 }

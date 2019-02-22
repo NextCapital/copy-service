@@ -1,5 +1,5 @@
 import CopyService from '../../js/index.js';
-import PlainTextEvaluator from '../../js/PlainTextEvaluator';
+import PlainTextEvaluator from '../../PlainTextEvaluator';
 
 import copy from '../copy';
 

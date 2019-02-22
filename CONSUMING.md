@@ -115,7 +115,7 @@ Example:
 
 Syntax: `*{left}{right}{substitutionKey}`
 
-Allows conditional logic within copy. When the passed substitution returns `true` or `1`, the `left` copy is resolved. Otherwise, the `right` copy is resolved. The substitution key must reference a valid path on the passed substitutions object, otherwise an error is thrown. Works recursively.
+Allows conditional logic within copy. When the passed substitution returns truthy or `1`, the `left` copy is resolved. Otherwise, the `right` copy is resolved (including for non-one numbers). The substitution key must reference a valid path on the passed substitutions object, otherwise an error is thrown. Works recursively.
 
 Example:
 
@@ -204,8 +204,8 @@ Example:
 
 ```javascript
 import CopyService from '@nextcapital/copy-service';
-import PlainTextEvaluator from '@nextcapital/copy-service/js/PlainTextEvaluator';
-import ReactEvaluator from '@nextcapital/copy-service/js/ReactEvaluator';
+import PlainTextEvaluator from '@nextcapital/copy-service/PlainTextEvaluator';
+import ReactEvaluator from '@nextcapital/copy-service/ReactEvaluator';
 
 import copy from './copy.json';
 

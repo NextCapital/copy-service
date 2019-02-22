@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 
 import CopyService from '../../js/index.js';
-import ReactEvaluator from '../../js/ReactEvaluator';
+import ReactEvaluator from '../../ReactEvaluator';
 
 import copy from '../copy';
 

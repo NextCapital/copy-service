@@ -4,7 +4,9 @@
   "description": "The base copy service that provides copy parsing and evaluating.",
   "main": "js/index.js",
   "files": [
-    "js"
+    "js",
+    "PlainTextEvaluator.js",
+    "ReactEvaluator.js"
   ],
   "scripts": {
     "autopublish": "autopublish",
@@ -34,6 +36,7 @@
     "@babel/preset-env": "^7.3.1",
     "@babel/preset-react": "^7.0.0",
     "@nextcapital/eslint-config-js-linter": "^1.1.1",
+    "@pixi/jsdoc-template": "^2.4.0",
     "autopublish": "0.0.8",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.0.1",

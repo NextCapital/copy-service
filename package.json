@@ -10,7 +10,8 @@
   ],
   "scripts": {
     "autopublish": "autopublish",
-    "ci": "npm run lint && npm run test",
+    "build": "webpack",
+    "ci": "npm run lint && npm run test && npm run build",
     "docs": "rm -rf docs/ && jsdoc js/**/*.js -c .jsdoc.json",
     "lint": "eslint js/**/*.{js,jsx}",
     "test": "jest"
@@ -55,7 +56,9 @@
     "jest-junit-reporter": "^1.1.0",
     "jsdoc": "^3.5.5",
     "react": "^15.5.4",
-    "react-dom": "^15.5.4"
+    "react-dom": "^15.5.4",
+    "webpack": "^4.29.1",
+    "webpack-cli": "^3.2.3"
   },
   "peerDependencies": {
     "lodash": "^4.17.10"

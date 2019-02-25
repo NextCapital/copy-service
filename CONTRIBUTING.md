@@ -14,7 +14,7 @@ This project uses a parser-evaluator pattern on ASTs built on a defined grammar.
 
 **WARNING: DO NOT MODIFY THIS GRAMMAR. Correct constructing a grammar is extremely difficult. Consult @nc-piercej on evaluating any changes.**
 
-The grammar is left-recursive and therefore recursive-descent (easily) parsable.
+The grammar is not left-recursive and therefore recursive-descent (easily) parsable.
 
 Writing an LR parser would be significantly more difficult, so best to avoid complex grammars.
 

@@ -1,162 +1,68 @@
 import Evaluator from './Evaluator';
+import Substitutions from '../Substitutions/Substitutions';
+import CopyService from '../CopyService';
+import ErrorHandler from '../ErrorHandler/ErrorHandler';
 
 describe('Evaluator', () => {
-  afterEach(() => {
-    jest.restoreAllMocks();
+  let evaluator, copyService;
+
+  beforeEach(() => {
+    copyService = new CopyService();
+    evaluator = new Evaluator(copyService);
   });
 
   describe('constructor', () => {
-    test('throws error', () => {
-      expect(() => new Evaluator()).toThrow('Evaluator: Evaluator is a singleton');
+    test('sets the copy service', () => {
+      expect(evaluator.copyService).toBe(copyService);
+    });
+  });
+
+  describe('getCopy', () => {
+    test('defers to evalAST with correct args', () => {
+      const key = 'some.copy.key';
+      const rawSubstitutions = { some: 'raw', substitutions: 'yo' };
+
+      const initialCopy = 'initialCopy';
+      const ast = { some: 'ast' };
+
+      jest.spyOn(copyService, 'getAstForKey').mockReturnValue(ast);
+      jest.spyOn(evaluator, 'getInitialResult').mockReturnValue(initialCopy);
+
+      const copy = 'result copy';
+      jest.spyOn(evaluator, 'evalAST').mockImplementation((init, ast, subs) => {
+        expect(subs.substitutions).toEqual(rawSubstitutions);
+        return copy;
+      });
+
+      expect(evaluator.getCopy(key, rawSubstitutions)).toBe(copy);
+      expect(evaluator.evalAST).toBeCalledWith(initialCopy, ast, expect.any(Substitutions));
+      expect(copyService.getAstForKey).toBeCalledWith(key);
+      expect(evaluator.getInitialResult).toBeCalled();
     });
   });
 
   describe('evalAST', () => {
     test('throws error', () => {
-      expect(() => Evaluator.evalAST()).toThrow(
+      expect(() => evaluator.evalAST()).toThrow(
         'evalAST is abstract and must be implemented by the extending class'
       );
     });
   });
 
-  describe('_getInitialResult', () => {
+  describe('getInitialResult', () => {
     test('throws error', () => {
-      expect(() => Evaluator._getInitialResult()).toThrow(
-        '_getInitialResult is abstract and must be implemented by the extending class'
+      expect(() => evaluator.getInitialResult()).toThrow(
+        'getInitialResult is abstract and must be implemented by the extending class'
       );
     });
   });
 
-  describe('_trySubstitution', () => {
-    describe('when the substitution is found in the passed substitutions', () => {
-      test('returns substitution value', () => {
-        const key = 'key';
-        const substitutions = { [key]: 'value' };
-
-        expect(Evaluator._trySubstitution(substitutions, key)).toBe(substitutions[key]);
-      });
-    });
-
-    describe('when the substitution is not found in the passed substitutions', () => {
-      beforeEach(() => {
-        jest.spyOn(Evaluator, '_handleError').mockImplementation();
-      });
-
-      afterEach(() => {
-        Evaluator._handleError.mockRestore();
-      });
-
-      test('logs error', () => {
-        const substitutionKey = 'some.key';
-
-        Evaluator._trySubstitution({}, substitutionKey);
-        expect(Evaluator._handleError).toBeCalledWith(
-          `No value for substitution at key ${substitutionKey} provided`
-        );
-      });
-
-      test('returns empty string', () => {
-        expect(Evaluator._trySubstitution({}, 'some.key')).toBe('');
-      });
-    });
-  });
-
   describe('_handleError', () => {
-    describe('when options.halt is true', () => {
-      describe('when in dev mode', () => {
-        beforeEach(() => {
-          jest.spyOn(Evaluator, '_isInDevMode').mockReturnValue(true);
-        });
-
-        afterEach(() => {
-          Evaluator._isInDevMode.mockRestore();
-        });
-
-        test('throws error', () => {
-          const error = 'some error';
-          expect(() => Evaluator._handleError(error, { halt: true })).toThrow(
-            `Evaluator: ${error}`
-          );
-        });
-      });
-
-      describe('when not in dev mode', () => {
-        beforeEach(() => {
-          jest.spyOn(Evaluator, '_isInDevMode').mockReturnValue(false);
-        });
-
-        afterEach(() => {
-          Evaluator._isInDevMode.mockRestore();
-        });
-
-        test('throws error', () => {
-          const error = 'some error';
-          expect(() => Evaluator._handleError(error, { halt: true })).toThrow(
-            `Evaluator: ${error}`
-          );
-        });
-      });
-    });
-
-    describe('when options.halt is falsy', () => {
-      beforeEach(() => {
-        jest.spyOn(console, 'error').mockImplementation();
-      });
-
-      afterEach(() => {
-        console.error.mockRestore(); // eslint-disable-line no-console
-      });
-
-      describe('when in dev mode', () => {
-        beforeEach(() => {
-          jest.spyOn(Evaluator, '_isInDevMode').mockReturnValue(true);
-        });
-
-        afterEach(() => {
-          Evaluator._isInDevMode.mockRestore();
-        });
-
-        test('does not throw error', () => {
-          const error = 'some error';
-          expect(() => Evaluator._handleError(error)).not.toThrow();
-        });
-
-        test('logs error to console', () => {
-          const error = 'some error';
-
-          Evaluator._handleError(error, { halt: false });
-          // eslint-disable-next-line no-console
-          expect(console.error).toBeCalledWith(`Evaluator: ${error}`);
-        });
-      });
-
-      describe('when not in dev mode', () => {
-        beforeEach(() => {
-          jest.spyOn(Evaluator, '_isInDevMode').mockReturnValue(false);
-        });
-
-        afterEach(() => {
-          Evaluator._isInDevMode.mockRestore();
-        });
-
-        test('does not throw error', () => {
-          const error = 'some error';
-          expect(() => Evaluator._handleError(error, { halt: false })).not.toThrow();
-        });
-
-        test('does not log error to console', () => {
-          const error = 'some error';
-
-          Evaluator._handleError(error, { halt: false });
-          expect(console.error).not.toBeCalled(); // eslint-disable-line no-console
-        });
-      });
-    });
-  });
-
-  describe('_isInDevMode', () => {
-    test('returns DEV_MODE', () => {
-      expect(Evaluator._isInDevMode()).toBe(global.DEV_MODE);
+    test('defers to ErrorHandler.handleError', () => {
+      const args = ['some error message', { halt: true }];
+      jest.spyOn(ErrorHandler, 'handleError').mockImplementation();
+      evaluator._handleError(...args);
+      expect(ErrorHandler.handleError).toBeCalledWith(Evaluator.name, ...args);
     });
   });
 });

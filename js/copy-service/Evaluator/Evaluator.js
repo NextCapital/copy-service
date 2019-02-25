@@ -1,4 +1,5 @@
-import _ from 'lodash';
+import Substitutions from '../Substitutions/Substitutions';
+import ErrorHandler from '../ErrorHandler/ErrorHandler';
 
 /**
  * Provides an interface to recursively generate copy evaluated with substitutions.
@@ -6,18 +7,40 @@ import _ from 'lodash';
  */
 class Evaluator {
   /**
-   * Evaluates the AST with given substitutions
-   * @param  {string} copyPrefix    The copy string being recursively built.
-   * @param  {AST} ast
-   *                                The AST to be evaluated. This AST must be constructed by Parser.
-   * @param  {function} getASTForKey Reference to the parsed copy from the copy service.
-   * @param  {object} substitutions An object containing substitutions for keys specified in the
-   *                                AST.
-   * @return {*}               The evaluated copy.
+   * Takes in a copy service and provide methods for evaluating its ASTs.
+   * @param {CopyService} copyService
    */
-  static evalAST() {
+  constructor(copyService) {
+    this.copyService = copyService;
+  }
+
+  /**
+   * Returns evalauted copy got the given copy key and substitutions.
+   * @param  {string} key
+   * @param  {object|function} [rawSubstitutions] Substitutions to be used by the evaluator when
+   * evaluating the AST. Must either be an object or a fucntion returning the object.
+   * @return {*} The evaluated copy
+   */
+  getCopy(key, rawSubstitutions) {
+    const substitutions = new Substitutions(rawSubstitutions);
+    const ast = this.copyService.getAstForKey(key);
+
+    return this.evalAST(this.getInitialResult(), ast, substitutions);
+  }
+
+  /**
+   * Evaluates the AST with given substitutions
+   * @param  {*} copyPrefix The evaluated copy in process of being recursively built.
+   * @param  {AST} ast The AST to be evaluated. This AST must be constructed by Parser.
+   * @param  {Substitutions} substitutions An object containing substitutions for keys specified in
+   * the AST.
+   * @return {*} The evaluated copy.
+   * @abstract
+   */
+  evalAST() {
     this._handleError(
-      'evalAST is abstract and must be implemented by the extending class', { halt: true }
+      'evalAST is abstract and must be implemented by the extending class',
+      { halt: true }
     );
   }
   /* eslint-enable brace-style */
@@ -27,61 +50,18 @@ class Evaluator {
    * @return {*}
    * @abstract
    */
-  static _getInitialResult() {
+  getInitialResult() {
     this._handleError(
-      '_getInitialResult is abstract and must be implemented by the extending class', { halt: true }
+      'getInitialResult is abstract and must be implemented by the extending class',
+      { halt: true }
     );
   }
 
   /**
-   * Retrieves the item at a key from a given substitutions object. Logs an error and returns empty
-   * string if no substitution is found.
-   * @param  {object} substitutions
-   * @param  {string} substitutionKey
-   * @return {*}
-   * @private
+   * Defers to ErrorHandler.handleError with the constructor name and any args.
    */
-  static _trySubstitution(substitutions, substitutionKey) {
-    const value = _.get(substitutions, substitutionKey);
-
-    if (_.isUndefined(value)) {
-      this._handleError(`No value for substitution at key ${substitutionKey} provided`);
-      return '';
-    }
-
-    return value;
-  }
-
-  /**
-   * When in dev mode, log errors to the console.
-   * @param {string} error            The error message to display
-   * @param {object} [options]
-   * @param {boolean} [options.halt]  Whether or not to throw a halting error.
-   * @private
-   */
-  static _handleError(error, options = {}) {
-    const message = `${this.name}: ${error}`;
-    if (options.halt) {
-      throw new Error(message);
-    } else if (this._isInDevMode()) {
-      console.error(message); // eslint-disable-line no-console
-    }
-  }
-
-  /**
-   * Returns the global boolean DEV_MODE set via webpack.
-   * @return {boolean} DEV_MODE
-   */
-  static _isInDevMode() {
-    return DEV_MODE;
-  }
-
-  /**
-   * Evaluator is a singleton and will error when trying to create an instance.
-   * @throws {Error}
-   */
-  constructor() {
-    this.constructor._handleError(`${this.constructor.name} is a singleton`, { halt: true });
+  _handleError(...args) {
+    ErrorHandler.handleError(this.constructor.name, ...args);
   }
 }
 

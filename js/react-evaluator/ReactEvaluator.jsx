@@ -48,7 +48,7 @@ class ReactEvaluator extends Evaluator {
     } else if (ast instanceof Substitute) {
       const value = substitutions.get(ast.key);
 
-      if (!_.isNil(value)) {
+      if (!_.isNil(value) && value !== '') {
         const jsx = (<span>{ value.toString() }</span>);
         mergedCopy = this._mergePrefixes(copyPrefix, jsx);
       } else {

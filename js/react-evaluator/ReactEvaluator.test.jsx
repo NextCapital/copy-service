@@ -88,7 +88,7 @@ describe('ReactEvaluator', () => {
 
         describe('when the AST is a Substitute', () => {
           describe('when the substitution is not found', () => {
-            test('returns copy prefix', () => {
+            test('returns the copy prefix', () => {
               substitutions.get.mockReturnValue(null);
               const ast = new Substitute({ key: 'does.not.exist' });
 
@@ -103,6 +103,15 @@ describe('ReactEvaluator', () => {
               const ast = new Substitute({ key: 'exists' });
 
               expect(getStaticMarkup(null, ast)).toBe(`<span>${text}</span>`);
+            });
+          });
+
+          describe('when the substitution is an empty string', () => {
+            test('returns the copy prefix', () => {
+              substitutions.get.mockReturnValue('');
+              const ast = new Substitute({ key: 'exists' });
+
+              expect(evaluator.evalAST(null, ast, substitutions)).toBe(null);
             });
           });
         });

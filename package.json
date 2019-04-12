@@ -55,8 +55,8 @@
     "jest": "^23.6.0",
     "jest-junit-reporter": "^1.1.0",
     "jsdoc": "^3.5.5",
-    "react": "^15.5.4",
-    "react-dom": "^15.5.4",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
     "webpack": "^4.29.1",
     "webpack-cli": "^3.2.3"
   },

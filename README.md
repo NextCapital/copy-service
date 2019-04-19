@@ -1,34 +1,63 @@
-# copy-service
+# Copy Service
 
-A Javascript service for copy management.
+A Javascript service for copy management. This service allows consumer to provide copy content (i.e. text). The service in turn handles formatting and substitutions into a piece of copy on a copy retrieval request from the consumer.
 
 ## Features
 
-* Allows for multiple sources of copy to be registered (via merging), allowing for tenant and application overrides of abstracted, generic copy.
-* Supports references to other pieces of copy, reducing duplication.
-* Supports dynamic and functional substitutions at runtime.
-* Allows for copy to be outputed in different formats (string literals, HTML, React JSX, etc).
+- Supports registration of copy from multiple sources, merging latter copy into already registered copy.
+  - Allows for concise tenant and application overrides of abstracted, generic copy.
+- Provides a verbose syntax for dynamic feature support
+  - Reference syntax to other copy, preventing duplication
+  - Substitution syntax to interpolate dynamic values, including dynamic references to other copy
+  - Functional syntax to handle complex formatting and logic-based substitutions
+  - Supports formatting HTML tags (e.g. `<b>`, `<i>`)
+- Supports different output formats via Evaluators
+  - String literals, React components
 
-#### Why roll our own?
+## Documentation
 
-* We are Nextcapital, it's what we do.
-* There is not another Javascript solution on the open market meeting our requirements and use cases that easily plug into our front-end applications at compile time.
+[System Documentation (Confluence)](<https://confluence.internal.nextcapital.com/display/SC/Copy+Service>)
+
+[Developer System Documentation](./CONSUMING.md) - Contains docs on writing copy files and syntax
 
 ## Structure
 
-The copy-service package provides the CopyService class. Copy and an evaluator can be registered with each instance. As CopyService is not a singleton, multiple instances with different copy and/or different evaluators can exist. Note: Registered copy is not shared between CopyService instances.
+There are separate two pieces: the CopyService class and Evaluator classes. The CopyService class handles registration of copy and parsing copy into a format that any Evaluator class can consume. Evaluator classes are responsible for processing requests for copy, converting the syntax into formatted copy with interpolated substitutions.
 
-Each evaluator transforms the parsed copy in formatted, consumable copy. The plain-text-evaluator returns string literal copy with no formatting (HTML) tags. The react-evaluator returns a React (JSX) component containing the copy and all formatting (such as inline HTML tags).
+### Evaluators
 
-To consume this project, you need the copy-service package and an evaluator package.
+PlainTextEvaluator returns copy formatted as string literals.
 
-## Consuming copy-service
+ReactEvaluator returns copy formatted as React components.
 
-See [CONSUMING.md](./CONSUMING.md).
+## Installation
 
-## Developing copy-service
+```
+npm install --save @nextcapital/copy-service
+```
+
+## Usage
+
+```javascript
+import CopyService from '@nextcapital/copy-service';
+import PlainTextEvaluator from '@nextcapital/copy-service/PlainTextEvaluator';
+import ReactEvaluator from '@nextcapital/copy-service/ReactEvaluator';
+
+import copy from './some/path/to/copy.json';
+
+const copyService = new CopyService();
+copyService.registerCopy(copy);
+
+const textEvaluator = new PlainTextEvaluator(copyService);
+const reactEvaluator = new ReactEvaluator(copyService);
+
+const stringCopy = textEvaluator.getCopy('some.copy.key', { some: 'substitutions' });
+const jsxCopy = reactEvaluator.getCopy('some.copy.key', { some: 'substitutions' });
+```
+
+## Contributing to Copy Service
 
 **WARNING: This project involves complex technical concepts. Developing on this project will likely be more difficult than other projects.**
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md).
+See [CONTRIBUTING.md](https://github.com/BLC/copy-service/blob/master/CONTRIBUTING.md).
 

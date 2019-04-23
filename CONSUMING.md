@@ -1,32 +1,16 @@
-# Consuming copy-service
-
-## Installation
-
-These packages live on Nextcapital's internal npm registry. Run the following configuration if you have not on your npm instance already:
-
-```
-npm set registry https://npm.nextcapital.com
-npm adduser --registry https://npm.nextcapital.com
-```
-
-Then:
-
-```
-npm install --save @nextcapital/copy-service
-```
+# Using Copy Service
 
 ## Copy Keys
 
-Copy Keys (sometimes denoted without the space: CopyKeys) are the key path in a copy object to a piece of copy. This path can be easily retrieved using lodash's `get` method.
+Copy keys are a key path in a registered copy file to a specific piece of copy.
 
-Example (`copy.json`):
+#### Example
 
 ```json
+// copy.json
 {
     "account": {
-        "accountNumber": {
-            "primary": "Account Number"
-        },
+        "accountNumber": "Account Number",
         "characters": {
             "checking": "Checking",
             "savings": "Savings"
@@ -41,9 +25,11 @@ The copy key for `'Checking'` is `account.characters.checking`.
 
 ## Substitutions
 
-When calling `getCopy`, you can optionally pass an object as the second argument for substitutions from the consuming project. The object can have nested properties. Any `substitutitonKey` referenced below uses the same key path syntax as Copy Keys.
+The copy service allows for dynamic interpolation of values in copy. These substitutions can be provided with the request for a piece of copy and will be interpolated in the final formatted copy. The syntax (defined below) will reference keys on the passed substitutions object to find the correct value to interpolate. 
 
-Example (a substitution object passed to `getCopy`):
+**Note**: Most substitutions do not require calculations and can be directly provided on the substitutions object. However, some values require expensive calculations (i.e. take a long time to calculate). For this, there are two solutions. First, instead of passing a substitution object, a function returning a substitution object can be passed. The function will not be invoked until a piece of copy requiring a substitution is requested. The substitution object returned by this function will be cached and reused for subsequent substitutions. This allows multiple parts of a copy key to use the same cached value. Second, a function can be passed as an individual substitution using the syntax defined below, which will not be called until the piece of copy is requested.
+
+#### Example
 
 ```json
 {
@@ -56,170 +42,86 @@ Example (a substitution object passed to `getCopy`):
 
 The valid `substitutionKey` paths for these attributes are `value` and `nested.displayValue`.
 
-NOTE: If your substitutions are computationally expensive, you can pass in a function that returns them. The function won't be called unless one is actually needed, and it will only be called once if there are multiple substitutions used within a single copy key.
+## Writing a Copy File
 
-See the generated documentation for more detail on method signatures.
-
-## Writing a copy file
-
-Copy files must be valid JSON.
+**Note:** All copy files must be valid JSON files.
 
 ### Syntax
 
-#### Reference to another piece of copy
+| Syntax                                       | Description                                                  |
+| -------------------------------------------- | ------------------------------------------------------------ |
+| `${some.copy.key.to.reference}`              | Interpolates another piece of copy. Works recursively.       |
+| `#{substitutionKey}`                         | Interpolates a substitution.                                 |
+| `%{substitutionKey}`                         | Grabs a copy key reference from the substitutions and interpolates the referenced copy. |
+| `*{left}{right}{substitutionKey}`            | Interpolates left or right copy based on the value of the substitution (i.e. basic logic switch). If the substitution evaluates to a truthy value or the number 1, the left copy will be interpolated. If  the substitution evaluates to a falsy value or the number 0, the right copy will be interpolated. |
+| `^{COPY}{substitutionKey}`*                  | Passes COPY to a function that returns copy. Allows for extremely flexible interpolation and evaluation of copy. Useful for inserting links. |
+| `^{COPY}{substitutionKey}[arg1, arg2, ...]`* | Passes COPY and arguments to a function that returns copy. Arguments are passed as string literals (e.g. the boolean `true` will be passed as the string `'true'`). |
+| `<html>COPY</html>`*^                        | Interpolates HTML formatting tags. Valid tags are listed below. Invalid tags will be ignored. |
 
-Syntax: `${key.to.other.copy}`
+\* This syntax is not executed when using the PlainTextEvaluator. The PlainTextEvaluator will simply return the `COPY` inside of the syntax tags.
 
-Allows one piece of copy to directly substitute another piece of copy. Works recursively.
+^ Valid HTML tags are  `<b>`, `<i>`, `<u>`, `<sup>`, `<sub>`, `<s>`, `<em>`, `<p>`, `<span>`, `<div>`, `<ol>`, `<ul>`, `<li>`.
 
-Example:
+### Examples
 
 ```json
+// copy.json
 {
-    "account": {
-        "name": "Account",
-        "description": "${account.characters.checking}",
-        "characters": {
-            "checking": "Checking Account",
-            "savings": "Savings Account"
-        },
-        "recursiveProof": "${account.description}"
-    }
+  "account": {
+		"name": "Account",
+    "value": "#{accountValue}",
+    "description": "${account.characters.checking}",
+    "characters": {
+      "checking": "Checking Account",
+      "savings": "Savings Account"
+    },
+    "owner": "*{Spouse}{Primary}{isSpouse}",
+    "recursiveProof": "${account.description}",
+    "subbedCharacter": "%{character}",
+    "switchedCharacter": "*{${account.characters.checking}}{${account.characters.savings}}{characterSwitch}",
+    "save": "<b>Save</b>",
+    "cancel": "<q>Cancel</q>",
+    "rollover": "^{You may rollover}[rollover]",
+		"implement": "^{You are going to implement}[implement][true]"
+  }
 }
 ```
 
-`account.description` will resolve to `'Checking Account'`.
+- `account.name` will resolve to `'Account'`.
 
-`account.recursiveProof` will also resolve to `'Checking Account'`.
+- `account.description` will resolve to `'Checking Account'`.
 
-#### Direct substitution
+- `account.recursiveProof` will resolve to `'Checking Account'`.
 
-Syntax: `#{substitutionKey}`
+- `account.value` with substitutions `{ accountValue: 100 }` will resolve to `'$100'`.
 
-Allows direct substitutions into copy from consuming projects. The substitution key must reference a valid path on the passed substitutions object, otherwise an error is thrown.
+- `account.subbedCharacter` with substitutions `{ character: 'account.characters.savings' }` will resolve to `'Savings Account'`.
 
-Example:
+- `account.owner` with substitutions `{ isSpouse: true }` will resolve to `'Spouse'`.
 
-```json
-{
-    "account": {
-        "name": "Account",
-        "value": "$#{accountValue}"
-    }
-}
-```
+- `account.owner` with substitutions `{ isSpouse: false }` will resolve to `'Primary'`.
 
-`account.value` with the substitution object `{ accountValue: 100 }` will resolve to `'$100'`.
+- `account.switchedCharacter` with substitutions `{ characterSwitch: true }` will resolve to `'Checking Account'`.
 
-#### Simple switching
+  
 
-Syntax: `*{left}{right}{substitutionKey}`
+- With the PlainTextEvaluator, `account.save` will resolve to `'Save'`.
 
-Allows conditional logic within copy. When the passed substitution returns truthy or `1`, the `left` copy is resolved. Otherwise, the `right` copy is resolved (including for non-one numbers). The substitution key must reference a valid path on the passed substitutions object, otherwise an error is thrown. Works recursively.
+- With the ReactEvaluator, `account.save` will resolve to `<span><b>Save</b></span>`.
 
-Example:
+- With the PlainTextEvaluator, `account.cancel` will resolve to `'Cancel'`.
 
-```json
-{
-    "account": {
-        "name": "Account",
-        "linked": "*{Linked}{Not Linked}{isLinked}"
-    }
-}
-```
+- With the ReactEvaluator, `account.cancel` will resolve to `<span>Cancel</span>`.
 
-`account.linked` with the substitution object `{ isLinked: false }` will resolve to `'Not Linked'`.
+  
 
-#### Functional substitution
+- With the PlainTextEvaluator, `account.rollover` with substitutions `{ rollover: (copy) => copy + 'your external IRA' }` will resolve to `'You may rollover'`.
 
-Syntax: `^{copy}{substitutionKey}`
+- With the ReactEvaluator, `account.rollover` will resolve to `<span>You may rollover your external IRA</span>`.
 
-**NOTE: The function provided on the substitution object is only invoked when using the ReactEvaluator. When using the PlainTextEvaluator, the function is not invoked and the initial `copy` is returned.**
+  
 
-Passes copy to a function whose result is returned. Extrememly powerful. Useful for inserting links, additional formatting, etc.
+- With the PlainTextEvaluator, `account.implement` with substitutions `{ implement: (copy, addMore) => copy + 'your NextCapital managed account' }` will resolve to `'You are going to implement'`.
 
-Example:
+- With the ReactEvaluator, `account.implement` with substitutions `{ implement: (copy, addMore) => copy + 'your NextCapital managed account' }` will resolve to `<span>You are going to implement your NextCapital managed account</span>`.
 
-```json
-{
-    "account": {
-        "name": "Account",
-        "formattedName": "^{Format me}{subFunc}"
-    }
-}
-```
-
-`account.formattedName` with the substitution object `{ subFunc: (copy) => 'I did' + copy }` will resolve to `'I did Format me'`.
-
-#### Functional substitution with arguments
-
-Syntax: `^{copy}{substitutionKey}[arg1, arg2...]`
-
-**NOTE: The function provided on the substitution object is only invoked when using the ReactEvaluator. When using the PlainTextEvaluator, the function is not invoked and the initial `copy` is returned.**
-
-**NOTE: Arguments are passed as string literals. `true` would be passed as `'true'`.**
-
-Passes copy to a function with optional arguments whose result is returned. Extrememly powerful.
-
-Example:
-
-```json
-{
-    "account": {
-        "name": "Account",
-        "formattedName": "^{Format me}{subFunc}[more]"
-    }
-}
-```
-
-`account.formattedName` with the substitution object `{ subFunc: (copy, more) => 'I did ' + copy + + ' ' + more }` will resolve to `'I did Format me more'`.
-
-#### HTML formatting
-
-Syntax: `<tag>copy</tag>`
-
-**NOTE: HTML tags are only included when using ReactEvaluator. When using the PlainTextEvaluator, the tags are omitted and the initial `copy` is returned.**
-
-Allows for basic HTML tags for visual formatting.
-
-Valid tags: `<b>`, `<i>`, `<u>`, `<sup>`, `<sub>`, `<s>`, `<em>`, `<p>`, `<span>`, `<div>`, `<ol>`, `<ul>`, `<li>`
-
-Example:
-
-```json
-{
-    "account": {
-        "name": "Account",
-        "formattedName": "<b>I will be bold</b>",
-        "illegalTag": "<q>I will not have tags</q>"
-    }
-}
-```
-
-`account.formattedName` will resolve to `<b>I will be bold</b>`.
-
-`account.illegalTag` will resolve to `I will not have tags`.
-
-## Registering copy
-
-```javascript
-import CopyService from '@nextcapital/copy-service';
-import PlainTextEvaluator from '@nextcapital/copy-service/PlainTextEvaluator';
-import ReactEvaluator from '@nextcapital/copy-service/ReactEvaluator';
-
-import copy from './copy.json';
-
-const copyService = new CopyService();
-copyService.registerCopy(copy);
-
-// one copy service can be used by multiple evaluators
-const reactEvaluator = new ReactEvaluator(copyService);
-const textEvaluator = new PlainTextEvaluator(copyService);
-```
-
-## Getting copy
-
-```javascript
-// Assumes reactEvaluator as set up above
-const copy = reactEvaluator.getCopy('some.copy.key', { some: 'substitutions' });
-```

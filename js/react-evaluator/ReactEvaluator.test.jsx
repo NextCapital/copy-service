@@ -235,7 +235,7 @@ describe('ReactEvaluator', () => {
               });
 
               expect(getStaticMarkup(evaluator.evalAST(prefix, ast))).toBe(
-                `<span>prefix</span>`
+                '<span>prefix</span>'
               );
             });
           });

@@ -224,6 +224,21 @@ describe('ReactEvaluator', () => {
               `<span><i>${ast.copy.text}</i></span>`
             );
           });
+
+          describe('when the tag is empty', () => {
+            test('returns the existing prefix', () => {
+              const prefix = <span>prefix</span>;
+
+              const ast = new Formatting({
+                tag: 'i',
+                copy: null
+              });
+
+              expect(getStaticMarkup(evaluator.evalAST(prefix, ast))).toBe(
+                `<span>prefix</span>`
+              );
+            });
+          });
         });
 
         describe('when the AST is an unknown AST class', () => {

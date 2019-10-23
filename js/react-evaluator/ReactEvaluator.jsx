@@ -87,9 +87,13 @@ class ReactEvaluator extends Evaluator {
       mergedCopy = this._mergePrefixes(copyPrefix, jsx);
     } else if (ast instanceof Formatting) {
       const jsx = this.evalAST(this.getInitialResult(), ast.copy, substitutions);
-      const tag = React.createElement(ast.tag, {}, jsx.props.children);
 
-      mergedCopy = this._mergePrefixes(copyPrefix, <span>{ tag }</span>);
+      if (jsx) {
+        const tag = React.createElement(ast.tag, {}, jsx.props.children);
+        mergedCopy = this._mergePrefixes(copyPrefix, <span>{ tag }</span>);
+      } else { // empty formatting, skip tag
+        mergedCopy = copyPrefix;
+      }
     } else {
       this._handleError('Unknown node detected');
       return this.getInitialResult();

@@ -14,7 +14,10 @@
     "ci": "npm run lint && npm run test && npm run build",
     "docs": "rm -rf docs/ && jsdoc js/**/*.js -c .jsdoc.json",
     "lint": "eslint js/**/*.{js,jsx}",
-    "test": "jest"
+    "test": "jest",
+    "version:major": "git reset && changelog -M && git add CHANGELOG.md && git commit -m 'Update CHANGELOG' -n && npm version major",
+    "version:minor": "git reset && changelog -m && git add CHANGELOG.md && git commit -m 'Update CHANGELOG' -n && npm version minor",
+    "version:patch": "git reset && changelog -p && git add CHANGELOG.md && git commit -m 'Update CHANGELOG' -n && npm version patch"
   },
   "repository": {
     "type": "git",
@@ -52,6 +55,7 @@
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.11.0",
     "eslint-plugin-react": "^7.12.4",
+    "generate-changelog": "^1.8.0",
     "jest": "^23.6.0",
     "jest-junit-reporter": "^1.1.0",
     "jsdoc": "^3.5.5",

@@ -57,25 +57,17 @@ const jsxCopy = reactEvaluator.getCopy('some.copy.key', { some: 'substitutions' 
 
 ## Commit Format and Changelog
 
-To automatically generate a changelog, this project uses the [generate-changelog](https://github.com/lob/generate-changelog) package, which requires a standardized commit format. See this [doc](https://github.com/BLC/ux-framework/wiki#commit-format) for how to properly format commit messages.
+To automatically generate a changelog, this project uses the [standard-version](https://github.com/conventional-changelog/standard-version) package, which requires a standardized commit format. See this [doc](https://github.com/BLC/ux-framework/wiki#commit-format) for how to properly format commit messages.
 
 For `category`, use the following categories for this repository:
 
-* `Action`: Changes to the Action class
-* `BaseApplication`: Changes to the BaseApplication class
-* `DesignArray`: Changes to the DesignArray class
-* `DesignObject`: Changes to the DesignObject class
-* `FormatEvaluator`: Changes to the FormatEvaluator or related classes
-* `GlobalState`: Changes to the GlobalState class
-* `History`: Changes to the History or HistoryScope classes
-* `MemoryTracker`: Changes to the MemoryTracker class
-* `Pickable`: Changes to the Pickable class
+* `CopyService`: Changes to the CopyService class or parser classes
+* `PlainTextEvaluator`: Changes to the PlainTextEvaluator
+* `ReactEvaluator`: Changes to the ReactEvaluator
 * `build`: Changes to the build process
-* `primitives`: Changes to the Design Value class or any subclasses
-* `services`: Changes to code in the services folder not captured by other categories
 * `other`: Changes not captured in the above categories
 
-Further, you **must** use the versioning npm scripts (`version:<major,minor,patch>`) to bump the package version. This will generate the appropriate changelog and bump the package version for you. **Do not use `npm version <major,minor,patch>`.**
+Further, you **must** use the versioning npm script (`npm run version`) to bump the package version. This will generate the appropriate changelog and bump the package version for you. **Do not use `npm version <major,minor,patch>`.**
 
 ## Contributing to Copy Service
 

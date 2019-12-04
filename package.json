@@ -15,9 +15,7 @@
     "docs": "rm -rf docs/ && jsdoc js/**/*.js -c .jsdoc.json",
     "lint": "eslint js/**/*.{js,jsx}",
     "test": "jest",
-    "version:major": "git reset && changelog -M && git add CHANGELOG.md && git commit -m 'Update CHANGELOG' -n && npm version major",
-    "version:minor": "git reset && changelog -m && git add CHANGELOG.md && git commit -m 'Update CHANGELOG' -n && npm version minor",
-    "version:patch": "git reset && changelog -p && git add CHANGELOG.md && git commit -m 'Update CHANGELOG' -n && npm version patch"
+    "version": "standard-version --no-verify"
   },
   "repository": {
     "type": "git",
@@ -55,16 +53,58 @@
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.11.0",
     "eslint-plugin-react": "^7.12.4",
-    "generate-changelog": "^1.8.0",
     "jest": "^23.6.0",
     "jest-junit-reporter": "^1.1.0",
     "jsdoc": "^3.5.5",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "standard-version": "^7.0.1",
     "webpack": "^4.29.1",
     "webpack-cli": "^3.2.3"
   },
-  "peerDependencies": {
-    "lodash": "^4.17.10"
+  "standard-version": {
+    "releaseCommitMessageFormat": "{{currentTag}}",
+    "types": [
+      {
+        "type": "breaking",
+        "section": "Breaking Changes"
+      },
+      {
+        "type": "feat",
+        "section": "Features"
+      },
+      {
+        "type": "fix",
+        "section": "Bug Fixes"
+      },
+      {
+        "type": "ci",
+        "section": "CI"
+      },
+      {
+        "type": "chore",
+        "section": "Chores"
+      },
+      {
+        "type": "docs",
+        "section": "Documentation"
+      },
+      {
+        "type": "other",
+        "section": "Other"
+      },
+      {
+        "type": "refactor",
+        "section": "Refactors"
+      },
+      {
+        "type": "revert",
+        "section": "Reverts"
+      },
+      {
+        "type": "test",
+        "section": "Tests"
+      }
+    ]
   }
 }

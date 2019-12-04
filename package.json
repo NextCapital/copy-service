@@ -15,7 +15,7 @@
     "docs": "rm -rf docs/ && jsdoc js/**/*.js -c .jsdoc.json",
     "lint": "eslint js/**/*.{js,jsx}",
     "test": "jest",
-    "version": "standard-version --no-verify"
+    "version": "standard-version --no-verify && git push --follow-tags"
   },
   "repository": {
     "type": "git",

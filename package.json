@@ -14,8 +14,7 @@
     "ci": "npm run lint && npm run test && npm run build",
     "docs": "rm -rf docs/ && jsdoc js/**/*.js -c .jsdoc.json",
     "lint": "eslint js/**/*.{js,jsx}",
-    "test": "jest",
-    "version": "standard-version --no-verify && git push --follow-tags"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -58,53 +57,7 @@
     "jsdoc": "^3.6.3",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "standard-version": "^7.0.1",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10"
-  },
-  "standard-version": {
-    "releaseCommitMessageFormat": "{{currentTag}}",
-    "types": [
-      {
-        "type": "breaking",
-        "section": "Breaking Changes"
-      },
-      {
-        "type": "feat",
-        "section": "Features"
-      },
-      {
-        "type": "fix",
-        "section": "Bug Fixes"
-      },
-      {
-        "type": "ci",
-        "section": "CI"
-      },
-      {
-        "type": "chore",
-        "section": "Chores"
-      },
-      {
-        "type": "docs",
-        "section": "Documentation"
-      },
-      {
-        "type": "other",
-        "section": "Other"
-      },
-      {
-        "type": "refactor",
-        "section": "Refactors"
-      },
-      {
-        "type": "revert",
-        "section": "Reverts"
-      },
-      {
-        "type": "test",
-        "section": "Tests"
-      }
-    ]
   }
 }

@@ -44,6 +44,32 @@ describe('PlainTextEvaluator', () => {
       });
     });
 
+    describe('when the ast is cached', () => {
+      test('combines the cached result with the prefix', () => {
+        const copyPrefix = 'hello';
+        const suffix = 'world';
+        const ast = new Newline({});
+
+        jest.spyOn(evaluator, 'getCached').mockReturnValue(suffix);
+        expect(evaluator.evalAST(copyPrefix, ast)).toBe(copyPrefix + suffix);
+        expect(evaluator.getCached).toBeCalledWith(ast);
+      });
+    });
+
+    describe('when the ast is not cached', () => {
+      test('caches the fully evalauted ast, without the prefix', () => {
+        const copyPrefix = 'hello';
+        const ast = new Verbatim({
+          text: 'world',
+          sibling: new Verbatim({ text: '!' })
+        });
+
+        jest.spyOn(evaluator, 'setCached').mockImplementation();
+        expect(evaluator.evalAST(copyPrefix, ast)).toBe('helloworld!');
+        expect(evaluator.setCached).toBeCalledWith(ast, 'world!');
+      });
+    });
+
     describe('when an AST is passed', () => {
       describe('when the AST is simple and has no sibling', () => {
         describe('when the AST is a Newline', () => {

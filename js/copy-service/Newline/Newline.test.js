@@ -26,4 +26,28 @@ describe('Newline', () => {
       expect(newline.copy).toBeUndefined();
     });
   });
+
+  describe('isCacheable', () => {
+    describe('when there is a sibling', () => {
+      test('defers to the sibling', () => {
+        const options = { sibling: new Newline({}) };
+
+        const newline = new Newline(options);
+
+        jest.spyOn(newline.sibling, 'isCacheable').mockReturnValue(false);
+        expect(newline.isCacheable()).toBe(false);
+        expect(newline.sibling.isCacheable).toBeCalled();
+      });
+    });
+
+    describe('when there is no sibling', () => {
+      test('returns true', () => {
+        const options = { sibling: null };
+
+        const newline = new Newline(options);
+
+        expect(newline.isCacheable()).toBe(true);
+      });
+    });
+  });
 });

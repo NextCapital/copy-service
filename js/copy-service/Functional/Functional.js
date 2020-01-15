@@ -27,6 +27,13 @@ class Functional {
      */
     this.args = options.args || [];
   }
+
+  /**
+   * @returns {boolean} true if this node can be cached after evaluation
+   */
+  isCacheable() {
+    return false;
+  }
 }
 
 export default Functional;

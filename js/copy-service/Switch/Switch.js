@@ -27,6 +27,13 @@ class Switch {
      */
     this.right = options.right;
   }
+
+  /**
+   * @returns {boolean} true if this node can be cached after evaluation
+   */
+  isCacheable() {
+    return false;
+  }
 }
 
 export default Switch;

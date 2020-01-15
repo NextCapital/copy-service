@@ -12,6 +12,31 @@ class Evaluator {
    */
   constructor(copyService) {
     this.copyService = copyService;
+    this.evaluationCache = new Map();
+  }
+
+  /**
+   * Gets the cached evaluation result for the given ast, if it exists.
+   *
+   * @param {AST} ast
+   * @returns {*} The evaluated copy
+   */
+  getCached(ast) {
+    return this.evaluationCache.get(ast);
+  }
+
+  /**
+   * Sets the evaluated result for the AST in the cache, if the ast node is cacheable.
+   *
+   * NOTE: The evaluated result should be the result of fully evaluating the ast with no prefix.
+   *
+   * @param {AST} ast node being cached
+   * @param {*} evaluated fully-evalauted result for the node
+   */
+  setCached(ast, evaluated) {
+    if (ast.isCacheable()) {
+      this.evaluationCache.set(ast, evaluated);
+    }
   }
 
   /**

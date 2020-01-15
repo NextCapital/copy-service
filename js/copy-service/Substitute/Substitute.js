@@ -17,6 +17,13 @@ class Substitute {
      */
     this.sibling = options.sibling;
   }
+
+  /**
+   * @returns {boolean} true if this node can be cached after evaluation
+   */
+  isCacheable() {
+    return false;
+  }
 }
 
 export default Substitute;

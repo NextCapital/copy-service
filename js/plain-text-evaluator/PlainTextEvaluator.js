@@ -34,6 +34,11 @@ class PlainTextEvaluator extends Evaluator {
       return copyPrefix;
     }
 
+    const cached = this.getCached(ast);
+    if (cached) {
+      return copyPrefix + cached;
+    }
+
     let copy;
 
     // Append a newline character.
@@ -90,7 +95,10 @@ class PlainTextEvaluator extends Evaluator {
     }
 
     // Continue recursing to evaluate the remaining ast with the appended copyPrefix.
-    return this.evalAST(copyPrefix + copy, ast.sibling, substitutions);
+    const evaluated = this.evalAST(copy, ast.sibling, substitutions);
+    this.setCached(ast, evaluated);
+
+    return copyPrefix + evaluated;
   }
   /* eslint-enable brace-style */
 

@@ -64,9 +64,9 @@ describe('PlainTextEvaluator', () => {
           sibling: new Verbatim({ text: '!' })
         });
 
-        jest.spyOn(evaluator, 'setCached').mockImplementation();
+        jest.spyOn(evaluator, 'setCacheIfCacheable').mockImplementation();
         expect(evaluator.evalAST(copyPrefix, ast)).toBe('helloworld!');
-        expect(evaluator.setCached).toBeCalledWith(ast, 'world!');
+        expect(evaluator.setCacheIfCacheable).toBeCalledWith(ast, 'world!');
       });
     });
 

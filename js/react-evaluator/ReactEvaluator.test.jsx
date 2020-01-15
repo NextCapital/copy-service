@@ -73,9 +73,9 @@ describe('ReactEvaluator', () => {
           sibling: new Verbatim({ text: '!' })
         });
 
-        jest.spyOn(evaluator, 'setCached');
+        jest.spyOn(evaluator, 'setCacheIfCacheable');
         expect(getStaticMarkup(copyPrefix, ast)).toBe('<span>helloworld!</span>');
-        expect(evaluator.setCached).toBeCalledWith(ast, expect.any(Object));
+        expect(evaluator.setCacheIfCacheable).toBeCalledWith(ast, expect.any(Object));
         expect(ReactDOMServer.renderToStaticMarkup(evaluator.getCached(ast))).toBe(
           '<span>world!</span>'
         );

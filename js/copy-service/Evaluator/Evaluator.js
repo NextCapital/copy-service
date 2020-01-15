@@ -33,7 +33,7 @@ class Evaluator {
    * @param {AST} ast node being cached
    * @param {*} evaluated fully-evalauted result for the node
    */
-  setCached(ast, evaluated) {
+  setCacheIfCacheable(ast, evaluated) {
     if (ast.isCacheable()) {
       this.evaluationCache.set(ast, evaluated);
     }

@@ -96,7 +96,7 @@ class PlainTextEvaluator extends Evaluator {
 
     // Continue recursing to evaluate the remaining ast with the appended copyPrefix.
     const evaluated = this.evalAST(copy, ast.sibling, substitutions);
-    this.setCached(ast, evaluated);
+    this.setCacheIfCacheable(ast, evaluated);
 
     return copyPrefix + evaluated;
   }

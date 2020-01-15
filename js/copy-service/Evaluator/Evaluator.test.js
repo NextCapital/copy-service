@@ -31,14 +31,14 @@ describe('Evaluator', () => {
     });
   });
 
-  describe('setCached', () => {
+  describe('setCacheIfCacheable', () => {
     const result = { some: 'result' };
 
     describe('when the ast is cacheable', () => {
       const ast = { an: 'ast', isCacheable: jest.fn().mockReturnValue(true) };
 
       test('sets the result in the cache', () => {
-        evaluator.setCached(ast, result);
+        evaluator.setCacheIfCacheable(ast, result);
         expect(evaluator.getCached(ast)).toBe(result);
       });
     });
@@ -47,7 +47,7 @@ describe('Evaluator', () => {
       const ast = { an: 'ast', isCacheable: jest.fn().mockReturnValue(false) };
 
       test('does not set the result in the cache', () => {
-        evaluator.setCached(ast, result);
+        evaluator.setCacheIfCacheable(ast, result);
         expect(evaluator.getCached(ast)).toBeUndefined();
       });
     });

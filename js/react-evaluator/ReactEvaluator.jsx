@@ -102,7 +102,7 @@ class ReactEvaluator extends Evaluator {
     }
 
     const evaluated = this.evalAST(copy, ast.sibling, substitutions);
-    this.setCached(ast, evaluated);
+    this.setCacheIfCacheable(ast, evaluated);
 
     return this._mergePrefixes(copyPrefix, evaluated);
   }

@@ -53,6 +53,35 @@ describe('ReactEvaluator', () => {
       });
     });
 
+    describe('when the ast is cached', () => {
+      test('combines the cached result with the prefix', () => {
+        const copyPrefix = <span>hello</span>;
+        const suffix = <span>world</span>;
+        const ast = new Newline({});
+
+        jest.spyOn(evaluator, 'getCached').mockReturnValue(suffix);
+        expect(getStaticMarkup(copyPrefix, ast)).toBe('<span>helloworld</span>');
+        expect(evaluator.getCached).toBeCalledWith(ast);
+      });
+    });
+
+    describe('when the ast is not cached', () => {
+      test('caches the fully evalauted ast, without the prefix', () => {
+        const copyPrefix = <span>hello</span>;
+        const ast = new Verbatim({
+          text: 'world',
+          sibling: new Verbatim({ text: '!' })
+        });
+
+        jest.spyOn(evaluator, 'setCacheIfCacheable');
+        expect(getStaticMarkup(copyPrefix, ast)).toBe('<span>helloworld!</span>');
+        expect(evaluator.setCacheIfCacheable).toBeCalledWith(ast, expect.any(Object));
+        expect(ReactDOMServer.renderToStaticMarkup(evaluator.getCached(ast))).toBe(
+          '<span>world!</span>'
+        );
+      });
+    });
+
     describe('when an AST is passed', () => {
       describe('when the AST is simple and has no sibling', () => {
         describe('when the AST is a Newline', () => {

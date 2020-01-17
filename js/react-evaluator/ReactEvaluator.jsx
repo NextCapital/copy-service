@@ -34,32 +34,35 @@ class ReactEvaluator extends Evaluator {
       return copyPrefix;
     }
 
-    let mergedCopy;
+    const cached = this.getCached(ast);
+    if (cached) {
+      return this._mergePrefixes(copyPrefix, cached);
+    }
+
+    let copy;
 
     if (ast instanceof Newline) {
-      mergedCopy = this._mergePrefixes(copyPrefix, <span><br /></span>);
+      copy = <span><br /></span>;
     } else if (ast instanceof Verbatim) {
-      mergedCopy = this._mergePrefixes(copyPrefix, <span>{ ast.text }</span>);
+      copy = <span>{ ast.text }</span>;
     } else if (ast instanceof Reference) {
-      const referencedCopy = this.evalAST(
+      copy = this.evalAST(
         this.getInitialResult(), this.copyService.getAstForKey(ast.key), substitutions
       );
-      mergedCopy = this._mergePrefixes(copyPrefix, referencedCopy);
     } else if (ast instanceof Substitute) {
       const value = substitutions.get(ast.key);
 
       if (!_.isNil(value) && value !== '') {
         const jsx = (<span>{ value.toString() }</span>);
-        mergedCopy = this._mergePrefixes(copyPrefix, jsx);
+        copy = jsx;
       } else {
-        mergedCopy = copyPrefix;
+        copy = null;
       }
     } else if (ast instanceof RefSubstitute) {
       const copyKey = substitutions.get(ast.key);
-      const referencedCopy = this.evalAST(
+      copy = this.evalAST(
         this.getInitialResult(), this.copyService.getAstForKey(copyKey), substitutions
       );
-      mergedCopy = this._mergePrefixes(copyPrefix, referencedCopy);
     } else if (ast instanceof Switch) {
       const decider = substitutions.getBoolean(ast.key);
       let subtree;
@@ -70,10 +73,9 @@ class ReactEvaluator extends Evaluator {
         subtree = ast.right;
       }
 
-      const switchJsx = this.evalAST(
+      copy = this.evalAST(
         this.getInitialResult(), subtree, substitutions
       );
-      mergedCopy = this._mergePrefixes(copyPrefix, switchJsx);
     } else if (ast instanceof Functional) {
       const method = substitutions.get(ast.key);
       let jsx = this.evalAST(this.getInitialResult(), ast.copy, substitutions);
@@ -84,22 +86,25 @@ class ReactEvaluator extends Evaluator {
         );
       }
 
-      mergedCopy = this._mergePrefixes(copyPrefix, jsx);
+      copy = jsx;
     } else if (ast instanceof Formatting) {
       const jsx = this.evalAST(this.getInitialResult(), ast.copy, substitutions);
 
       if (jsx) {
         const tag = React.createElement(ast.tag, {}, jsx.props.children);
-        mergedCopy = this._mergePrefixes(copyPrefix, <span>{ tag }</span>);
+        copy = <span>{ tag }</span>;
       } else { // empty formatting, skip tag
-        mergedCopy = copyPrefix;
+        copy = null;
       }
     } else {
       this._handleError('Unknown node detected');
       return this.getInitialResult();
     }
 
-    return this.evalAST(mergedCopy, ast.sibling, substitutions);
+    const evaluated = this.evalAST(copy, ast.sibling, substitutions);
+    this.setCacheIfCacheable(ast, evaluated);
+
+    return this._mergePrefixes(copyPrefix, evaluated);
   }
   /* eslint-enable brace-style */
 

@@ -29,4 +29,17 @@ describe('RefSubstitute', () => {
       expect(reference.copy).toBeUndefined();
     });
   });
+
+  describe('isCacheable', () => {
+    test('returns false', () => {
+      const options = {
+        sibling: new RefSubstitute({ key: 'some key' }),
+        key: 'some key'
+      };
+
+      const reference = new RefSubstitute(options);
+
+      expect(reference.isCacheable()).toBe(false);
+    });
+  });
 });

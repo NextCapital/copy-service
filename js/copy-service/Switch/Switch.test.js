@@ -31,4 +31,19 @@ describe('Switch', () => {
       expect(switchInstance.copy).toBeUndefined();
     });
   });
+
+  describe('isCacheable', () => {
+    test('returns false', () => {
+      const options = {
+        sibling: new Switch({ key: 'some key' }),
+        key: 'some key',
+        left: new Switch({ key: 'some key' }),
+        right: new Switch({ key: 'some key' })
+      };
+
+      const switchInstance = new Switch(options);
+
+      expect(switchInstance.isCacheable()).toBe(false);
+    });
+  });
 });

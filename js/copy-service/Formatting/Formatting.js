@@ -22,6 +22,17 @@ class Formatting {
      */
     this.tag = options.tag;
   }
+
+  /**
+   * @returns {boolean} true if this node can be cached after evaluation
+   */
+  isCacheable() {
+    if (this.sibling) {
+      return this.sibling.isCacheable();
+    }
+
+    return true;
+  }
 }
 
 export default Formatting;

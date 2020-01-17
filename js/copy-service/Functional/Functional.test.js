@@ -34,4 +34,19 @@ describe('Functional', () => {
       expect(functional.arg).toBeUndefined();
     });
   });
+
+  describe('isCacheable', () => {
+    test('returns false', () => {
+      const options = {
+        sibling: new Functional({ key: 'some key' }),
+        copy: 'some copy',
+        key: 'some key',
+        args: ['some args', 'some more args']
+      };
+
+      const functional = new Functional(options);
+
+      expect(functional.isCacheable()).toBe(false);
+    });
+  });
 });

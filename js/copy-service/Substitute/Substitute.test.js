@@ -29,4 +29,17 @@ describe('Substitute', () => {
       expect(substitute.copy).toBeUndefined();
     });
   });
+
+  describe('isCacheable', () => {
+    test('returns false', () => {
+      const options = {
+        sibling: new Substitute({ key: 'some key' }),
+        key: 'some key'
+      };
+
+      const substitute = new Substitute(options);
+
+      expect(substitute.isCacheable()).toBe(false);
+    });
+  });
 });

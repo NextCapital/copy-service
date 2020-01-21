@@ -21,7 +21,19 @@ class Reference {
   /**
    * @returns {boolean} true if this node can be cached after evaluation
    */
-  isCacheable() {
+  isCacheable(copyService) {
+    const ast = copyService.getAstForKey(this.key);
+
+    if (ast) {
+      const astCacheable = ast.isCacheable(copyService);
+
+      if (this.sibling) {
+        return astCacheable && this.sibling.isCacheable(copyService);
+      }
+
+      return astCacheable;
+    }
+
     return false;
   }
 }

@@ -16,9 +16,9 @@ class Newline {
   /**
    * @returns {boolean} true if this node can be cached after evaluation
    */
-  isCacheable() {
+  isCacheable(copyService) {
     if (this.sibling) {
-      return this.sibling.isCacheable();
+      return this.sibling.isCacheable(copyService);
     }
 
     return true;

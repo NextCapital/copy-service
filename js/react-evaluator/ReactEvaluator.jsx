@@ -145,16 +145,10 @@ class ReactEvaluator extends Evaluator {
       return left;
     }
 
-    const allChildren = _.compact(
-      _.concat(
-        _.castArray(keyedLeftChildren),
-        _.castArray(keyedRightChildren)
-      )
-    );
-
     return (
       <span>
-        { allChildren }
+        { keyedLeftChildren }
+        { keyedRightChildren }
       </span>
     );
   }

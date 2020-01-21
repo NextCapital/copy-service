@@ -34,7 +34,7 @@ class Evaluator {
    * @param {*} evaluated fully-evalauted result for the node
    */
   setCacheIfCacheable(ast, evaluated) {
-    if (ast.isCacheable()) {
+    if (ast.isCacheable(this.copyService)) {
       this.evaluationCache.set(ast, evaluated);
     }
   }

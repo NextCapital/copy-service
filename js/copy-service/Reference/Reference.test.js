@@ -1,4 +1,5 @@
 import Reference from './Reference';
+import CopyService from '../CopyService';
 
 describe('Reference', () => {
   describe('constructor', () => {
@@ -31,15 +32,105 @@ describe('Reference', () => {
   });
 
   describe('isCacheable', () => {
-    test('returns false', () => {
-      const options = {
-        sibling: new Reference({ key: 'some key' }),
-        key: 'some key'
-      };
+    let copyService;
 
-      const reference = new Reference(options);
+    beforeEach(() => {
+      copyService = new CopyService();
+    });
 
-      expect(reference.isCacheable()).toBe(false);
+    describe('when the referenced ast node is found', () => {
+      let node;
+
+      beforeEach(() => {
+        node = new Reference({ key: 'some.other.key' });
+        jest.spyOn(copyService, 'getAstForKey').mockReturnValue(node);
+      });
+
+      describe('when the node is cacheable', () => {
+        beforeEach(() => {
+          jest.spyOn(node, 'isCacheable').mockReturnValue(true);
+        });
+
+        describe('when there is a sibling', () => {
+          describe('when the sibling is cacheable', () => {
+            test('returns true', () => {
+              const options = {
+                sibling: new Reference({ key: 'some key' }),
+                key: 'some key'
+              };
+
+              const reference = new Reference(options);
+              jest.spyOn(reference.sibling, 'isCacheable').mockReturnValue(true);
+
+              expect(reference.isCacheable(copyService)).toBe(true);
+              expect(reference.sibling.isCacheable).toBeCalledWith(copyService);
+            });
+          });
+
+          describe('when the sibling is not cacheable', () => {
+            test('returns false', () => {
+              const options = {
+                sibling: new Reference({ key: 'some key' }),
+                key: 'some key'
+              };
+
+              const reference = new Reference(options);
+              jest.spyOn(reference.sibling, 'isCacheable').mockReturnValue(false);
+
+              expect(reference.isCacheable(copyService)).toBe(false);
+              expect(reference.sibling.isCacheable).toBeCalledWith(copyService);
+            });
+          });
+        });
+
+        describe('when there is not a sibling', () => {
+          test('returns true', () => {
+            const options = {
+              sibling: null,
+              key: 'some key'
+            };
+
+            const reference = new Reference(options);
+
+            expect(reference.isCacheable(copyService)).toBe(true);
+          });
+        });
+      });
+
+      describe('when the node is not cacheable', () => {
+        beforeEach(() => {
+          jest.spyOn(node, 'isCacheable').mockReturnValue(false);
+        });
+
+        test('returns false', () => {
+          const options = {
+            sibling: new Reference({ key: 'some key' }),
+            key: 'some key'
+          };
+
+          const reference = new Reference(options);
+
+          expect(reference.isCacheable(copyService)).toBe(false);
+          expect(node.isCacheable).toBeCalledWith(copyService);
+        });
+      });
+    });
+
+    describe('when the referenced ast node is not found', () => {
+      beforeEach(() => {
+        jest.spyOn(copyService, 'getAstForKey').mockReturnValue(null);
+      });
+
+      test('returns false', () => {
+        const options = {
+          sibling: new Reference({ key: 'some key' }),
+          key: 'some key'
+        };
+
+        const reference = new Reference(options);
+
+        expect(reference.isCacheable(copyService)).toBe(false);
+      });
     });
   });
 });

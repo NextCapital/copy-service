@@ -1,4 +1,5 @@
 import Verbatim from './Verbatim';
+import CopyService from '../CopyService';
 
 describe('Verbatim', () => {
   describe('constructor', () => {
@@ -29,6 +30,12 @@ describe('Verbatim', () => {
   });
 
   describe('isCacheable', () => {
+    let copyService;
+
+    beforeEach(() => {
+      copyService = new CopyService();
+    });
+
     describe('when there is a sibling', () => {
       test('defers to the sibling', () => {
         const options = {
@@ -39,8 +46,8 @@ describe('Verbatim', () => {
         const verbatim = new Verbatim(options);
 
         jest.spyOn(verbatim.sibling, 'isCacheable').mockReturnValue(false);
-        expect(verbatim.isCacheable()).toBe(false);
-        expect(verbatim.sibling.isCacheable).toBeCalled();
+        expect(verbatim.isCacheable(copyService)).toBe(false);
+        expect(verbatim.sibling.isCacheable).toBeCalledWith(copyService);
       });
     });
 
@@ -53,7 +60,7 @@ describe('Verbatim', () => {
 
         const verbatim = new Verbatim(options);
 
-        expect(verbatim.isCacheable()).toBe(true);
+        expect(verbatim.isCacheable(copyService)).toBe(true);
       });
     });
   });

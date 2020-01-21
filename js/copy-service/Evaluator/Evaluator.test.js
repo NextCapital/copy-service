@@ -40,6 +40,7 @@ describe('Evaluator', () => {
       test('sets the result in the cache', () => {
         evaluator.setCacheIfCacheable(ast, result);
         expect(evaluator.getCached(ast)).toBe(result);
+        expect(ast.isCacheable).toBeCalledWith(copyService);
       });
     });
 
@@ -49,6 +50,7 @@ describe('Evaluator', () => {
       test('does not set the result in the cache', () => {
         evaluator.setCacheIfCacheable(ast, result);
         expect(evaluator.getCached(ast)).toBeUndefined();
+        expect(ast.isCacheable).toBeCalledWith(copyService);
       });
     });
   });

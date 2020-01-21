@@ -26,9 +26,15 @@ class Formatting {
   /**
    * @returns {boolean} true if this node can be cached after evaluation
    */
-  isCacheable() {
+  isCacheable(copyService) {
     if (this.sibling) {
-      return this.sibling.isCacheable();
+      if (this.copy) {
+        return this.sibling.isCacheable(copyService) && this.copy.isCacheable(copyService);
+      }
+
+      return this.sibling.isCacheable(copyService);
+    } else if (this.copy) {
+      return this.copy.isCacheable(copyService);
     }
 
     return true;

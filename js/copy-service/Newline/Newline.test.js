@@ -1,4 +1,5 @@
 import Newline from './Newline';
+import CopyService from '../CopyService';
 
 describe('Newline', () => {
   describe('constructor', () => {
@@ -28,6 +29,12 @@ describe('Newline', () => {
   });
 
   describe('isCacheable', () => {
+    let copyService;
+
+    beforeEach(() => {
+      copyService = new CopyService();
+    });
+
     describe('when there is a sibling', () => {
       test('defers to the sibling', () => {
         const options = { sibling: new Newline({}) };
@@ -35,8 +42,8 @@ describe('Newline', () => {
         const newline = new Newline(options);
 
         jest.spyOn(newline.sibling, 'isCacheable').mockReturnValue(false);
-        expect(newline.isCacheable()).toBe(false);
-        expect(newline.sibling.isCacheable).toBeCalled();
+        expect(newline.isCacheable(copyService)).toBe(false);
+        expect(newline.sibling.isCacheable).toBeCalledWith(copyService);
       });
     });
 
@@ -46,7 +53,7 @@ describe('Newline', () => {
 
         const newline = new Newline(options);
 
-        expect(newline.isCacheable()).toBe(true);
+        expect(newline.isCacheable(copyService)).toBe(true);
       });
     });
   });

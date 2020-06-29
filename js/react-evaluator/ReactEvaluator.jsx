@@ -123,32 +123,19 @@ class ReactEvaluator extends Evaluator {
       return right;
     }
 
-    let key = 0;
-    const addKeyToChild = (child) => {
-      let newChild;
-      if (!_.isString(child)) {
-        newChild = React.cloneElement(child, { key });
-        key += 1;
-      }
-
-      return newChild || child;
-    };
-
-    const keyedLeftChildren = React.Children.map(left.props.children, addKeyToChild);
-    const keyedRightChildren = React.Children.map(right.props.children, addKeyToChild);
-
-    if (!keyedLeftChildren) {
-      return right;
-    }
-
-    if (!keyedRightChildren) {
-      return left;
+    // single child preferable to multiple ones, as it avoids array alloc
+    if (_.isString(left.props.children) && _.isString(right.props.children)) {
+      return (
+        <span>
+          { left.props.children + right.props.children }
+        </span>
+      )
     }
 
     return (
       <span>
-        { keyedLeftChildren }
-        { keyedRightChildren }
+        { left.props.children }
+        { right.props.children }
       </span>
     );
   }

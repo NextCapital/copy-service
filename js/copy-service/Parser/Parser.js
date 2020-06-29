@@ -34,11 +34,6 @@ const TOKENS = {
  */
 class Parser {
   /**
-   * RegExp for HTML tags.
-   * @type {RegExp}
-   */
-  static HTML_REGEX = /<\/?([\w\s="'\-:;]*)>/g;
-  /**
    * RegExp for the starting tag of allowed HTML tags.
    * @type {RegExp}
    */

@@ -21,7 +21,7 @@ class SyntaxNode {
     return this.constructor.safeToSyntax(node);
   }
 
-  isCacheable(copyService) {
+  isCacheable(copyService) { // eslint-disable-line no-unused-vars
     return false;
   }
 }

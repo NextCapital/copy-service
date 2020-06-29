@@ -1,15 +1,6 @@
 import _ from 'lodash';
 
 import SyntaxNode from './SyntaxNode/SyntaxNode';
-import Formatting from './Formatting/Formatting';
-import Functional from './Functional/Functional';
-import Newline from './Newline/Newline';
-import Reference from './Reference/Reference';
-import RefSubstitute from './RefSubstitute/RefSubstitute';
-import Substitute from './Substitute/Substitute';
-import Switch from './Switch/Switch';
-import Verbatim from './Verbatim/Verbatim';
-
 import Parser from './Parser/Parser';
 
 import ErrorHandler from './ErrorHandler/ErrorHandler';

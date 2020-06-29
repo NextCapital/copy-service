@@ -14,7 +14,7 @@ class Evaluator {
     allowFunctional = true
   } = {}) {
     this.copyService = copyService;
-    this.evaluationCache = new Map();
+    this.evaluationCache = new WeakMap();
     this.allowFunctional = allowFunctional;
   }
 

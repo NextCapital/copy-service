@@ -77,7 +77,7 @@ class ReactEvaluator extends Evaluator {
         this.getInitialResult(), subtree, substitutions
       );
     } else if (ast instanceof Functional) {
-      const method = substitutions.get(ast.key);
+      const method = substitutions.getFunction(ast.key);
       let jsx = this.evalAST(this.getInitialResult(), ast.copy, substitutions);
 
       if (this.allowFunctional && method && _.isFunction(method)) {

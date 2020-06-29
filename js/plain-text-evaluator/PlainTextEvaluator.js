@@ -82,7 +82,7 @@ class PlainTextEvaluator extends Evaluator {
     }
     // Evaluate the copy of the class, ignoring the function, and append the evaluated copy.
     else if (ast instanceof Functional) {
-      const method = substitutions.get(ast.key);
+      const method = substitutions.getFunction(ast.key);
       let text = this.evalAST(this.getInitialResult(), ast.copy, substitutions);
 
       if (this.allowFunctional && method && _.isFunction(method)) {

@@ -35,18 +35,39 @@ class Substitutions {
    * @return {*} The value from the substitutions
    */
   get(key) {
-    const value = _.get(this.substitutions, key);
+    const value = _.result(this.substitutions, key);
 
     if (_.isUndefined(value)) {
-      ErrorHandler.handleError(
-        'Substitutions',
-        `No value for substitution at key '${key}' provided`
-      );
-
-      return '';
+      return this._handleMissing(key);
     }
 
     return value;
+  }
+
+  getFunction(key) {
+    const value = _.get(this.substitutions, key);
+
+    if (_.isUndefined(value)) {
+      return this._handleMissing(key);
+    }
+
+    if (!_.isFunction(value)) {
+      ErrorHandler.handleError(
+        'Substitutions',
+        `Expected substitution at key '${key}' to be a function`
+      );
+    }
+
+    return value;
+  }
+
+  _handleMissing(key) {
+    ErrorHandler.handleError(
+      'Substitutions',
+      `No value for substitution at key '${key}' provided`
+    );
+
+    return '';
   }
 
   /**

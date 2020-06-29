@@ -1,18 +1,22 @@
+import SyntaxNode from '../SyntaxNode/SyntaxNode';
+
 /**
  * Represents text in an AST.
  */
-class Verbatim {
+class Verbatim extends SyntaxNode {
   /**
    * @param  {object} options
    */
   constructor(options) {
+    super(options);
+
     /**
      * @type {string}
      */
     this.text = options.text;
     /**
      * The neighboring AST.
-     * @type {Formatting|Functional|Newline|Reference|Substitute|Switch|Verbatim}
+     * @type {SyntaxNode|null}
      */
     this.sibling = options.sibling;
   }

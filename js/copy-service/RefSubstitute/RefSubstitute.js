@@ -1,11 +1,15 @@
+import SyntaxNode from '../SyntaxNode/SyntaxNode';
+
 /**
  * Represents a substitution of a copy key reference in an AST.
  */
-class RefSubstitute {
+class RefSubstitute extends SyntaxNode {
   /**
    * @param  {object} options
    */
   constructor(options) {
+    super(options);
+
     /**
      * The copy key being referenced, with leading and trailing whitespace trimmed.
      * @type {string}
@@ -13,7 +17,7 @@ class RefSubstitute {
     this.key = options.key.trim();
     /**
      * The neighboring AST.
-     * @type {Formatting|Functional|Newline|Reference|Substitute|Switch|Verbatim}
+     * @type {SyntaxNode|null}
      */
     this.sibling = options.sibling;
   }

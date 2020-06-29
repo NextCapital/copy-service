@@ -1,5 +1,6 @@
 import _ from 'lodash';
 
+import SyntaxNode from './SyntaxNode/SyntaxNode';
 import Formatting from './Formatting/Formatting';
 import Functional from './Functional/Functional';
 import Newline from './Newline/Newline';
@@ -15,7 +16,7 @@ import ErrorHandler from './ErrorHandler/ErrorHandler';
 
 /**
  * An AST class.
- * @typedef {Formatting|Functional|Newline|Reference|RefSubstitute|Substitute|Switch|Verbatim} AST
+ * @typedef {SyntaxNode|null} AST
  */
 
 /**
@@ -28,15 +29,7 @@ class CopyService {
    * @return {Boolean}
    */
   static isAST(object) {
-    return _.isNil(object) ||
-      object instanceof Formatting ||
-      object instanceof Functional ||
-      object instanceof Newline ||
-      object instanceof Reference ||
-      object instanceof RefSubstitute ||
-      object instanceof Substitute ||
-      object instanceof Switch ||
-      object instanceof Verbatim;
+    return SyntaxNode.isAST(object);
   }
 
   constructor(options = {}) {
@@ -53,7 +46,9 @@ class CopyService {
   }
 
   /**
-   * Parses copy into ASTs and stores it.
+   * Stores the new copy into the copy set. Copy will not be parsed immediately by default. To
+   * immediately parse copy into an AST, call `parseAllCopy`.
+   *
    * @param  {object} jsonCopyConfig A json object containing copy.
    */
   registerCopy(jsonCopyConfig) {
@@ -121,9 +116,20 @@ class CopyService {
     return result;
   }
 
+  /**
+   * Parses all copy that has not yet been parsed to an AST.
+   */
+  parseAllCopy() {
+    this._mergeParsedCopy(this._parsedCopy, Parser.parseLeaves(this._parsedCopy));
+  }
+
   _mergeParsedCopy(existingCopy, newCopy) {
     _.mergeWith(existingCopy, newCopy, (oldValue, newValue) => {
-      if (this.constructor.isAST(newValue)) {
+      if (_.isString(newValue)) { // strings always replace
+        return newValue;
+      }
+
+      if (this.constructor.isAST(newValue)) { // AST always replaces
         return newValue;
       }
     });

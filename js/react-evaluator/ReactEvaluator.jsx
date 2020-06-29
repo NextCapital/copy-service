@@ -23,7 +23,7 @@ class ReactEvaluator extends Evaluator {
   /**
    * Evaluates the AST with given substitutions
    * @param  {string} copyPrefix The copy string being recursively built.
-   * @param  {Formatting|Functional|Newline|Reference|Substitute|Switch|Verbatim} ast
+   * @param  {SyntaxNode|null} ast
    * The AST to be evaluated. This AST must be constructed by Parser.
    * @param  {Substitutions} substitutions An object containing substitutions for keys specified in
    * the AST.

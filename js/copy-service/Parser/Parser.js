@@ -1,5 +1,6 @@
 import _ from 'lodash';
 
+import SyntaxNode from '../SyntaxNode/SyntaxNode';
 import Formatting from '../Formatting/Formatting';
 import Functional from '../Functional/Functional';
 import Newline from '../Newline/Newline';
@@ -84,7 +85,9 @@ class Parser {
   static parseLeaves(tree) {
     const astTree = _.cloneDeep(tree);
     _.forEach(astTree, (node, key) => {
-      if (_.isObject(node) && !_.isArray(node) && !_.isFunction(node)) {
+      if (SyntaxNode.isAST(node)) {
+        return; // already parsed
+      } else if (_.isObject(node) && !_.isArray(node) && !_.isFunction(node)) {
         astTree[key] = this.parseLeaves(node);
       } else if (_.isString(node)) {
         const tokens = this._tokenize(node);

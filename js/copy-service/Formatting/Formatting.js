@@ -1,19 +1,23 @@
+import SyntaxNode from '../SyntaxNode/SyntaxNode';
+
 /**
  * Represents an HTML tag in the AST.
  */
-class Formatting {
+class Formatting extends SyntaxNode {
   /**
    * @param  {object} options
    */
   constructor(options) {
+    super();
+
     /**
      * The neighboring AST.
-     * @type {Formatting|Functional|Newline|Reference|Substitute|Switch|Verbatim}
+     * @type {SyntaxNode|null}
      */
     this.sibling = options.sibling;
     /**
      * An AST representing the string displayed inside the HTML tag.
-     * @type {Formatting|Functional|Newline|Reference|Substitute|Switch|Verbatim}
+     * @type {SyntaxNode|null}
      */
     this.copy = options.copy;
     /**

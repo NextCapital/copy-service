@@ -1,14 +1,18 @@
+import SyntaxNode from '../SyntaxNode/SyntaxNode';
+
 /**
  * Represents a newline in an AST.
  */
-class Newline {
+class Newline extends SyntaxNode {
   /**
    * @param  {object} options
    */
   constructor(options) {
+    super(options);
+
     /**
      * The neighboring AST.
-     * @type {Formatting|Functional|Newline|Reference|Substitute|Switch|Verbatim}
+     * @type {SyntaxNode|null}
      */
     this.sibling = options.sibling;
   }

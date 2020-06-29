@@ -10,9 +10,12 @@ class Evaluator {
    * Takes in a copy service and provide methods for evaluating its ASTs.
    * @param {CopyService} copyService
    */
-  constructor(copyService) {
+  constructor(copyService, {
+    allowFunctional = true
+  } = {}) {
     this.copyService = copyService;
     this.evaluationCache = new Map();
+    this.allowFunctional = allowFunctional;
   }
 
   /**

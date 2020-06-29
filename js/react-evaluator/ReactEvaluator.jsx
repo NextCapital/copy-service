@@ -80,7 +80,7 @@ class ReactEvaluator extends Evaluator {
       const method = substitutions.get(ast.key);
       let jsx = this.evalAST(this.getInitialResult(), ast.copy, substitutions);
 
-      if (method && _.isFunction(method)) {
+      if (this.allowFunctional && method && _.isFunction(method)) {
         jsx = (
           <span>{ method(jsx, ...ast.args) }</span>
         );

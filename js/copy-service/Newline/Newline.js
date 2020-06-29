@@ -27,6 +27,10 @@ class Newline extends SyntaxNode {
 
     return true;
   }
+
+  toSyntax() {
+    return `\n${this.safeToSyntax(this.sibling)}`;
+  }
 }
 
 export default Newline;

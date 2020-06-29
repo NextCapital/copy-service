@@ -40,6 +40,12 @@ class Reference extends SyntaxNode {
 
     return false;
   }
+
+  toSyntax() {
+    return (
+      `\${${this.key}}${this.safeToSyntax(this.sibling)}`
+    );
+  }
 }
 
 export default Reference;

@@ -38,6 +38,15 @@ class Switch extends SyntaxNode {
   isCacheable() {
     return false;
   }
+
+  toSyntax() {
+    const left = this.safeToSyntax(this.left);
+    const right = this.safeToSyntax(this.right);
+
+    return (
+      `*{${left}}{${right}}{${this.key}}${this.safeToSyntax(this.sibling)}`
+    );
+  }
 }
 
 export default Switch;

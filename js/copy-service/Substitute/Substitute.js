@@ -28,6 +28,12 @@ class Substitute extends SyntaxNode {
   isCacheable() {
     return false;
   }
+
+  toSyntax() {
+    return (
+      `#{${this.key}}${this.safeToSyntax(this.sibling)}`
+    );
+  }
 }
 
 export default Substitute;

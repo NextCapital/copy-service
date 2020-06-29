@@ -31,6 +31,12 @@ class Verbatim extends SyntaxNode {
 
     return true;
   }
+
+  toSyntax() {
+    return (
+      `${this.text}${this.safeToSyntax(this.sibling)}`
+    );
+  }
 }
 
 export default Verbatim;

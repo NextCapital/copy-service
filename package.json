@@ -13,7 +13,7 @@
     "build": "webpack",
     "ci": "npm run lint && npm run test && npm run build",
     "docs": "rm -rf docs/ && jsdoc js/**/*.js -c .jsdoc.json",
-    "lint": "eslint js/**/*.{js,jsx}",
+    "lint": "eslint js/**/*.{js,jsx} --cache",
     "test": "jest"
   },
   "repository": {

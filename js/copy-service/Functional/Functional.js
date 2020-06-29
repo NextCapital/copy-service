@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import SyntaxNode from '../SyntaxNode/SyntaxNode';
 
 /**
@@ -37,6 +38,16 @@ class Functional extends SyntaxNode {
    */
   isCacheable() {
     return false;
+  }
+
+  toSyntax() {
+    const args = _.isEmpty(this.args) ?
+      '' :
+      `[${this.args.join(',')}]`;
+
+    return (
+      `^{${this.safeToSyntax(this.copy)}}{${this.key}}${args}${this.safeToSyntax(this.sibling)}`
+    );
   }
 }
 

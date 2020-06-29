@@ -43,6 +43,12 @@ class Formatting extends SyntaxNode {
 
     return true;
   }
+
+  toSyntax() {
+    return (
+      `<${this.tag}>${this.safeToSyntax(this.copy)}</${this.tag}>${this.safeToSyntax(this.sibling)}`
+    );
+  }
 }
 
 export default Formatting;

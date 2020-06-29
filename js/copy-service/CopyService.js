@@ -134,6 +134,43 @@ class CopyService {
     return result;
   }
 
+  getRegisteredCopy(_node = null) {
+    const tree = {};
+
+    _.forEach(_node || this._registeredCopy, (node, key) => {
+      if (_.isNil(node)) {
+        tree[key] = null;
+      } else if (_.isString(node)) { // not yet parsed
+        tree[key] = node;
+      } else if (SyntaxNode.isAST(node)) { // parsed
+        tree[key] = node.toSyntax();
+      } else if (_.isPlainObject(node)) {
+        tree[key] = this.getRegisteredCopy(node);
+      }
+    });
+
+    return tree;
+  }
+
+  getRegisteredCopyForKey(key) {
+    const result = _.get(this._registeredCopy, key);
+
+    if (_.isNil(result)) {
+      return null;
+    }
+
+    if (_.isString(result)) {
+      return result;
+    }
+
+    if (this.constructor.isAST(result)) {
+      return result.toSyntax();
+    }
+
+    ErrorHandler.handleError('CopyService', `No AST found for copy key: ${key}. Returning null...`);
+    return null;
+  }
+
   /**
    * Parses all copy that has not yet been parsed to an AST.
    *

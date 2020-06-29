@@ -1,23 +1,32 @@
 module.exports = {
-  "plugins": [
-    ["@babel/plugin-proposal-class-properties", { "loose": true }]
+  plugins: [
+    ['@babel/plugin-proposal-class-properties', { loose: true }]
   ],
-  "presets": [
+  presets: [
     [
-      "@babel/preset-env",
+      '@babel/preset-env',
       {
-        "modules": false
+        modules: false,
+        targets: {
+          chrome: '79',
+          firefox: '72',
+          safari: '13',
+          edge: '18'
+        }
       }
     ],
-    "@babel/preset-react"
+    '@babel/preset-react'
   ],
-  "env": {
-    "test": {
-      "presets": [
+  env: {
+    test: {
+      presets: [
         [
-          "@babel/preset-env",
+          '@babel/preset-env',
           {
-            "modules": "commonjs"
+            modules: 'commonjs',
+            targets: {
+              node: 'current'
+            }
           }
         ]
       ]

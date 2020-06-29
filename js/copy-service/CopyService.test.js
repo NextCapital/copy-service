@@ -23,12 +23,12 @@ describe('CopyService', () => {
           jest.spyOn(Parser, 'parseLeaves').mockReturnValue(parsedCopy);
         });
 
-        test('parses the passed copy and sets _parsedCopy', () => {
+        test('parses the passed copy and sets _registeredCopy', () => {
           const copy = { some: 'unparsed copy' };
 
           const copyService = new CopyService({ copy });
           expect(Parser.parseLeaves).toBeCalledWith(copy);
-          expect(copyService._parsedCopy).toEqual(parsedCopy);
+          expect(copyService._registeredCopy).toEqual(parsedCopy);
         });
       });
     });
@@ -47,12 +47,12 @@ describe('CopyService', () => {
         );
       });
 
-      test('does not modify _parsedCopy', () => {
+      test('does not modify _registeredCopy', () => {
         const parsedCopy = {};
-        copyService._parsedCopy = parsedCopy;
+        copyService._registeredCopy = parsedCopy;
 
         copyService.registerCopy();
-        expect(copyService._parsedCopy).toBe(parsedCopy);
+        expect(copyService._registeredCopy).toBe(parsedCopy);
       });
 
       test('returns undefined', () => {
@@ -75,7 +75,7 @@ describe('CopyService', () => {
         expect(Parser.parseLeaves).toBeCalledWith(unparsedCopy);
       });
 
-      test('merges _parsedCopy with parsed copy', () => {
+      test('merges _registeredCopy with parsed copy', () => {
         const unparsedCopy = { some: 'unparsed copy' };
         const alreadyParsedCopy = {
           some: 'already parsedCopy',
@@ -83,10 +83,10 @@ describe('CopyService', () => {
             'stuff': 'copy'
           }
         };
-        copyService._parsedCopy = alreadyParsedCopy;
+        copyService._registeredCopy = alreadyParsedCopy;
 
         copyService.registerCopy(unparsedCopy);
-        expect(copyService._parsedCopy).toEqual(_.merge(alreadyParsedCopy, parsedCopy));
+        expect(copyService._registeredCopy).toEqual(_.merge(alreadyParsedCopy, parsedCopy));
       });
     });
   });
@@ -105,7 +105,7 @@ describe('CopyService', () => {
         }
       };
 
-      copyService._parsedCopy = parsedCopy;
+      copyService._registeredCopy = parsedCopy;
       jest.spyOn(copyService, 'getSubkeys');
     });
 
@@ -135,7 +135,7 @@ describe('CopyService', () => {
         more: 'stuff'
       };
       const parsedCopy = { 'key': key };
-      copyService._parsedCopy = parsedCopy;
+      copyService._registeredCopy = parsedCopy;
 
       expect(copyService.getSubkeys('key')).toBe(key);
     });

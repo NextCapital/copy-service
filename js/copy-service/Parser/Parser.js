@@ -83,15 +83,14 @@ class Parser {
    * @return {object}
    */
   static parseLeaves(tree) {
-    const astTree = _.cloneDeep(tree);
-    _.forEach(astTree, (node, key) => {
+    _.forEach(tree, (node, key) => {
       if (SyntaxNode.isAST(node)) {
         return; // already parsed
       } else if (_.isObject(node) && !_.isArray(node) && !_.isFunction(node)) {
-        astTree[key] = this.parseLeaves(node);
+        tree[key] = this.parseLeaves(node);
       } else if (_.isString(node)) {
         const tokens = this._tokenize(node);
-        astTree[key] = this._parse(tokens, node);
+        tree[key] = this._parse(tokens, node);
       } else {
         ErrorHandler.handleError(
           'Parser',
@@ -100,27 +99,35 @@ class Parser {
         );
       }
     });
-    return astTree;
+
+    return tree;
+  }
+
+  static parseSingle(copy) {
+    if (!_.isString(copy)) {
+      ErrorHandler.handleError(
+        'Parser',
+        'Can only parse strings as copy',
+        { halt: true }
+      );
+    }
+
+    const tokens = this._tokenize(copy);
+    return this._parse(tokens, copy);
   }
 
   /**
-   * Validated the string contains only allowed html tags.
+   * Validates the tag is an allowed HTML tag.
    * @param  {string} string
    * @private
    */
-  static _validateFormatting(string) {
-    let tag;
-
-    // RegEx objects maintain an internal state. This iterates over all matches.
-    // eslint-disable-next-line no-cond-assign
-    while (tag = this.HTML_REGEX.exec(string)) {
-      if (!_.includes(this.ALLOWED_HTML_TAGS, tag[1])) {
-        ErrorHandler.handleError(
-          'Parser',
-          `Unknown HTML tag '${tag[0]}' found in formatting`,
-          { halt: true }
-        );
-      }
+  static _validateTag(tag) {
+    if (!_.includes(this.ALLOWED_HTML_TAGS, tag)) {
+      ErrorHandler.handleError(
+        'Parser',
+        `Unknown HTML tag '${tag}' found in formatting`,
+        { halt: true }
+      );
     }
   }
 
@@ -130,8 +137,6 @@ class Parser {
    * @return {array} The array of tokens.
    */
   static _tokenize(string) {
-    this._validateFormatting(string);
-
     const tokens = [];
     let remainder = string;
     let withinArgs = false;
@@ -178,15 +183,21 @@ class Parser {
         remainder = remainder.slice(this.TOKENS.ARGS_END.length);
         withinArgs = false;
       } else if (remainder.match(this.ALLOWED_HTML_START_TAG_REGEX)) {
+        const tag = remainder.match(this.ALLOWED_HTML_START_TAG_REGEX)[1];
+        this._validateTag(tag);
+
         tokens.push({
           type: this.TOKENS.HTML_TAG_START,
-          tag: remainder.match(this.ALLOWED_HTML_START_TAG_REGEX)[1]
+          tag
         });
         remainder = remainder.replace(this.ALLOWED_HTML_START_TAG_REGEX, '');
       } else if (remainder.match(this.ALLOWED_HTML_END_TAG_REGEX)) {
+        const tag = remainder.match(this.ALLOWED_HTML_END_TAG_REGEX)[1];
+        this._validateTag(tag);
+
         tokens.push({
           type: this.TOKENS.HTML_TAG_END,
-          tag: remainder.match(this.ALLOWED_HTML_END_TAG_REGEX)[1]
+          tag
         });
         remainder = remainder.replace(this.ALLOWED_HTML_END_TAG_REGEX, '');
       } else if (last && last.type === this.TOKENS.TEXT) {

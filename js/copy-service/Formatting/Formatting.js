@@ -8,7 +8,7 @@ class Formatting extends SyntaxNode {
    * @param  {object} options
    */
   constructor(options) {
-    super();
+    super(options);
 
     /**
      * The neighboring AST.

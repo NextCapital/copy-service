@@ -14,12 +14,12 @@ class Formatting extends SyntaxNode {
      * The neighboring AST.
      * @type {SyntaxNode|null}
      */
-    this.sibling = options.sibling;
+    this.sibling = options.sibling || null;
     /**
      * An AST representing the string displayed inside the HTML tag.
      * @type {SyntaxNode|null}
      */
-    this.copy = options.copy;
+    this.copy = options.copy || null;
     /**
      * The tag as a string.
      * @type {string}

@@ -19,17 +19,17 @@ class Switch extends SyntaxNode {
      * The neighboring AST.
      * @type {SyntaxNode|null}
      */
-    this.sibling = options.sibling;
+    this.sibling = options.sibling || null;
     /**
      * The AST to use when the decider is evaluated to truthy.
      * @type {SyntaxNode|null}
      */
-    this.left = options.left;
+    this.left = options.left || null;
     /**
      * The AST to use when the decider is evaluated to falsy.
      * @type {SyntaxNode|null}
      */
-    this.right = options.right;
+    this.right = options.right || null;
   }
 
   /**

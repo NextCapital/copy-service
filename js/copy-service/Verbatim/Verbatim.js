@@ -18,7 +18,7 @@ class Verbatim extends SyntaxNode {
      * The neighboring AST.
      * @type {SyntaxNode|null}
      */
-    this.sibling = options.sibling;
+    this.sibling = options.sibling || null;
   }
 
   /**

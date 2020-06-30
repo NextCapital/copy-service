@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
 import Parser from './Parser/Parser';
+import SyntaxNode from './SyntaxNode/SyntaxNode';
 
 import ErrorHandler from './ErrorHandler/ErrorHandler';
 
@@ -16,19 +17,11 @@ describe('CopyService', () => {
   describe('constructor', () => {
     describe('when options are passed', () => {
       describe('copy option', () => {
-        let parsedCopy;
-
-        beforeEach(() => {
-          parsedCopy = { some: 'parsed copy' };
-          jest.spyOn(Parser, 'parseLeaves').mockReturnValue(parsedCopy);
-        });
-
-        test('parses the passed copy and sets _registeredCopy', () => {
+        test('sets _registeredCopy with the passed copy', () => {
           const copy = { some: 'unparsed copy' };
 
           const copyService = new CopyService({ copy });
-          expect(Parser.parseLeaves).toBeCalledWith(copy);
-          expect(copyService._registeredCopy).toEqual(parsedCopy);
+          expect(copyService._registeredCopy).toEqual(copy);
         });
       });
     });
@@ -61,20 +54,6 @@ describe('CopyService', () => {
     });
 
     describe('when a populated copy config is passed', () => {
-      let parsedCopy;
-
-      beforeEach(() => {
-        parsedCopy = { some: 'parsed copy' };
-        jest.spyOn(Parser, 'parseLeaves').mockReturnValue(parsedCopy);
-      });
-
-      test('calls Parser.parseLeaves with the unparsed copy', () => {
-        const unparsedCopy = { some: 'unparsed copy' };
-
-        copyService.registerCopy(unparsedCopy);
-        expect(Parser.parseLeaves).toBeCalledWith(unparsedCopy);
-      });
-
       test('merges _registeredCopy with parsed copy', () => {
         const unparsedCopy = { some: 'unparsed copy' };
         const alreadyParsedCopy = {
@@ -86,7 +65,7 @@ describe('CopyService', () => {
         copyService._registeredCopy = alreadyParsedCopy;
 
         copyService.registerCopy(unparsedCopy);
-        expect(copyService._registeredCopy).toEqual(_.merge(alreadyParsedCopy, parsedCopy));
+        expect(copyService._registeredCopy).toEqual(_.merge(alreadyParsedCopy, unparsedCopy));
       });
     });
   });
@@ -155,6 +134,199 @@ describe('CopyService', () => {
         jest.spyOn(copyService, 'getSubkeys').mockReturnValue();
         expect(copyService.hasKey('key')).toBe(false);
       });
+    });
+  });
+
+  describe('getAstForKey', () => {
+    beforeEach(() => {
+      jest.spyOn(ErrorHandler, 'handleError').mockImplementation();
+    });
+
+    describe('when the copy at the key has not been parsed', () => {
+      beforeEach(() => {
+        copyService.registerCopy({
+          some: {
+            key: 'this copy needs to be parsed'
+          }
+        });
+      });
+
+      test('parses the key and sets it in the registered copy', () => {
+        const rawCopy = copyService._registeredCopy.some.key;
+        const parsed = new SyntaxNode();
+
+        jest.spyOn(Parser, 'parseSingle').mockReturnValue(parsed);
+        expect(copyService.getAstForKey('some.key')).toBe(parsed);
+        expect(copyService._registeredCopy.some.key).toBe(parsed);
+        expect(Parser.parseSingle).toBeCalledWith(rawCopy);
+      });
+
+      describe('when the copy fails to parse', () => {
+        test('logs a waring and returns nil', () => {
+          jest.spyOn(Parser, 'parseSingle').mockImplementation(() => { throw new Error() });
+
+          expect(copyService.getAstForKey('some.key')).toBeNull();
+          expect(ErrorHandler.handleError).toBeCalledWith(
+            'CopyService',
+            'Failed to parse copy key: some.key. Returning null...'
+          );
+        });
+      });
+    });
+
+    describe('when the copy at the key has been parsed', () => {
+      beforeEach(() => {
+        copyService.registerCopy({
+          some: {
+            key: new SyntaxNode()
+          }
+        });
+      });
+
+      test('returns the value as-is', () => {
+        expect(copyService.getAstForKey('some.key')).toBe(
+          copyService._registeredCopy.some.key
+        );
+      });
+    });
+
+    describe('when the copy at the key is not found', () => {
+      beforeEach(() => {
+        copyService.registerCopy({
+          some: {}
+        });
+      });
+
+      test('warns and returns null', () => {
+        expect(copyService.getAstForKey('some.key')).toBeNull();
+
+        expect(ErrorHandler.handleError).toBeCalledWith(
+          'CopyService',
+          'No AST found for copy key: some.key. Returning null...'
+        );
+      });
+    });
+
+    describe('when the copy at the key is not convertible to an AST', () => {
+      beforeEach(() => {
+        copyService.registerCopy({
+          some: {
+            key: {
+              recursive: 'string'
+            }
+          }
+        });
+      });
+
+      test('warns and returns null', () => {
+        expect(copyService.getAstForKey('some.key')).toBeNull();
+
+        expect(ErrorHandler.handleError).toBeCalledWith(
+          'CopyService',
+          'No AST found for copy key: some.key. Returning null...'
+        );
+      });
+    });
+  });
+
+  describe('getRegisteredCopy', () => {
+    let copy;
+
+    beforeEach(() => {
+      copy = {
+        some: {
+          key: 'Hello world',
+          other: '${some.key}!',
+          deep: {
+            complex: '#{some.thing} is *{up}{down}{thing}!',
+            blank: ''
+          }
+        },
+        other: 'Copy is fun!'
+      };
+
+      copyService.registerCopy(copy);
+    });
+
+    test('gets original registered copy when parsed', () => {
+      copyService.parseAllCopy();
+      expect(copyService.getRegisteredCopy()).toEqual(copy);
+    });
+
+    test('gets original registered copy when not parsed', () => {
+      expect(copyService.getRegisteredCopy()).toEqual(copy);
+    });
+  });
+
+  describe('getRegisteredCopyForKey', () => {
+    beforeEach(() => {
+      jest.spyOn(ErrorHandler, 'handleError').mockImplementation();
+
+      copyService.registerCopy({
+        some: {
+          key: 'some #{key} yo!',
+          blank: '',
+          deep: {
+            thing: 'hello'
+          }
+        }
+      });
+    });
+
+    describe('when not found', () => {
+      test('returns null and logs a warning', () => {
+        expect(copyService.getRegisteredCopyForKey('some.fake')).toBeNull();
+
+        expect(ErrorHandler.handleError).toBeCalledWith(
+          'CopyService',
+          'No AST found for copy key: some.fake. Returning null...'
+        );
+      });
+    });
+
+    describe('when not a leaf node', () => {
+      test('returns null and logs a warning', () => {
+        expect(copyService.getRegisteredCopyForKey('some.deep')).toBeNull();
+
+        expect(ErrorHandler.handleError).toBeCalledWith(
+          'CopyService',
+          'No AST found for copy key: some.deep. Returning null...'
+        );
+      });
+    });
+
+    describe('when null', () => {
+      beforeEach(() => {
+        _.set(copyService._registeredCopy, 'some.blank', null);
+      });
+
+      test('returns an empty string', () => {
+        expect(copyService.getRegisteredCopyForKey('some.blank')).toBe('');
+      });
+    });
+
+    describe('when a string', () => {
+      test('returns the string', () => {
+        expect(copyService.getRegisteredCopyForKey('some.key')).toBe('some #{key} yo!');
+      });
+    });
+
+    describe('when an AST', () => {
+      beforeEach(() => {
+        _.set(copyService._registeredCopy, 'some.key', Parser.parseSingle('some #{key} yo!'));
+      });
+
+      test('returns the corresponding string', () => {
+        expect(copyService.getRegisteredCopyForKey('some.key')).toBe('some #{key} yo!');
+      });
+    });
+  });
+
+  describe('parseAllCopy', () => {
+    test('calls Parser.parseLeaves on the registered copy', () => {
+      jest.spyOn(Parser, 'parseLeaves').mockImplementation();
+      copyService.parseAllCopy();
+      expect(Parser.parseLeaves).toBeCalledWith(copyService._registeredCopy);
     });
   });
 });

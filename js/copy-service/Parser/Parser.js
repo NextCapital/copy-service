@@ -37,12 +37,12 @@ class Parser {
    * RegExp for the starting tag of allowed HTML tags.
    * @type {RegExp}
    */
-  static ALLOWED_HTML_START_TAG_REGEX = /^<(b|i|u|sup|sub|s|em|p|span|div|ol|ul|li)>/;
+  static ALLOWED_HTML_START_TAG_REGEX = /^<(\w+)>/;
   /**
    * RegExp for the ending tag of allowed HTML tags.
    * @type {RegExp}
    */
-  static ALLOWED_HTML_END_TAG_REGEX = /^<\/(b|i|u|sup|sub|s|em|p|span|div|ol|ul|li)>/;
+  static ALLOWED_HTML_END_TAG_REGEX = /^<\/(\w+)>/;
   /**
    * The supported HTML tags in copy.
    * @type {Array}
@@ -73,9 +73,10 @@ class Parser {
   ));
 
   /**
-   * Transforms raw copy into ASTs.
+   * Transforms raw copy into ASTs. Will mutate the `tree` argument.
+   *
    * @param  {object} tree
-   * @return {object}
+   * @return {object} the same object, with leaves parsed to ASTs
    */
   static parseLeaves(tree) {
     _.forEach(tree, (node, key) => {
@@ -126,7 +127,7 @@ class Parser {
     if (!_.includes(this.ALLOWED_HTML_TAGS, tag)) {
       ErrorHandler.handleError(
         'Parser',
-        `Unknown HTML tag '${tag}' found in formatting`,
+        `Unknown HTML tag '<${tag}>' found in formatting`,
         { halt: true }
       );
     }

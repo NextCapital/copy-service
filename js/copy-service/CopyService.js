@@ -14,15 +14,6 @@ import ErrorHandler from './ErrorHandler/ErrorHandler';
  * Provides the ability to register, parse, and evaluate copy.
  */
 class CopyService {
-  /**
-   * Determines if a passed object is an instance of an AST class
-   * @param  {AST|object}  object
-   * @return {Boolean}
-   */
-  static isAST(object) {
-    return SyntaxNode.isAST(object);
-  }
-
   constructor(options = {}) {
     /**
      * The store of registered copy.
@@ -117,7 +108,7 @@ class CopyService {
       }
     }
 
-    if (_.isUndefined(result) || !this.constructor.isAST(result)) {
+    if (_.isUndefined(result) || !SyntaxNode.isAST(result)) {
       ErrorHandler.handleError('CopyService', `No AST found for copy key: ${key}. Returning null...`);
       return null;
     }
@@ -159,11 +150,7 @@ class CopyService {
   getRegisteredCopyForKey(key) {
     const result = _.get(this._registeredCopy, key);
 
-    if (_.isUndefined(result)) {
-      return null;
-    }
-
-    if (_.isNil(result)) {
+    if (result === null) {
       return '';
     }
 
@@ -171,7 +158,7 @@ class CopyService {
       return result;
     }
 
-    if (this.constructor.isAST(result)) {
+    if (SyntaxNode.isAST(result)) {
       return result.toSyntax();
     }
 
@@ -211,7 +198,7 @@ class CopyService {
         return newValue;
       }
 
-      if (this.constructor.isAST(newValue)) { // AST always replaces
+      if (SyntaxNode.isAST(newValue)) { // AST always replaces
         return newValue;
       }
     });

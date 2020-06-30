@@ -11,7 +11,7 @@ class SyntaxNode {
    * @return {boolean}
    */
   static isAST(node) {
-    return _.isNil(node) || node instanceof SyntaxNode;
+    return node === null || node instanceof SyntaxNode;
   }
 
   /**
@@ -21,7 +21,7 @@ class SyntaxNode {
    * @return {string}
    */
   static safeToSyntax(node) {
-    if (_.isNil(node)) {
+    if (node === null) {
       return '';
     }
 

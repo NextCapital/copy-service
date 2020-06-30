@@ -174,13 +174,42 @@ describe('PlainTextEvaluator', () => {
         });
 
         describe('when the AST is a Functional', () => {
-          test('returns the evaluated copy of the Functional, ignoring the function itself', () => {
+          test('returns the evaluated copy, passing through the function', () => {
+            const funcText = 'func text';
+            const func = jest.fn().mockReturnValue(funcText);
+
             const ast = new Functional({
               copy: new Verbatim({ text: 'functional text' }),
-              key: 'functionKey'
+              key: 'func'
             });
 
-            expect(evaluator.evalAST('', ast, substitutions)).toBe(ast.copy.text);
+            expect(
+              evaluator.evalAST('', ast, new Substitutions({ func }))
+            ).toBe(funcText);
+
+            expect(func).toBeCalledWith(ast.copy.text);
+          });
+
+          describe('when allowFunctional is disabled on the evaluator', () => {
+            beforeEach(() => {
+              evaluator.allowFunctional = false;
+            });
+
+            test('returns the evaluated copy, ignoring the function itself', () => {
+              const funcText = 'func text';
+              const func = jest.fn().mockReturnValue(funcText);
+
+              const ast = new Functional({
+                copy: new Verbatim({ text: 'functional text' }),
+                key: 'func'
+              });
+
+              expect(
+                evaluator.evalAST('', ast, new Substitutions({ func }))
+              ).toBe(ast.copy.text);
+
+              expect(func).not.toBeCalled();
+            });
           });
         });
 

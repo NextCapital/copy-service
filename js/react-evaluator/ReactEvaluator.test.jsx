@@ -225,6 +225,31 @@ describe('ReactEvaluator', () => {
                 getStaticMarkup(evaluator.evalAST(null, ast, new Substitutions({ func })))
               ).toBe(`<span>${funcText}</span>`);
             });
+
+            describe('when allowFunctional is false on the evaluator', () => {
+              beforeEach(() => {
+                evaluator.allowFunctional = false;
+              });
+
+              test('returns the functional\'s evaluated copy without calling the function', () => {
+                const funcText = 'func text';
+                const func = jest.fn().mockReturnValue(funcText);
+
+                const ast = new Functional({
+                  key: 'func',
+                  copy: new Verbatim({ text: 'some copy' }),
+                  args: ['arg1', 'arg2']
+                });
+
+                expect(
+                  getStaticMarkup(evaluator.evalAST(null, ast, new Substitutions({ func })))
+                ).toBe(
+                  `<span>${ast.copy.text}</span>`
+                );
+
+                expect(func).not.toBeCalled();
+              });
+            });
           });
 
           describe('when the functional does not have a method', () => {

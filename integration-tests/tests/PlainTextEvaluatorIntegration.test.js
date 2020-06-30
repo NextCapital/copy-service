@@ -191,15 +191,27 @@ describe('CopyService - PlainTextEvaluator Integration Tests', () => {
         describe('functions.title', () => {
           testCopy({
             key: 'functions.title',
-            substitutions: { makeExternalLink: jest.fn() },
-            expectedCopy: 'learn more'
+            substitutions: { makeExternalLink: jest.fn().mockImplementation((text) => `+ ${text}`) },
+            expectedCopy: '+ learn more'
           });
 
-          test('does not call the passed function', () => {
-            const passedFunction = jest.fn();
+          test('calls the passed function', () => {
+            const passedFunction = jest.fn().mockImplementation((text) => `+ ${text}`);
             evaluator.getCopy('functions.title', { makeExternalLink: passedFunction });
-            expect(passedFunction).not.toBeCalled();
+            expect(passedFunction).toBeCalledWith('learn more');
           });
+        });
+      });
+
+      describe('when allowFunctional is false on the evaluator', () => {
+        beforeEach(() => {
+          evaluator.allowFunctional = false;
+        });
+
+        testCopy({
+          key: 'functions.title',
+          substitutions: { makeExternalLink: jest.fn().mockImplementation((text) => `+ ${text}`) },
+          expectedCopy: 'learn more'
         });
       });
 
@@ -208,15 +220,15 @@ describe('CopyService - PlainTextEvaluator Integration Tests', () => {
           testCopy({
             key: 'functions.args',
             substitutions: {
-              func: jest.fn(),
+              func: jest.fn().mockImplementation((text) => `+ ${text}`),
               arg1: 'arg1',
               arg2: 'arg2'
             },
-            expectedCopy: 'learn more'
+            expectedCopy: '+ learn more'
           });
 
-          test('does not call the passed function', () => {
-            const passedFunction = jest.fn();
+          test('calls the passed function with args', () => {
+            const passedFunction = jest.fn().mockImplementation((text) => `+ ${text}`);
             const substitutions = {
               func: passedFunction,
               arg1: 'arg1',
@@ -224,7 +236,7 @@ describe('CopyService - PlainTextEvaluator Integration Tests', () => {
             };
 
             evaluator.getCopy('functions.args', substitutions);
-            expect(passedFunction).not.toBeCalled();
+            expect(passedFunction).toBeCalledWith('learn more', 'arg1', 'arg2');
           });
         });
       });

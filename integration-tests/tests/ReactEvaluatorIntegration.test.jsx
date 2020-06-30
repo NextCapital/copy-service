@@ -212,6 +212,22 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
         });
       });
 
+      describe('when allowFunctional is false on the evaluator', () => {
+        beforeEach(() => {
+          evaluator.allowFunctional = false;
+        })
+
+        test('returns the copy without passing to the function', () => {
+          const funcResult = 'some result';
+          const passedFunction = jest.fn().mockReturnValue(funcResult);
+
+          const staticMarkup = getStaticMarkup(
+            evaluator.getCopy('functions.title', { makeExternalLink: passedFunction })
+          );
+          expect(staticMarkup).toBe('<span>learn more</span>');
+        });
+      });
+
       describe('with arguments', () => {
         describe('functions.args', () => {
           test('calls the passed function with the evaluated copy', () => {

@@ -81,7 +81,7 @@ class Parser {
     _.forEach(tree, (node, key) => {
       if (SyntaxNode.isAST(node)) {
         return; // already parsed
-      } else if (_.isObject(node) && !_.isArray(node) && !_.isFunction(node)) {
+      } else if (_.isPlainObject(node)) {
         tree[key] = this.parseLeaves(node);
       } else if (_.isString(node)) {
         const tokens = this._tokenize(node);
@@ -138,27 +138,27 @@ class Parser {
 
     while (remainder.length > 0) {
       let nonTextTokenFound = false;
+      const isArgsStart = _.startsWith(remainder, this.TOKENS.ARGS_START);
 
-      _.forEach(this.NON_TEXT_TOKENS, (nonTextToken) => {
-        if (
-          !nonTextTokenFound &&
-          _.startsWith(remainder, nonTextToken) &&
-          !_.startsWith(remainder, this.TOKENS.ARGS_START)
-        ) {
-          const last = _.last(tokens);
+      if (!isArgsStart) {
+        _.forEach(this.NON_TEXT_TOKENS, (nonTextToken) => {
+          if (_.startsWith(remainder, nonTextToken)) {
+            const last = _.last(tokens);
 
-          // Handle escaping special characters
-          if (last && last.type === this.TOKENS.TEXT && last.text.slice(-1) === '\\') {
-            last.text = last.text.substr(0, last.text.length - 1) + remainder[0];
-            remainder = remainder.slice(1);
-          } else {
-            tokens.push({ type: nonTextToken });
-            remainder = remainder.slice(nonTextToken.length);
+            // Handle escaping special characters
+            if (last && last.type === this.TOKENS.TEXT && last.text.slice(-1) === '\\') {
+              last.text = last.text.substr(0, last.text.length - 1) + remainder[0];
+              remainder = remainder.slice(1);
+            } else {
+              tokens.push({ type: nonTextToken });
+              remainder = remainder.slice(nonTextToken.length);
+            }
+
+            nonTextTokenFound = true;
+            return false; // kill the loop
           }
-
-          nonTextTokenFound = true;
-        }
-      });
+        });
+      }
 
       if (nonTextTokenFound) {
         continue;
@@ -168,7 +168,7 @@ class Parser {
       const last = _.last(tokens);
       let regexMatch = null;
 
-      if (_.startsWith(remainder, this.TOKENS.ARGS_START)) {
+      if (isArgsStart) {
         tokens.push({ type: this.TOKENS.ARGS_START });
         remainder = remainder.slice(this.TOKENS.ARGS_START.length);
         withinArgs = true;

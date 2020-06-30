@@ -166,6 +166,8 @@ class Parser {
 
       // Special processing for TAG and ARGS tags and default processing for TEXT tag
       const last = _.last(tokens);
+      let regexMatch = null;
+
       if (_.startsWith(remainder, this.TOKENS.ARGS_START)) {
         tokens.push({ type: this.TOKENS.ARGS_START });
         remainder = remainder.slice(this.TOKENS.ARGS_START.length);
@@ -177,24 +179,24 @@ class Parser {
         tokens.push({ type: this.TOKENS.ARGS_END });
         remainder = remainder.slice(this.TOKENS.ARGS_END.length);
         withinArgs = false;
-      } else if (remainder.match(this.ALLOWED_HTML_START_TAG_REGEX)) {
-        const tag = remainder.match(this.ALLOWED_HTML_START_TAG_REGEX)[1];
+      } else if (regexMatch = remainder.match(this.ALLOWED_HTML_START_TAG_REGEX)) {
+        const tag = regexMatch[1];
         this._validateTag(tag);
 
         tokens.push({
           type: this.TOKENS.HTML_TAG_START,
           tag
         });
-        remainder = remainder.replace(this.ALLOWED_HTML_START_TAG_REGEX, '');
-      } else if (remainder.match(this.ALLOWED_HTML_END_TAG_REGEX)) {
-        const tag = remainder.match(this.ALLOWED_HTML_END_TAG_REGEX)[1];
+        remainder = remainder.slice(regexMatch[0].length);
+      } else if (regexMatch = remainder.match(this.ALLOWED_HTML_END_TAG_REGEX)) {
+        const tag = regexMatch[1];
         this._validateTag(tag);
 
         tokens.push({
           type: this.TOKENS.HTML_TAG_END,
           tag
         });
-        remainder = remainder.replace(this.ALLOWED_HTML_END_TAG_REGEX, '');
+        remainder = remainder.slice(regexMatch[0].length);
       } else if (last && last.type === this.TOKENS.TEXT) {
         // If text was found and text was the last token, append the text to the previous token.
         last.text += remainder[0];

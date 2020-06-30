@@ -163,7 +163,7 @@ describe('CopyService', () => {
 
       describe('when the copy fails to parse', () => {
         test('logs a waring and returns nil', () => {
-          jest.spyOn(Parser, 'parseSingle').mockImplementation(() => { throw new Error() });
+          jest.spyOn(Parser, 'parseSingle').mockImplementation(() => { throw new Error(); });
 
           expect(copyService.getAstForKey('some.key')).toBeNull();
           expect(ErrorHandler.handleError).toBeCalledWith(

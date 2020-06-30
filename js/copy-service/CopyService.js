@@ -120,7 +120,7 @@ class CopyService {
    * Returns the current merged set of of registered copy. This is helpful to get the current
    * set of registered copy when copy is registered via many sources.
    *
-   * @param {AST} _node Node of the registered copy to get keys from.
+   * @param {AST} _node [PRIVATE] Node of the registered copy to get keys from when recursing.
    * @return {object} The registered copy, in un-parsed form.
    */
   getRegisteredCopy(_node = null) {

@@ -37,12 +37,12 @@ class Parser {
    * RegExp for the starting tag of allowed HTML tags.
    * @type {RegExp}
    */
-  static ALLOWED_HTML_START_TAG_REGEX = /^<(\w+)>/;
+  static HTML_START_TAG_REGEX = /^<(\w+)>/;
   /**
    * RegExp for the ending tag of allowed HTML tags.
    * @type {RegExp}
    */
-  static ALLOWED_HTML_END_TAG_REGEX = /^<\/(\w+)>/;
+  static HTML_END_TAG_REGEX = /^<\/(\w+)>/;
   /**
    * The supported HTML tags in copy.
    * @type {Array}
@@ -186,7 +186,7 @@ class Parser {
         tokens.push({ type: this.TOKENS.ARGS_END });
         remainder = remainder.slice(this.TOKENS.ARGS_END.length);
         withinArgs = false;
-      } else if (regexMatch = remainder.match(this.ALLOWED_HTML_START_TAG_REGEX)) {
+      } else if (regexMatch = remainder.match(this.HTML_START_TAG_REGEX)) {
         const tag = regexMatch[1];
         this._validateTag(tag);
 
@@ -195,7 +195,7 @@ class Parser {
           tag
         });
         remainder = remainder.slice(regexMatch[0].length);
-      } else if (regexMatch = remainder.match(this.ALLOWED_HTML_END_TAG_REGEX)) {
+      } else if (regexMatch = remainder.match(this.HTML_END_TAG_REGEX)) {
         const tag = regexMatch[1];
         this._validateTag(tag);
 

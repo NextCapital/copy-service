@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 /**
  * Base class for non-null AST nodes.
  */

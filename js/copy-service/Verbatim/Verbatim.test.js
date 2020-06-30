@@ -64,4 +64,15 @@ describe('Verbatim', () => {
       });
     });
   });
+
+  describe('toSyntax', () => {
+    test('converts back to a copy string', () => {
+      const verbatim = new Verbatim({
+        text: 'some text',
+        sibling: new Verbatim({ text: '.' })
+      });
+
+      expect(verbatim.toSyntax()).toBe('some text.');
+    });
+  });
 });

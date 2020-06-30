@@ -215,7 +215,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
       describe('when allowFunctional is false on the evaluator', () => {
         beforeEach(() => {
           evaluator.allowFunctional = false;
-        })
+        });
 
         test('returns the copy without passing to the function', () => {
           const funcResult = 'some result';

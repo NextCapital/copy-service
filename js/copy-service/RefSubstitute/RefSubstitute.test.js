@@ -1,4 +1,5 @@
 import RefSubstitute from './RefSubstitute';
+import Verbatim from '../Verbatim/Verbatim';
 
 describe('RefSubstitute', () => {
   describe('constructor', () => {
@@ -40,6 +41,17 @@ describe('RefSubstitute', () => {
       const reference = new RefSubstitute(options);
 
       expect(reference.isCacheable()).toBe(false);
+    });
+  });
+
+  describe('toSyntax', () => {
+    test('converts back to a copy string', () => {
+      const reference = new RefSubstitute({
+        key: 'some.copy.key',
+        sibling: new Verbatim({ text: '.' })
+      });
+
+      expect(reference.toSyntax()).toBe('%{some.copy.key}.');
     });
   });
 });

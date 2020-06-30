@@ -1,4 +1,5 @@
 import Switch from './Switch';
+import Verbatim from '../Verbatim/Verbatim';
 
 describe('Switch', () => {
   describe('constructor', () => {
@@ -44,6 +45,21 @@ describe('Switch', () => {
       const switchInstance = new Switch(options);
 
       expect(switchInstance.isCacheable()).toBe(false);
+    });
+  });
+
+  describe('toSyntax', () => {
+    test('converts back to a copy string', () => {
+      const switchInstance = new Switch({
+        sibling: new Verbatim({ text: '.' }),
+        key: 'switch.key',
+        left: new Verbatim({ text: 'left' }),
+        right: new Verbatim({ text: 'right' })
+      });
+
+      expect(switchInstance.toSyntax()).toBe(
+        '*{left}{right}{switch.key}.'
+      );
     });
   });
 });

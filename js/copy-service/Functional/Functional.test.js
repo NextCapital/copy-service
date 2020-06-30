@@ -1,4 +1,5 @@
 import Functional from './Functional';
+import Verbatim from '../Verbatim/Verbatim';
 
 describe('Functional', () => {
   describe('constructor', () => {
@@ -47,6 +48,38 @@ describe('Functional', () => {
       const functional = new Functional(options);
 
       expect(functional.isCacheable()).toBe(false);
+    });
+  });
+
+  describe('toSyntax', () => {
+    describe('when there are args', () => {
+      test('converts back to a copy string', () => {
+        const functional = new Functional({
+          sibling: new Verbatim({ text: '.' }),
+          copy: new Verbatim({ text: 'some copy' }),
+          key: 'some.key',
+          args: ['uno', 'dos']
+        });
+
+        expect(functional.toSyntax()).toBe(
+          '^{some copy}{some.key}[uno,dos].'
+        );
+      });
+    });
+
+    describe('when there are not args', () => {
+      test('converts back to a copy string', () => {
+        const functional = new Functional({
+          sibling: new Verbatim({ text: '.' }),
+          copy: new Verbatim({ text: 'some copy' }),
+          key: 'some.key',
+          args: []
+        });
+
+        expect(functional.toSyntax()).toBe(
+          '^{some copy}{some.key}.'
+        );
+      });
     });
   });
 });

@@ -17,7 +17,18 @@ describe('Evaluator', () => {
     });
 
     test('creates the evaluationCache', () => {
-      expect(evaluator.evaluationCache).toBeInstanceOf(Map);
+      expect(evaluator.evaluationCache).toBeInstanceOf(WeakMap);
+    });
+
+    test('defaults allowFunctional to true', () => {
+      expect(evaluator.allowFunctional).toBe(true);
+    });
+
+    describe('when allowFunctional is passed', () => {
+      test('sets allowFunctional from options', () => {
+        evaluator = new Evaluator(copyService, { allowFunctional: false });
+        expect(evaluator.allowFunctional).toBe(false);
+      });
     });
   });
 

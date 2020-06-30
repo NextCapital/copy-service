@@ -1,4 +1,5 @@
 import Newline from './Newline';
+import Verbatim from '../Verbatim/Verbatim';
 import CopyService from '../CopyService';
 
 describe('Newline', () => {
@@ -55,6 +56,13 @@ describe('Newline', () => {
 
         expect(newline.isCacheable(copyService)).toBe(true);
       });
+    });
+  });
+
+  describe('toSyntax', () => {
+    test('converts back to a copy string', () => {
+      const newline = new Newline({ sibling: new Verbatim({ text: 'some text' }) });
+      expect(newline.toSyntax()).toBe('\nsome text');
     });
   });
 });

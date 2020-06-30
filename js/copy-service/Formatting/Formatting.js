@@ -44,6 +44,11 @@ class Formatting extends SyntaxNode {
     return true;
   }
 
+  /**
+   * Converts the AST node to the syntax that made it.
+   *
+   * @return {string}
+   */
   toSyntax() {
     return (
       `<${this.tag}>${this.safeToSyntax(this.copy)}</${this.tag}>${this.safeToSyntax(this.sibling)}`

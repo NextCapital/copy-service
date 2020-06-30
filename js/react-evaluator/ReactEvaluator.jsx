@@ -129,7 +129,7 @@ class ReactEvaluator extends Evaluator {
         <span>
           { left.props.children + right.props.children }
         </span>
-      )
+      );
     }
 
     return (

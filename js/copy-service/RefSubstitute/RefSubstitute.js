@@ -29,6 +29,11 @@ class RefSubstitute extends SyntaxNode {
     return false;
   }
 
+  /**
+   * Converts the AST node to the syntax that made it.
+   *
+   * @return {string}
+   */
   toSyntax() {
     return (
       `%{${this.key}}${this.safeToSyntax(this.sibling)}`

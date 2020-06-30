@@ -28,6 +28,11 @@ class Newline extends SyntaxNode {
     return true;
   }
 
+  /**
+   * Converts the AST node to the syntax that made it.
+   *
+   * @return {string}
+   */
   toSyntax() {
     return `\n${this.safeToSyntax(this.sibling)}`;
   }

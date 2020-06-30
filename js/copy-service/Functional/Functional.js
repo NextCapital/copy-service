@@ -40,6 +40,11 @@ class Functional extends SyntaxNode {
     return false;
   }
 
+  /**
+   * Converts the AST node to the syntax that made it.
+   *
+   * @return {string}
+   */
   toSyntax() {
     const args = _.isEmpty(this.args) ?
       '' :

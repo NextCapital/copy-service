@@ -98,6 +98,12 @@ class Parser {
     return tree;
   }
 
+  /**
+   * Parses a single string of copy into an AST.
+   *
+   * @param {string} copy
+   * @return {SyntaxNode|null}
+   */
   static parseSingle(copy) {
     if (!_.isString(copy)) {
       ErrorHandler.handleError(

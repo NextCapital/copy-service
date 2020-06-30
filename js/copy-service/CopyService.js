@@ -25,7 +25,7 @@ class CopyService {
 
   constructor(options = {}) {
     /**
-     * The store of parsed copy.
+     * The store of registered copy.
      * @type {object}
      */
     this._registeredCopy = {};
@@ -60,7 +60,7 @@ class CopyService {
   }
 
   /**
-   * Recursivey builds all subkeys at which copy exists.
+   * Recursively builds all subkeys at which copy exists.
    * @param  {string} key
    * @return {Object} An object of the same structure where the value is the copy key path.
    */
@@ -125,12 +125,19 @@ class CopyService {
     return result;
   }
 
+  /**
+   * Returns the current merged set of of registered copy. This is helpful to get the current
+   * set of registered copy when copy is registered via many sources.
+   *
+   * @param {AST} _node Node of the registered copy to get keys from.
+   * @return {object} The registered copy, in un-parsed form.
+   */
   getRegisteredCopy(_node = null) {
     const tree = {};
 
     _.forEach(_node || this._registeredCopy, (node, key) => {
       if (_.isNil(node)) {
-        tree[key] = null;
+        tree[key] = '';
       } else if (_.isString(node)) { // not yet parsed
         tree[key] = node;
       } else if (SyntaxNode.isAST(node)) { // parsed
@@ -143,11 +150,21 @@ class CopyService {
     return tree;
   }
 
+  /**
+   * Gets the registered copy for a given copy key.
+   *
+   * @param {string} key
+   * @return {string|null} Registered copy at the key, or null if none.
+   */
   getRegisteredCopyForKey(key) {
     const result = _.get(this._registeredCopy, key);
 
-    if (_.isNil(result)) {
+    if (_.isUndefined(result)) {
       return null;
+    }
+
+    if (_.isNil(result)) {
+      return '';
     }
 
     if (_.isString(result)) {
@@ -171,6 +188,15 @@ class CopyService {
     Parser.parseLeaves(this._registeredCopy);
   }
 
+  /**
+   * Merges the new registered copy into the old registered copy. This will force any
+   * strings or ASY nodes to replace rather than merge.
+   *
+   * @param {object} existingCopy
+   * @param {object} newCopy
+   * @return {object}
+   * @private
+   */
   _mergeParsedCopy(existingCopy, newCopy) {
     if (_.isEmpty(existingCopy)) {
       return newCopy;

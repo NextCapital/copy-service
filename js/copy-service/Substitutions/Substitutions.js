@@ -15,8 +15,8 @@ class Substitutions {
   }
 
   /**
-   * If the substitutions are a function, evalautes it and replaces the function with the result.
-   * This way, the function does not get called until substititions are used, and the function
+   * If the substitutions are a function, evaluates it and replaces the function with the result.
+   * This way, the function does not get called until substitutions are used, and the function
    * only ever gets called once. This allows expensive substitutions not to be called unless needed.
    * @type {object}
    */
@@ -31,7 +31,10 @@ class Substitutions {
   /**
    * Returns a substitution at the given key from the substitutions object. If not found, an
    * empty string will be returned.
-   * @param {string} key path to substitution on the substititions object
+   *
+   * If the value at the substitutions key is a function, it will be evaluated to a value.
+   *
+   * @param {string} key path to substitution on the substitutions object
    * @return {*} The value from the substitutions
    */
   get(key) {
@@ -44,6 +47,13 @@ class Substitutions {
     return value;
   }
 
+  /**
+   * Works like `get`, but if the value is a function, it will not be called. Will also print a
+   * warning if the value is not a function.
+   *
+   * @param {string} key path to substitution on the substitutions object
+   * @return {*} The function from the substitutions
+   */
   getFunction(key) {
     const value = _.get(this.substitutions, key);
 
@@ -61,6 +71,13 @@ class Substitutions {
     return value;
   }
 
+  /**
+   * Prints a warning then returns an empty string.
+   *
+   * @param {string} key
+   * @returns {string} an empty string
+   * @private
+   */
   _handleMissing(key) {
     ErrorHandler.handleError(
       'Substitutions',
@@ -73,7 +90,7 @@ class Substitutions {
   /**
    * Finds the substitutions, then return true if the number 1 (singular) or truthy, and false
    * otherwise. Useful for evaluating Switch AST nodes.
-   * @param {string} key path to substitution on the substititions object
+   * @param {string} key path to substitution on the substitutions object
    * @return {Boolean} The evaluated boolean value of the substitution
    */
   getBoolean(key) {

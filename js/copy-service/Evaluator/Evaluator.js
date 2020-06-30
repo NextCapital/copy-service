@@ -15,6 +15,13 @@ class Evaluator {
   } = {}) {
     this.copyService = copyService;
     this.evaluationCache = new WeakMap();
+
+    /**
+     * When `true`, the functional ^{}{} syntax will run the configured method when evaluating.
+     * When `false`, the copy will be returned without passing it through the function.
+     *
+     * @type {boolean}
+     */
     this.allowFunctional = allowFunctional;
   }
 

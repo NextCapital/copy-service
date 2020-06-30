@@ -39,6 +39,11 @@ class Switch extends SyntaxNode {
     return false;
   }
 
+  /**
+   * Converts the AST node to the syntax that made it.
+   *
+   * @return {string}
+   */
   toSyntax() {
     const left = this.safeToSyntax(this.left);
     const right = this.safeToSyntax(this.right);

@@ -32,6 +32,11 @@ class Verbatim extends SyntaxNode {
     return true;
   }
 
+  /**
+   * Converts the AST node to the syntax that made it.
+   *
+   * @return {string}
+   */
   toSyntax() {
     return (
       `${this.text}${this.safeToSyntax(this.sibling)}`

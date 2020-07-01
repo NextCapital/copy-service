@@ -1,4 +1,5 @@
 import Reference from './Reference';
+import Verbatim from '../Verbatim/Verbatim';
 import CopyService from '../CopyService';
 
 describe('Reference', () => {
@@ -131,6 +132,17 @@ describe('Reference', () => {
 
         expect(reference.isCacheable(copyService)).toBe(false);
       });
+    });
+  });
+
+  describe('toSyntax', () => {
+    test('converts back to a copy string', () => {
+      const reference = new Reference({
+        key: 'some.copy.key',
+        sibling: new Verbatim({ text: '.' })
+      });
+
+      expect(reference.toSyntax()).toBe('${some.copy.key}.');
     });
   });
 });

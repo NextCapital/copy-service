@@ -23,7 +23,7 @@ class ReactEvaluator extends Evaluator {
   /**
    * Evaluates the AST with given substitutions
    * @param  {string} copyPrefix The copy string being recursively built.
-   * @param  {Formatting|Functional|Newline|Reference|Substitute|Switch|Verbatim} ast
+   * @param  {SyntaxNode|null} ast
    * The AST to be evaluated. This AST must be constructed by Parser.
    * @param  {Substitutions} substitutions An object containing substitutions for keys specified in
    * the AST.
@@ -77,10 +77,10 @@ class ReactEvaluator extends Evaluator {
         this.getInitialResult(), subtree, substitutions
       );
     } else if (ast instanceof Functional) {
-      const method = substitutions.get(ast.key);
+      const method = substitutions.getFunction(ast.key);
       let jsx = this.evalAST(this.getInitialResult(), ast.copy, substitutions);
 
-      if (method && _.isFunction(method)) {
+      if (this.allowFunctional && method && _.isFunction(method)) {
         jsx = (
           <span>{ method(jsx, ...ast.args) }</span>
         );
@@ -123,32 +123,19 @@ class ReactEvaluator extends Evaluator {
       return right;
     }
 
-    let key = 0;
-    const addKeyToChild = (child) => {
-      let newChild;
-      if (!_.isString(child)) {
-        newChild = React.cloneElement(child, { key });
-        key += 1;
-      }
-
-      return newChild || child;
-    };
-
-    const keyedLeftChildren = React.Children.map(left.props.children, addKeyToChild);
-    const keyedRightChildren = React.Children.map(right.props.children, addKeyToChild);
-
-    if (!keyedLeftChildren) {
-      return right;
-    }
-
-    if (!keyedRightChildren) {
-      return left;
+    // single child preferable to multiple ones, as it avoids array alloc
+    if (_.isString(left.props.children) && _.isString(right.props.children)) {
+      return (
+        <span>
+          { left.props.children + right.props.children }
+        </span>
+      );
     }
 
     return (
       <span>
-        { keyedLeftChildren }
-        { keyedRightChildren }
+        { left.props.children }
+        { right.props.children }
       </span>
     );
   }

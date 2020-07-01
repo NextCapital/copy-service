@@ -10,9 +10,19 @@ class Evaluator {
    * Takes in a copy service and provide methods for evaluating its ASTs.
    * @param {CopyService} copyService
    */
-  constructor(copyService) {
+  constructor(copyService, {
+    allowFunctional = true
+  } = {}) {
     this.copyService = copyService;
-    this.evaluationCache = new Map();
+    this.evaluationCache = new WeakMap();
+
+    /**
+     * When `true`, the functional ^{}{} syntax will run the configured method when evaluating.
+     * When `false`, the copy will be returned without passing it through the function.
+     *
+     * @type {boolean}
+     */
+    this.allowFunctional = allowFunctional;
   }
 
   /**

@@ -1,5 +1,6 @@
 import _ from 'lodash';
 
+import SyntaxNode from '../SyntaxNode/SyntaxNode';
 import Formatting from '../Formatting/Formatting';
 import Functional from '../Functional/Functional';
 import Newline from '../Newline/Newline';
@@ -33,20 +34,15 @@ const TOKENS = {
  */
 class Parser {
   /**
-   * RegExp for HTML tags.
-   * @type {RegExp}
-   */
-  static HTML_REGEX = /<\/?([\w\s="'\-:;]*)>/g;
-  /**
    * RegExp for the starting tag of allowed HTML tags.
    * @type {RegExp}
    */
-  static ALLOWED_HTML_START_TAG_REGEX = /^<(b|i|u|sup|sub|s|em|p|span|div|ol|ul|li)>/;
+  static HTML_START_TAG_REGEX = /^<(\w+)>/;
   /**
    * RegExp for the ending tag of allowed HTML tags.
    * @type {RegExp}
    */
-  static ALLOWED_HTML_END_TAG_REGEX = /^<\/(b|i|u|sup|sub|s|em|p|span|div|ol|ul|li)>/;
+  static HTML_END_TAG_REGEX = /^<\/(\w+)>/;
   /**
    * The supported HTML tags in copy.
    * @type {Array}
@@ -77,18 +73,20 @@ class Parser {
   ));
 
   /**
-   * Transforms raw copy into ASTs.
+   * Transforms raw copy into ASTs. Will mutate the `tree` argument.
+   *
    * @param  {object} tree
-   * @return {object}
+   * @return {object} the same object, with leaves parsed to ASTs
    */
   static parseLeaves(tree) {
-    const astTree = _.cloneDeep(tree);
-    _.forEach(astTree, (node, key) => {
-      if (_.isObject(node) && !_.isArray(node) && !_.isFunction(node)) {
-        astTree[key] = this.parseLeaves(node);
+    _.forEach(tree, (node, key) => {
+      if (SyntaxNode.isAST(node)) {
+        return; // already parsed
+      } else if (_.isPlainObject(node)) {
+        tree[key] = this.parseLeaves(node);
       } else if (_.isString(node)) {
         const tokens = this._tokenize(node);
-        astTree[key] = this._parse(tokens, node);
+        tree[key] = this._parse(tokens, node);
       } else {
         ErrorHandler.handleError(
           'Parser',
@@ -97,27 +95,41 @@ class Parser {
         );
       }
     });
-    return astTree;
+
+    return tree;
   }
 
   /**
-   * Validated the string contains only allowed html tags.
+   * Parses a single string of copy into an AST.
+   *
+   * @param {string} copy
+   * @return {SyntaxNode|null}
+   */
+  static parseSingle(copy) {
+    if (!_.isString(copy)) {
+      ErrorHandler.handleError(
+        'Parser',
+        'Can only parse strings as copy',
+        { halt: true }
+      );
+    }
+
+    const tokens = this._tokenize(copy);
+    return this._parse(tokens, copy);
+  }
+
+  /**
+   * Validates the tag is an allowed HTML tag.
    * @param  {string} string
    * @private
    */
-  static _validateFormatting(string) {
-    let tag;
-
-    // RegEx objects maintain an internal state. This iterates over all matches.
-    // eslint-disable-next-line no-cond-assign
-    while (tag = this.HTML_REGEX.exec(string)) {
-      if (!_.includes(this.ALLOWED_HTML_TAGS, tag[1])) {
-        ErrorHandler.handleError(
-          'Parser',
-          `Unknown HTML tag '${tag[0]}' found in formatting`,
-          { halt: true }
-        );
-      }
+  static _validateTag(tag) {
+    if (!_.includes(this.ALLOWED_HTML_TAGS, tag)) {
+      ErrorHandler.handleError(
+        'Parser',
+        `Unknown HTML tag '<${tag}>' found in formatting`,
+        { halt: true }
+      );
     }
   }
 
@@ -127,35 +139,33 @@ class Parser {
    * @return {array} The array of tokens.
    */
   static _tokenize(string) {
-    this._validateFormatting(string);
-
     const tokens = [];
     let remainder = string;
     let withinArgs = false;
 
     while (remainder.length > 0) {
       let nonTextTokenFound = false;
+      const isArgsStart = _.startsWith(remainder, this.TOKENS.ARGS_START);
 
-      _.forEach(this.NON_TEXT_TOKENS, (nonTextToken) => {
-        if (
-          !nonTextTokenFound &&
-          _.startsWith(remainder, nonTextToken) &&
-          !_.startsWith(remainder, this.TOKENS.ARGS_START)
-        ) {
-          const last = _.last(tokens);
+      if (!isArgsStart) {
+        _.forEach(this.NON_TEXT_TOKENS, (nonTextToken) => {
+          if (_.startsWith(remainder, nonTextToken)) {
+            const last = _.last(tokens);
 
-          // Handle escaping special characters
-          if (last && last.type === this.TOKENS.TEXT && last.text.slice(-1) === '\\') {
-            last.text = last.text.substr(0, last.text.length - 1) + remainder[0];
-            remainder = remainder.slice(1);
-          } else {
-            tokens.push({ type: nonTextToken });
-            remainder = remainder.slice(nonTextToken.length);
+            // Handle escaping special characters
+            if (last && last.type === this.TOKENS.TEXT && last.text.slice(-1) === '\\') {
+              last.text = last.text.substr(0, last.text.length - 1) + remainder[0];
+              remainder = remainder.slice(1);
+            } else {
+              tokens.push({ type: nonTextToken });
+              remainder = remainder.slice(nonTextToken.length);
+            }
+
+            nonTextTokenFound = true;
+            return false; // kill the loop
           }
-
-          nonTextTokenFound = true;
-        }
-      });
+        });
+      }
 
       if (nonTextTokenFound) {
         continue;
@@ -163,7 +173,9 @@ class Parser {
 
       // Special processing for TAG and ARGS tags and default processing for TEXT tag
       const last = _.last(tokens);
-      if (_.startsWith(remainder, this.TOKENS.ARGS_START)) {
+      let regexMatch = null;
+
+      if (isArgsStart) {
         tokens.push({ type: this.TOKENS.ARGS_START });
         remainder = remainder.slice(this.TOKENS.ARGS_START.length);
         withinArgs = true;
@@ -174,18 +186,24 @@ class Parser {
         tokens.push({ type: this.TOKENS.ARGS_END });
         remainder = remainder.slice(this.TOKENS.ARGS_END.length);
         withinArgs = false;
-      } else if (remainder.match(this.ALLOWED_HTML_START_TAG_REGEX)) {
+      } else if (regexMatch = remainder.match(this.HTML_START_TAG_REGEX)) {
+        const tag = regexMatch[1];
+        this._validateTag(tag);
+
         tokens.push({
           type: this.TOKENS.HTML_TAG_START,
-          tag: remainder.match(this.ALLOWED_HTML_START_TAG_REGEX)[1]
+          tag
         });
-        remainder = remainder.replace(this.ALLOWED_HTML_START_TAG_REGEX, '');
-      } else if (remainder.match(this.ALLOWED_HTML_END_TAG_REGEX)) {
+        remainder = remainder.slice(regexMatch[0].length);
+      } else if (regexMatch = remainder.match(this.HTML_END_TAG_REGEX)) {
+        const tag = regexMatch[1];
+        this._validateTag(tag);
+
         tokens.push({
           type: this.TOKENS.HTML_TAG_END,
-          tag: remainder.match(this.ALLOWED_HTML_END_TAG_REGEX)[1]
+          tag
         });
-        remainder = remainder.replace(this.ALLOWED_HTML_END_TAG_REGEX, '');
+        remainder = remainder.slice(regexMatch[0].length);
       } else if (last && last.type === this.TOKENS.TEXT) {
         // If text was found and text was the last token, append the text to the previous token.
         last.text += remainder[0];

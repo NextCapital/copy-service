@@ -1,11 +1,15 @@
+import SyntaxNode from '../SyntaxNode/SyntaxNode';
+
 /**
  * Represents a reference to another copy key in an AST.
  */
-class Reference {
+class Reference extends SyntaxNode {
   /**
    * @param  {object} options
    */
   constructor(options) {
+    super(options);
+
     /**
      * The copy key being referenced, with leading and trailing whitespace trimmed.
      * @type {string}
@@ -13,9 +17,9 @@ class Reference {
     this.key = options.key.trim();
     /**
      * The neighboring AST.
-     * @type {Formatting|Functional|Newline|Reference|Substitute|Switch|Verbatim}
+     * @type {SyntaxNode|null}
      */
-    this.sibling = options.sibling;
+    this.sibling = options.sibling || null;
   }
 
   /**
@@ -35,6 +39,17 @@ class Reference {
     }
 
     return false;
+  }
+
+  /**
+   * Converts the AST node to the syntax that made it.
+   *
+   * @return {string}
+   */
+  toSyntax() {
+    return (
+      `\${${this.key}}${this.safeToSyntax(this.sibling)}`
+    );
   }
 }
 

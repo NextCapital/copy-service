@@ -1,21 +1,25 @@
+import SyntaxNode from '../SyntaxNode/SyntaxNode';
+
 /**
  * Represents an HTML tag in the AST.
  */
-class Formatting {
+class Formatting extends SyntaxNode {
   /**
    * @param  {object} options
    */
   constructor(options) {
+    super(options);
+
     /**
      * The neighboring AST.
-     * @type {Formatting|Functional|Newline|Reference|Substitute|Switch|Verbatim}
+     * @type {SyntaxNode|null}
      */
-    this.sibling = options.sibling;
+    this.sibling = options.sibling || null;
     /**
      * An AST representing the string displayed inside the HTML tag.
-     * @type {Formatting|Functional|Newline|Reference|Substitute|Switch|Verbatim}
+     * @type {SyntaxNode|null}
      */
-    this.copy = options.copy;
+    this.copy = options.copy || null;
     /**
      * The tag as a string.
      * @type {string}
@@ -38,6 +42,17 @@ class Formatting {
     }
 
     return true;
+  }
+
+  /**
+   * Converts the AST node to the syntax that made it.
+   *
+   * @return {string}
+   */
+  toSyntax() {
+    return (
+      `<${this.tag}>${this.safeToSyntax(this.copy)}</${this.tag}>${this.safeToSyntax(this.sibling)}`
+    );
   }
 }
 

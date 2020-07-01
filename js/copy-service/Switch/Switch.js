@@ -1,11 +1,15 @@
+import SyntaxNode from '../SyntaxNode/SyntaxNode';
+
 /**
  * Represents a logic branch in an AST.
  */
-class Switch {
+class Switch extends SyntaxNode {
   /**
    * @param  {object} options
    */
   constructor(options) {
+    super(options);
+
     /**
      * The substitution key for the decider, with leading and trailing whitespace trimmed.
      * @type {string}
@@ -13,19 +17,19 @@ class Switch {
     this.key = options.key.trim();
     /**
      * The neighboring AST.
-     * @type {Formatting|Functional|Newline|Reference|Substitute|Switch|Verbatim}
+     * @type {SyntaxNode|null}
      */
-    this.sibling = options.sibling;
+    this.sibling = options.sibling || null;
     /**
      * The AST to use when the decider is evaluated to truthy.
-     * @type {Formatting|Functional|Newline|Reference|Substitute|Switch|Verbatim}
+     * @type {SyntaxNode|null}
      */
-    this.left = options.left;
+    this.left = options.left || null;
     /**
      * The AST to use when the decider is evaluated to falsy.
-     * @type {Formatting|Functional|Newline|Reference|Substitute|Switch|Verbatim}
+     * @type {SyntaxNode|null}
      */
-    this.right = options.right;
+    this.right = options.right || null;
   }
 
   /**
@@ -33,6 +37,20 @@ class Switch {
    */
   isCacheable() {
     return false;
+  }
+
+  /**
+   * Converts the AST node to the syntax that made it.
+   *
+   * @return {string}
+   */
+  toSyntax() {
+    const left = this.safeToSyntax(this.left);
+    const right = this.safeToSyntax(this.right);
+
+    return (
+      `*{${left}}{${right}}{${this.key}}${this.safeToSyntax(this.sibling)}`
+    );
   }
 }
 

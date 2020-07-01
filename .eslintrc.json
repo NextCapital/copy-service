@@ -25,13 +25,7 @@
       2,
       "any"
     ],
-    "indent": [
-      2,
-      2,
-      {
-        "SwitchCase": 1
-      }
-    ],
+    "indent": "off",
     "no-use-before-define": 2,
     "max-len": [
       2,

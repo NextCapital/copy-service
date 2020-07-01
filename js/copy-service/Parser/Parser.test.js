@@ -24,7 +24,7 @@ describe('Parser', () => {
     });
   });
 
-  describe('parseLeaves', () => {
+  describe('static parseLeaves', () => {
     describe('when the tree is empty', () => {
       test('returns empty tree', () => {
         expect(Parser.parseLeaves({})).toEqual({});
@@ -544,6 +544,32 @@ describe('Parser', () => {
             );
           });
         });
+      });
+    });
+  });
+
+  describe('static parseSingle', () => {
+    describe('when the value is not a string', () => {
+      test('throws an error', () => {
+        expect(() => Parser.parseSingle({})).toThrow(
+          'Parser: Can only parse strings as copy'
+        );
+      });
+    });
+
+    describe('when the value is a string', () => {
+      test('tokenizes and parses the string', () => {
+        const result = { some: 'ast' };
+        jest.spyOn(Parser, '_parse').mockReturnValue(result);
+
+        const tokens = ['some', 'tokens'];
+        jest.spyOn(Parser, '_tokenize').mockReturnValue(tokens);
+
+        const copy = 'some copy';
+        expect(Parser.parseSingle(copy)).toBe(result);
+
+        expect(Parser._tokenize).toBeCalledWith(copy);
+        expect(Parser._parse).toBeCalledWith(tokens, copy);
       });
     });
   });

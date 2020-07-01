@@ -23,7 +23,7 @@ class PlainTextEvaluator extends Evaluator {
   /**
    * Evaluates the AST with given substitutions
    * @param  {string} copyPrefix    The copy string being recursively built.
-   * @param  {Formatting|Functional|Newline|Reference|Substitute|Switch|Verbatim} ast
+   * @param  {SyntaxNode|null} ast
    *                                The AST to be evaluated. This AST must be constructed by Parser.
    * @param  {object} substitutions An object containing substitutions for keys specified in the
    *                                AST.
@@ -82,7 +82,14 @@ class PlainTextEvaluator extends Evaluator {
     }
     // Evaluate the copy of the class, ignoring the function, and append the evaluated copy.
     else if (ast instanceof Functional) {
-      copy = this.evalAST(this.getInitialResult(), ast.copy, substitutions);
+      const method = substitutions.getFunction(ast.key);
+      let text = this.evalAST(this.getInitialResult(), ast.copy, substitutions);
+
+      if (this.allowFunctional && method && _.isFunction(method)) {
+        text = method(text, ...ast.args);
+      }
+
+      copy = text;
     }
     // Evaluate the copy, ignoring the HTML tags, and append the evaluated copy.
     else if (ast instanceof Formatting) {

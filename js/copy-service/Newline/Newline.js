@@ -1,16 +1,20 @@
+import SyntaxNode from '../SyntaxNode/SyntaxNode';
+
 /**
  * Represents a newline in an AST.
  */
-class Newline {
+class Newline extends SyntaxNode {
   /**
    * @param  {object} options
    */
   constructor(options) {
+    super(options);
+
     /**
      * The neighboring AST.
-     * @type {Formatting|Functional|Newline|Reference|Substitute|Switch|Verbatim}
+     * @type {SyntaxNode|null}
      */
-    this.sibling = options.sibling;
+    this.sibling = options.sibling || null;
   }
 
   /**
@@ -22,6 +26,15 @@ class Newline {
     }
 
     return true;
+  }
+
+  /**
+   * Converts the AST node to the syntax that made it.
+   *
+   * @return {string}
+   */
+  toSyntax() {
+    return `\n${this.safeToSyntax(this.sibling)}`;
   }
 }
 

@@ -4,3 +4,4 @@ docs/
 dist/
 node_modules/
 test-report.xml
+.eslintcache

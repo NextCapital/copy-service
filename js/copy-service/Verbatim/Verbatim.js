@@ -1,20 +1,24 @@
+import SyntaxNode from '../SyntaxNode/SyntaxNode';
+
 /**
  * Represents text in an AST.
  */
-class Verbatim {
+class Verbatim extends SyntaxNode {
   /**
    * @param  {object} options
    */
   constructor(options) {
+    super(options);
+
     /**
      * @type {string}
      */
     this.text = options.text;
     /**
      * The neighboring AST.
-     * @type {Formatting|Functional|Newline|Reference|Substitute|Switch|Verbatim}
+     * @type {SyntaxNode|null}
      */
-    this.sibling = options.sibling;
+    this.sibling = options.sibling || null;
   }
 
   /**
@@ -26,6 +30,17 @@ class Verbatim {
     }
 
     return true;
+  }
+
+  /**
+   * Converts the AST node to the syntax that made it.
+   *
+   * @return {string}
+   */
+  toSyntax() {
+    return (
+      `${this.text}${this.safeToSyntax(this.sibling)}`
+    );
   }
 }
 

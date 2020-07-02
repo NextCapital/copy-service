@@ -3,6 +3,14 @@ module.exports = {
   collectCoverageFrom: [
     "js/**/*.{js,jsx}"
   ],
+  coverageThreshold: {
+    global: {
+      statements: -9,
+      branches: -12,
+      functions: 100,
+      lines: -9
+    }
+  },
   moduleFileExtensions: [
     'js',
     'jsx',

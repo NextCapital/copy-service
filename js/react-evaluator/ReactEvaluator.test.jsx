@@ -55,12 +55,12 @@ describe('ReactEvaluator', () => {
 
     describe('when the ast is cached', () => {
       test('combines the cached result with the prefix', () => {
-        const copyPrefix = <span>hello</span>;
-        const suffix = <span>world</span>;
+        const copyPrefix = 'hello';
+        const suffix = <b>world</b>;
         const ast = new Newline({});
 
         jest.spyOn(evaluator, 'getCached').mockReturnValue(suffix);
-        expect(getStaticMarkup(copyPrefix, ast)).toBe('<span>helloworld</span>');
+        expect(getStaticMarkup(copyPrefix, ast)).toBe('<span>hello<b>world</b></span>');
         expect(evaluator.getCached).toBeCalledWith(ast);
       });
     });
@@ -75,9 +75,9 @@ describe('ReactEvaluator', () => {
 
         jest.spyOn(evaluator, 'setCacheIfCacheable');
         expect(getStaticMarkup(copyPrefix, ast)).toBe('<span>helloworld!</span>');
-        expect(evaluator.setCacheIfCacheable).toBeCalledWith(ast, expect.any(Object));
+        expect(evaluator.setCacheIfCacheable).toBeCalledWith(ast, 'world!');
         expect(ReactDOMServer.renderToStaticMarkup(evaluator.getCached(ast))).toBe(
-          '<span>world!</span>'
+          'world!'
         );
       });
     });
@@ -88,7 +88,7 @@ describe('ReactEvaluator', () => {
           test('returns a span with a br element', () => {
             const ast = new Newline({});
 
-            expect(getStaticMarkup(null, ast)).toBe('<span><br/></span>');
+            expect(getStaticMarkup(null, ast)).toBe('<br/>');
           });
         });
 
@@ -97,7 +97,7 @@ describe('ReactEvaluator', () => {
             const text = 'some really cool text';
             const ast = new Verbatim({ text });
 
-            expect(getStaticMarkup(null, ast)).toBe(`<span>${text}</span>`);
+            expect(getStaticMarkup(null, ast)).toBe(text);
           });
         });
 
@@ -109,9 +109,7 @@ describe('ReactEvaluator', () => {
             const key = 'some.key';
             const ast = new Reference({ key });
 
-            expect(getStaticMarkup(null, ast)).toBe(
-              `<span>${referencedAST.text}</span>`
-            );
+            expect(getStaticMarkup(null, ast)).toBe(referencedAST.text);
           });
         });
 
@@ -131,7 +129,7 @@ describe('ReactEvaluator', () => {
               substitutions.get.mockReturnValue(text);
               const ast = new Substitute({ key: 'exists' });
 
-              expect(getStaticMarkup(null, ast)).toBe(`<span>${text}</span>`);
+              expect(getStaticMarkup(null, ast)).toBe(text);
             });
           });
 
@@ -163,9 +161,7 @@ describe('ReactEvaluator', () => {
               const key = 'some.key';
               const ast = new RefSubstitute({ key });
 
-              expect(getStaticMarkup(null, ast)).toBe(
-                `<span>${referencedAST.text}</span>`
-              );
+              expect(getStaticMarkup(null, ast)).toBe(referencedAST.text);
             });
           });
         });
@@ -180,7 +176,7 @@ describe('ReactEvaluator', () => {
                 key: 'decider'
               });
 
-              expect(getStaticMarkup(null, ast)).toBe(`<span>${ast.left.text}</span>`);
+              expect(getStaticMarkup(null, ast)).toBe(ast.left.text);
             });
           });
 
@@ -193,7 +189,7 @@ describe('ReactEvaluator', () => {
                 key: 'decider'
               });
 
-              expect(getStaticMarkup(null, ast)).toBe(`<span>${ast.right.text}</span>`);
+              expect(getStaticMarkup(null, ast)).toBe(ast.right.text);
             });
           });
         });
@@ -209,7 +205,7 @@ describe('ReactEvaluator', () => {
               });
 
               evaluator.evalAST(null, ast, new Substitutions({ func }));
-              expect(func).toBeCalledWith(<span>{ ast.copy.text }</span>, 'arg1', 'arg2');
+              expect(func).toBeCalledWith(ast.copy.text, 'arg1', 'arg2');
             });
 
             test('returns the result of the function method formatted as JSX', () => {
@@ -243,9 +239,7 @@ describe('ReactEvaluator', () => {
 
                 expect(
                   getStaticMarkup(evaluator.evalAST(null, ast, new Substitutions({ func })))
-                ).toBe(
-                  `<span>${ast.copy.text}</span>`
-                );
+                ).toBe(ast.copy.text);
 
                 expect(func).not.toBeCalled();
               });
@@ -261,7 +255,7 @@ describe('ReactEvaluator', () => {
               });
 
               expect(getStaticMarkup(evaluator.evalAST(null, ast, substitutions))).toBe(
-                `<span>${ast.copy.text}</span>`
+                ast.copy.text
               );
             });
           });
@@ -275,7 +269,7 @@ describe('ReactEvaluator', () => {
             });
 
             expect(getStaticMarkup(evaluator.evalAST(null, ast))).toBe(
-              `<span><i>${ast.copy.text}</i></span>`
+              `<i>${ast.copy.text}</i>`
             );
           });
 
@@ -336,9 +330,7 @@ describe('ReactEvaluator', () => {
 
             expect(
               getStaticMarkup(evaluator.evalAST(null, ast, substitutions))
-            ).toBe(
-              `<span>${ast.left.right.text}</span>`
-            );
+            ).toBe(ast.left.right.text);
           });
         });
 
@@ -352,7 +344,7 @@ describe('ReactEvaluator', () => {
               })
             });
 
-            expect(getStaticMarkup(null, ast)).toBe('<span>verbatim1verbatim2verbatim3</span>');
+            expect(getStaticMarkup(null, ast)).toBe('verbatim1verbatim2verbatim3');
           });
         });
 
@@ -370,7 +362,7 @@ describe('ReactEvaluator', () => {
               })
             });
 
-            expect(getStaticMarkup(null, ast)).toBe('<span><b><i>rr</i></b></span>');
+            expect(getStaticMarkup(null, ast)).toBe('<b><i>rr</i></b>');
           });
         });
       });

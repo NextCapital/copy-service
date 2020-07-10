@@ -38,35 +38,35 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
       describe('verbatim.balance', () => {
         testCopy({
           key: 'verbatim.balance',
-          expectedCopy: '<span>Balance</span>'
+          expectedCopy: 'Balance'
         });
       });
 
       describe('verbatim.pluralTitle', () => {
         testCopy({
           key: 'verbatim.pluralTitle',
-          expectedCopy: '<span>accounts</span>'
+          expectedCopy: 'accounts'
         });
       });
 
       describe('verbatim.owner', () => {
         testCopy({
           key: 'verbatim.owner',
-          expectedCopy: '<span>Account Owner</span>'
+          expectedCopy: 'Account Owner'
         });
       });
 
       describe('verbatim.nameOnAccount', () => {
         testCopy({
           key: 'verbatim.nameOnAccount',
-          expectedCopy: '<span>name on account</span>'
+          expectedCopy: 'name on account'
         });
       });
 
       describe('verbatim.list.title.primary', () => {
         testCopy({
           key: 'verbatim.list.title.primary',
-          expectedCopy: '<span>accounts</span>'
+          expectedCopy: 'accounts'
         });
       });
     });
@@ -76,7 +76,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
         testCopy({
           key: 'substitutions.title',
           substitutions: { designObject: { members: { nickname: { faceValue: 'faceValue' } } } },
-          expectedCopy: '<span>faceValue</span>'
+          expectedCopy: 'faceValue'
         });
       });
 
@@ -84,7 +84,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
         testCopy({
           key: 'substitutions.symbol',
           substitutions: { value: 100 },
-          expectedCopy: '<span>$100</span>'
+          expectedCopy: '$100'
         });
       });
 
@@ -92,7 +92,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
         testCopy({
           key: 'substitutions.min',
           substitutions: { value: 100 },
-          expectedCopy: '<span>input value must be no earlier than 100</span>'
+          expectedCopy: 'input value must be no earlier than 100'
         });
       });
     });
@@ -101,7 +101,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
       describe('references.title', () => {
         testCopy({
           key: 'references.title',
-          expectedCopy: '<span>Balance and accounts</span>'
+          expectedCopy: 'Balance and accounts'
         });
       });
 
@@ -109,14 +109,14 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
         testCopy({
           key: 'references.symbol',
           substitutions: { value: 100 },
-          expectedCopy: '<span>$100</span>'
+          expectedCopy: '$100'
         });
       });
 
       describe('references.owner', () => {
         testCopy({
           key: 'references.owner',
-          expectedCopy: '<span>Account Owner</span>'
+          expectedCopy: 'Account Owner'
         });
       });
     });
@@ -126,7 +126,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
         testCopy({
           key: 'referenceSubstitutions.title',
           substitutions: { substitution: 'verbatim.balance' },
-          expectedCopy: '<span>Balance</span>'
+          expectedCopy: 'Balance'
         });
       });
     });
@@ -137,7 +137,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
           testCopy({
             key: 'decisions.title',
             substitutions: { designObject: { current: true } },
-            expectedCopy: '<span>Current asset</span>'
+            expectedCopy: 'Current asset'
           });
         });
 
@@ -145,7 +145,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
           testCopy({
             key: 'decisions.title',
             substitutions: { designObject: { current: 1 } },
-            expectedCopy: '<span>Current asset</span>'
+            expectedCopy: 'Current asset'
           });
         });
 
@@ -153,7 +153,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
           testCopy({
             key: 'decisions.title',
             substitutions: { designObject: { current: false } },
-            expectedCopy: '<span>Proposed asset</span>'
+            expectedCopy: 'Proposed asset'
           });
         });
 
@@ -161,13 +161,13 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
           testCopy({
             key: 'decisions.title',
             substitutions: { designObject: { current: 0 } },
-            expectedCopy: '<span>Proposed asset</span>'
+            expectedCopy: 'Proposed asset'
           });
 
           testCopy({
             key: 'decisions.title',
             substitutions: { designObject: { current: 400 } },
-            expectedCopy: '<span>Proposed asset</span>'
+            expectedCopy: 'Proposed asset'
           });
         });
       });
@@ -177,7 +177,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
           testCopy({
             key: 'decisions.space',
             substitutions: { relative: true },
-            expectedCopy: '<span>contribution rate</span>'
+            expectedCopy: 'contribution rate'
           });
         });
 
@@ -185,7 +185,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
           testCopy({
             key: 'decisions.space',
             substitutions: { relative: false },
-            expectedCopy: '<span>contribution</span>'
+            expectedCopy: 'contribution'
           });
         });
       });
@@ -197,7 +197,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
           test('calls the passed function with the evaluated copy', () => {
             const passedFunction = jest.fn();
             evaluator.getCopy('functions.title', { makeExternalLink: passedFunction });
-            expect(passedFunction).toBeCalledWith(<span>learn more</span>);
+            expect(passedFunction).toBeCalledWith('learn more');
           });
 
           test('returns the result of the function', () => {
@@ -224,7 +224,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
           const staticMarkup = getStaticMarkup(
             evaluator.getCopy('functions.title', { makeExternalLink: passedFunction })
           );
-          expect(staticMarkup).toBe('<span>learn more</span>');
+          expect(staticMarkup).toBe('learn more');
         });
       });
 
@@ -239,7 +239,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
             };
             evaluator.getCopy('functions.args', substitutions);
             expect(passedFunction).toBeCalledWith(
-              <span>learn more</span>, substitutions.arg1, substitutions.arg2
+              'learn more', substitutions.arg1, substitutions.arg2
             );
           });
 
@@ -268,7 +268,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
         testCopy({
           key: 'tags.nestedReference',
           substitutions: { value: 100 },
-          expectedCopy: '<span><b><i>$100</i></b></span>'
+          expectedCopy: '<b><i>$100</i></b>'
         });
       });
     });
@@ -283,7 +283,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
               sub: 'some sub',
               value: 100
             },
-            expectedCopy: '<span><b><i>$100</i></b></span>'
+            expectedCopy: '<b><i>$100</i></b>'
           });
         });
 
@@ -295,10 +295,24 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
               sub: 'some sub',
               value: 100
             },
-            expectedCopy: '<span>some sub</span>'
+            expectedCopy: 'some sub'
           });
         });
       });
+    });
+  });
+
+  describe('tags', () => {
+    testCopy({
+      key: 'tags.nested',
+      substitutions: { value: 100 },
+      expectedCopy: '<b><i>Plan</i></b>'
+    });
+
+    testCopy({
+      key: 'tags.beginAndEnd',
+      substitutions: { value: 100 },
+      expectedCopy: '<span><b>begin</b> and <i>end</i></span>'
     });
   });
 });

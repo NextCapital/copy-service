@@ -36,6 +36,7 @@
   "tags": {
     "title": "<b>Plan</b>",
     "nested": "<b><i>Plan</i></b>",
-    "nestedReference": "<b><i>${references.symbol}</i></b>"
+    "nestedReference": "<b><i>${references.symbol}</i></b>",
+    "beginAndEnd": "<b>begin</b> and <i>end</i>"
   }
 }

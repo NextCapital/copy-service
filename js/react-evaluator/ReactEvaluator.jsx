@@ -42,9 +42,9 @@ class ReactEvaluator extends Evaluator {
     let copy;
 
     if (ast instanceof Newline) {
-      copy = <span><br /></span>;
+      copy = <br />;
     } else if (ast instanceof Verbatim) {
-      copy = <span>{ ast.text }</span>;
+      copy = ast.text;
     } else if (ast instanceof Reference) {
       copy = this.evalAST(
         this.getInitialResult(), this.copyService.getAstForKey(ast.key), substitutions
@@ -53,8 +53,7 @@ class ReactEvaluator extends Evaluator {
       const value = substitutions.get(ast.key);
 
       if (!_.isNil(value) && value !== '') {
-        const jsx = (<span>{ value.toString() }</span>);
-        copy = jsx;
+        copy = value.toString();
       } else {
         copy = null;
       }
@@ -81,8 +80,11 @@ class ReactEvaluator extends Evaluator {
       let jsx = this.evalAST(this.getInitialResult(), ast.copy, substitutions);
 
       if (this.allowFunctional && method && _.isFunction(method)) {
+        // because this can return arbitrary JSX, we must wrap in a span
         jsx = (
-          <span>{ method(jsx, ...ast.args) }</span>
+          <span>
+            { method(jsx, ...ast.args) }
+          </span>
         );
       }
 
@@ -91,8 +93,7 @@ class ReactEvaluator extends Evaluator {
       const jsx = this.evalAST(this.getInitialResult(), ast.copy, substitutions);
 
       if (jsx) {
-        const tag = React.createElement(ast.tag, {}, jsx.props.children);
-        copy = <span>{ tag }</span>;
+        copy = React.createElement(ast.tag, {}, jsx);
       } else { // empty formatting, skip tag
         copy = null;
       }
@@ -116,6 +117,25 @@ class ReactEvaluator extends Evaluator {
     return null;
   }
 
+  /**
+   * Merges two AST results together.
+   *
+   * If either side is null, returns the other.
+   * If both sides are strings, concatenates them.
+   * If one side is a string, and the other JSX we:
+   *  - check if the `jsx` is a span. If so, we know it is output of _mergePrefixes or functional
+   *    copy, and thus has no props on it
+   *  - If a span, we can avoid duplicate tabs by merging children
+   *  - If not a span, we need to wrap in a new span to preserve the type
+   * If neither side is a string, we have to wrap both in a new span
+   *  - Unless both are spans, in which case we can merge children
+   *
+   * So, in conclusion:
+   *
+   *  - Any top-level span tags are specifically added by this method or functional copy
+   *  - Thus, it is *always* safe to merge the children of two spans
+   *  - If either 'left' or 'right' is a non-span element, we have to wrap
+   */
   _mergePrefixes(left, right) {
     if (!right) {
       return left;
@@ -123,19 +143,45 @@ class ReactEvaluator extends Evaluator {
       return right;
     }
 
-    // single child preferable to multiple ones, as it avoids array alloc
-    if (_.isString(left.props.children) && _.isString(right.props.children)) {
+    // happy path: both sides are strings
+    if (_.isString(left) && _.isString(right)) {
+      return left + right;
+    }
+
+    // merge the two spans
+    if (left.type === 'span') {
+      // both are spans, merge children into one span
+      if (right.type === 'span') {
+        return (
+          <span>
+            { left.props.children }
+            { right.props.children }
+          </span>
+        );
+      }
+
       return (
         <span>
-          { left.props.children + right.props.children }
+          { left.props.children }
+          { right }
         </span>
       );
     }
 
+    if (right.type === 'span') {
+      return (
+        <span>
+          { left }
+          { right.props.children }
+        </span>
+      );
+    }
+
+    // have to merge both elements under a new span tag
     return (
       <span>
-        { left.props.children }
-        { right.props.children }
+        { left }
+        { right }
       </span>
     );
   }

@@ -314,5 +314,11 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
       substitutions: { value: 100 },
       expectedCopy: '<span><b>begin</b> and <i>end</i></span>'
     });
+
+    testCopy({
+      key: 'tags.nestedList',
+      substitutions: { value: 100 },
+      expectedCopy: '<span>A list of <ul><li>uno</li><li>dos</li><li>tres</li></ul> things.</span>'
+    });
   });
 });

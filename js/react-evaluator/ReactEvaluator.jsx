@@ -93,7 +93,12 @@ class ReactEvaluator extends Evaluator {
       const jsx = this.evalAST(this.getInitialResult(), ast.copy, substitutions);
 
       if (jsx) {
-        copy = React.createElement(ast.tag, {}, jsx);
+        // unwrap a span, otherwise preserve children as-is
+        const childContent = (_.isString(jsx) || jsx.type !== 'span') ?
+          jsx :
+          jsx.props.children;
+
+        copy = React.createElement(ast.tag, {}, childContent);
       } else { // empty formatting, skip tag
         copy = null;
       }

@@ -58,11 +58,11 @@ describe('Functional', () => {
           sibling: new Verbatim({ text: '.' }),
           copy: new Verbatim({ text: 'some copy' }),
           key: 'some.key',
-          args: ['uno', 'dos']
+          args: ['one', 'two']
         });
 
         expect(functional.toSyntax()).toBe(
-          '^{some copy}{some.key}[uno,dos].'
+          '^{some copy}{some.key}[one,two].'
         );
       });
     });

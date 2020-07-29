@@ -15,7 +15,7 @@ import {
 } from '../index.js';
 
 /**
- * Provides an interface that can register copy, determine the existance of copy, and generate copy
+ * Provides an interface that can register copy, determine the existence of copy, and generate copy
  * recursively evaluated with substitutions.
  * @interface
  */

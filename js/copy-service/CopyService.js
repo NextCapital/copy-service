@@ -177,7 +177,7 @@ class CopyService {
 
   /**
    * Merges the new registered copy into the old registered copy. This will force any
-   * strings or ASY nodes to replace rather than merge.
+   * strings or AST nodes to replace rather than merge.
    *
    * @param {object} existingCopy
    * @param {object} newCopy

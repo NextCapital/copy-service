@@ -373,7 +373,7 @@ describe('Parser', () => {
                 level2: {
                   text: '^{some copy}{functionKey}',
                   more: {
-                    text: '<b><i>#{moar}i like copy${level1}\n\non different lines</i></b>'
+                    text: '<b><i>#{more}i like copy${level1}\n\non different lines</i></b>'
                   }
                 }
               };
@@ -407,7 +407,7 @@ describe('Parser', () => {
                   tag: 'i',
                   sibling: null,
                   copy: new Substitute({
-                    key: 'moar',
+                    key: 'more',
                     sibling: new Verbatim({
                       text: 'i like copy',
                       sibling: new Reference({
@@ -517,7 +517,7 @@ describe('Parser', () => {
 
         describe('when the tree contains copy with an unknown token', () => {
           test('throws error', () => {
-            const tree = { tag: '!{lol}' };
+            const tree = { tag: '!{word}' };
 
             expect(() => Parser.parseLeaves(tree)).toThrow(
               'Parser: Unexpected token }'
@@ -527,7 +527,7 @@ describe('Parser', () => {
 
         describe('when the tree contains copy with a nested unknown token', () => {
           test('throws error', () => {
-            const tree = { tag: '<b>!{lol}</b>' };
+            const tree = { tag: '<b>!{word}</b>' };
 
             expect(() => Parser.parseLeaves(tree)).toThrow(
               'Parser: Unexpected restricted token }'

@@ -9,7 +9,7 @@ describe('Substitutions', () => {
       some: 'subs',
       to: 'use',
       deep: {
-        test: 'derp'
+        test: 'word'
       }
     };
 

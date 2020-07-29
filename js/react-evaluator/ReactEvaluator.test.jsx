@@ -66,7 +66,7 @@ describe('ReactEvaluator', () => {
     });
 
     describe('when the ast is not cached', () => {
-      test('caches the fully evalauted ast, without the prefix', () => {
+      test('caches the fully evaluated ast, without the prefix', () => {
         const copyPrefix = <span>hello</span>;
         const ast = new Verbatim({
           text: 'world',
@@ -93,7 +93,7 @@ describe('ReactEvaluator', () => {
         });
 
         describe('when the AST is a Verbatim', () => {
-          test('returns the Verbatim\'s text in JSX', () => {
+          test('returns the text from Verbatim as JSX', () => {
             const text = 'some really cool text';
             const ast = new Verbatim({ text });
 
@@ -334,7 +334,7 @@ describe('ReactEvaluator', () => {
           });
         });
 
-        describe('when several Verbatims are siblings', () => {
+        describe('when several Verbatim nodes are siblings', () => {
           test('returns the correct copy', () => {
             const ast = new Verbatim({
               text: 'verbatim1',

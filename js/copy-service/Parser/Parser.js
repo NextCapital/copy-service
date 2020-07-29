@@ -48,6 +48,7 @@ class Parser {
    * @type {Array}
    */
   static ALLOWED_HTML_TAGS = [
+    // cspell:disable-next-line
     'b', 'i', 'u', 'sup', 'sub', 's', 'em', 'p', 'span', 'div', 'ol', 'ul', 'li'
   ];
 

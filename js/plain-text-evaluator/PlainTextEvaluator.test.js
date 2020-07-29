@@ -57,7 +57,7 @@ describe('PlainTextEvaluator', () => {
     });
 
     describe('when the ast is not cached', () => {
-      test('caches the fully evalauted ast, without the prefix', () => {
+      test('caches the fully evaluated ast, without the prefix', () => {
         const copyPrefix = 'hello';
         const ast = new Verbatim({
           text: 'world',
@@ -81,7 +81,7 @@ describe('PlainTextEvaluator', () => {
         });
 
         describe('when the AST is a Verbatim', () => {
-          test('returns Verbatim\'s text', () => {
+          test('returns text from Verbatim', () => {
             const text = 'some really cool text';
             const ast = new Verbatim({ text });
 

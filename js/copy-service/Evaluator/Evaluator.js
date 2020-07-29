@@ -41,7 +41,7 @@ class Evaluator {
    * NOTE: The evaluated result should be the result of fully evaluating the ast with no prefix.
    *
    * @param {AST} ast node being cached
-   * @param {*} evaluated fully-evalauted result for the node
+   * @param {*} evaluated fully-evaluated result for the node
    */
   setCacheIfCacheable(ast, evaluated) {
     if (ast.isCacheable(this.copyService)) {
@@ -50,10 +50,10 @@ class Evaluator {
   }
 
   /**
-   * Returns evalauted copy got the given copy key and substitutions.
+   * Returns evaluated copy got the given copy key and substitutions.
    * @param  {string} key
    * @param  {object|function} [rawSubstitutions] Substitutions to be used by the evaluator when
-   * evaluating the AST. Must either be an object or a fucntion returning the object.
+   * evaluating the AST. Must either be an object or a function returning the object.
    * @return {*} The evaluated copy
    */
   getCopy(key, rawSubstitutions) {

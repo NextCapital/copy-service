@@ -9,7 +9,7 @@
     "ReactEvaluator.js"
   ],
   "scripts": {
-    "autopublish": "autopublish",
+    "autopublish": "auto-publish-package",
     "build": "webpack",
     "ci": "npm run lint && npm run test && npm run build",
     "docs": "rm -rf docs/ && jsdoc js/**/*.js -c .jsdoc.json",
@@ -40,7 +40,7 @@
     "@babel/preset-react": "^7.10.4",
     "@nextcapital/eslint-config-js-linter": "^2.0.3",
     "@pixi/jsdoc-template": "^2.6.0",
-    "autopublish": "0.0.8",
+    "auto-publish-package": "^0.1.0",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.3.0",

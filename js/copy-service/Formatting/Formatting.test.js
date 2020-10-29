@@ -142,13 +142,13 @@ describe('Formatting', () => {
   describe('toSyntax', () => {
     test('converts copy back to a string', () => {
       const formatting = new Formatting({
-        tag: 'b',
+        tag: 'strong',
         copy: new Verbatim({ text: 'some text' }),
         sibling: new Verbatim({ text: '.' })
       });
 
       expect(formatting.toSyntax()).toBe(
-        '<b>some text</b>.'
+        '<strong>some text</strong>.'
       );
     });
   });

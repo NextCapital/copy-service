@@ -145,11 +145,11 @@ describe('Parser', () => {
           describe('when the tree contains a valid HTML tag', () => {
             test('completes a parse with an AST containing a Formatting node', () => {
               const initialTree = {
-                formatting: '<b>some text</b>'
+                formatting: '<strong>some text</strong>'
               };
               const expectedTree = {
                 formatting: new Formatting({
-                  tag: 'b',
+                  tag: 'strong',
                   copy: new Verbatim({
                     text: 'some text',
                     sibling: null
@@ -283,7 +283,7 @@ describe('Parser', () => {
           describe('when a tree contains copy nested inside HTML tags', () => {
             test('parses the nested copy successfully', () => {
               const initialTree = {
-                tags: '<b><i>${hello}\n#{sub}</i></b>'
+                tags: '<strong><em>${hello}\n#{sub}</em></strong>'
               };
               const expectedTree = {
                 tags: new Formatting({
@@ -297,10 +297,10 @@ describe('Parser', () => {
                         })
                       })
                     }),
-                    tag: 'i',
+                    tag: 'em',
                     sibling: null
                   }),
-                  tag: 'b',
+                  tag: 'strong',
                   sibling: null
                 })
               };
@@ -373,7 +373,7 @@ describe('Parser', () => {
                 level2: {
                   text: '^{some copy}{functionKey}',
                   more: {
-                    text: '<b><i>#{more}i like copy${level1}\n\non different lines</i></b>'
+                    text: '<strong><em>#{more}i like copy${level1}\n\non different lines</em></strong>'
                   }
                 }
               };
@@ -401,10 +401,10 @@ describe('Parser', () => {
               });
 
               const moreTextParsed = new Formatting({
-                tag: 'b',
+                tag: 'strong',
                 sibling: null,
                 copy: new Formatting({
-                  tag: 'i',
+                  tag: 'em',
                   sibling: null,
                   copy: new Substitute({
                     key: 'more',
@@ -483,6 +483,22 @@ describe('Parser', () => {
               'Parser: Unknown HTML tag \'<invalid>\' found in formatting'
             );
           });
+
+          test('throws error', () => {
+            const tree = { tag: '<b></b>' };
+
+            expect(() => Parser.parseLeaves(tree)).toThrow(
+              'Parser: Unknown HTML tag \'<b>\' found in formatting'
+            );
+          });
+
+          test('throws error', () => {
+            const tree = { tag: '<i></i>' };
+
+            expect(() => Parser.parseLeaves(tree)).toThrow(
+              'Parser: Unknown HTML tag \'<i>\' found in formatting'
+            );
+          });
         });
 
         describe('when the tree contains copy with missing text', () => {
@@ -527,7 +543,7 @@ describe('Parser', () => {
 
         describe('when the tree contains copy with a nested unknown token', () => {
           test('throws error', () => {
-            const tree = { tag: '<b>!{word}</b>' };
+            const tree = { tag: '<strong>!{word}</strong>' };
 
             expect(() => Parser.parseLeaves(tree)).toThrow(
               'Parser: Unexpected restricted token }'
@@ -537,7 +553,7 @@ describe('Parser', () => {
 
         describe('when the tree contains copy with a missing HTML end tag', () => {
           test('throws error', () => {
-            const tree = { tag: '<b>' };
+            const tree = { tag: '<strong>' };
 
             expect(() => Parser.parseLeaves(tree)).toThrow(
               'Parser: Expected closing >'

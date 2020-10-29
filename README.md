@@ -14,7 +14,8 @@ A Javascript service for copy management. This service allows consumer to provid
   - Reference syntax to other copy, preventing duplication
   - Substitution syntax to interpolate dynamic values, including dynamic references to other copy
   - Functional syntax to handle complex formatting and logic-based substitutions
-  - Supports formatting HTML tags (e.g. `<b>`, `<i>`)
+  - Supports formatting HTML tags (e.g. `<strong>`, `<em>`)
+    - NOTE: Support for `<b>` and `<i>` has been dropped to meet accessibility standards
 - Supports different output formats via Evaluators
   - String literals, React components
 
@@ -113,7 +114,7 @@ The valid `substitutionKey` paths for these attributes are `value` and `nested.d
 
 \* This syntax is not executed when using the PlainTextEvaluator. The PlainTextEvaluator will simply return the `COPY` inside of the syntax tags.
 
-^ Valid HTML tags are  `<b>`, `<i>`, `<u>`, `<sup>`, `<sub>`, `<s>`, `<em>`, `<p>`, `<span>`, `<div>`, `<ol>`, `<ul>`, `<li>`.
+^ Valid HTML tags are  `<strong>`, `<u>`, `<sup>`, `<sub>`, `<s>`, `<em>`, `<p>`, `<span>`, `<div>`, `<ol>`, `<ul>`, `<li>`.
 
 #### Examples
 
@@ -132,7 +133,7 @@ The valid `substitutionKey` paths for these attributes are `value` and `nested.d
     "recursiveProof": "${account.description}",
     "subbedCharacter": "%{character}",
     "switchedCharacter": "*{${account.characters.checking}}{${account.characters.savings}}{characterSwitch}",
-    "save": "<b>Save</b>",
+    "save": "<strong>Save</strong>",
     "cancel": "<q>Cancel</q>",
     "rollover": "^{You may rollover}[rollover]",
     "implement": "^{You are going to implement}[implement][true]"
@@ -160,7 +161,7 @@ The valid `substitutionKey` paths for these attributes are `value` and `nested.d
 
 - With the PlainTextEvaluator, `account.save` will resolve to `'Save'`.
 
-- With the ReactEvaluator, `account.save` will resolve to `<span><b>Save</b></span>`.
+- With the ReactEvaluator, `account.save` will resolve to `<span><strong>Save</strong></span>`.
 
 - With the PlainTextEvaluator, `account.cancel` will resolve to `'Cancel'`.
 

@@ -56,11 +56,11 @@ describe('ReactEvaluator', () => {
     describe('when the ast is cached', () => {
       test('combines the cached result with the prefix', () => {
         const copyPrefix = 'hello';
-        const suffix = <b>world</b>;
+        const suffix = <strong>world</strong>;
         const ast = new Newline({});
 
         jest.spyOn(evaluator, 'getCached').mockReturnValue(suffix);
-        expect(getStaticMarkup(copyPrefix, ast)).toBe('<span>hello<b>world</b></span>');
+        expect(getStaticMarkup(copyPrefix, ast)).toBe('<span>hello<strong>world</strong></span>');
         expect(evaluator.getCached).toBeCalledWith(ast);
       });
     });
@@ -264,12 +264,12 @@ describe('ReactEvaluator', () => {
         describe('when the AST is a Formatting', () => {
           test('returns the Formatting\'s HTML tag containing evaluated copy', () => {
             const ast = new Formatting({
-              tag: 'i',
+              tag: 'em',
               copy: new Verbatim({ text: 'some copy' })
             });
 
             expect(getStaticMarkup(evaluator.evalAST(null, ast))).toBe(
-              `<i>${ast.copy.text}</i>`
+              `<em>${ast.copy.text}</em>`
             );
           });
 
@@ -278,7 +278,7 @@ describe('ReactEvaluator', () => {
               const prefix = <span>prefix</span>;
 
               const ast = new Formatting({
-                tag: 'i',
+                tag: 'em',
                 copy: null
               });
 
@@ -351,9 +351,9 @@ describe('ReactEvaluator', () => {
         describe('when complex copy exists inside of an HTML tag', () => {
           test('returns the correct copy', () => {
             const ast = new Formatting({
-              tag: 'b',
+              tag: 'strong',
               copy: new Formatting({
-                tag: 'i',
+                tag: 'em',
                 copy: new Switch({
                   left: new Verbatim({ text: 'rl' }),
                   right: new Verbatim({ text: 'rr' }),
@@ -362,7 +362,7 @@ describe('ReactEvaluator', () => {
               })
             });
 
-            expect(getStaticMarkup(null, ast)).toBe('<b><i>rr</i></b>');
+            expect(getStaticMarkup(null, ast)).toBe('<strong><em>rr</em></strong>');
           });
         });
       });

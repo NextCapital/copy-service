@@ -217,7 +217,7 @@ describe('PlainTextEvaluator', () => {
           test('returns the evaluated copy of the Formatting, ignoring the HTML tags', () => {
             const ast = new Formatting({
               copy: new Verbatim({ text: 'functional text' }),
-              tag: 'b'
+              tag: 'strong'
             });
 
             expect(evaluator.evalAST('', ast, substitutions)).toBe(ast.copy.text);

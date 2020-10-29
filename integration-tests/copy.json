@@ -34,10 +34,10 @@
     "args": "^{learn more}{func}[arg1, arg2]"
   },
   "tags": {
-    "title": "<b>Plan</b>",
-    "nested": "<b><i>Plan</i></b>",
-    "nestedReference": "<b><i>${references.symbol}</i></b>",
-    "beginAndEnd": "<b>begin</b> and <i>end</i>",
+    "title": "<strong>Plan</strong>",
+    "nested": "<strong><em>Plan</em></strong>",
+    "nestedReference": "<strong><em>${references.symbol}</em></strong>",
+    "beginAndEnd": "<strong>begin</strong> and <em>end</em>",
     "nestedList": "A list of <ul><li>uno</li><li>dos</li><li>tres</li></ul> things."
   }
 }

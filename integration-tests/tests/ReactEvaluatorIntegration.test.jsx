@@ -268,7 +268,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
         testCopy({
           key: 'tags.nestedReference',
           substitutions: { value: 100 },
-          expectedCopy: '<b><i>$100</i></b>'
+          expectedCopy: '<strong><em>$100</em></strong>'
         });
       });
     });
@@ -283,7 +283,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
               sub: 'some sub',
               value: 100
             },
-            expectedCopy: '<b><i>$100</i></b>'
+            expectedCopy: '<strong><em>$100</em></strong>'
           });
         });
 
@@ -306,13 +306,13 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
     testCopy({
       key: 'tags.nested',
       substitutions: { value: 100 },
-      expectedCopy: '<b><i>Plan</i></b>'
+      expectedCopy: '<strong><em>Plan</em></strong>'
     });
 
     testCopy({
       key: 'tags.beginAndEnd',
       substitutions: { value: 100 },
-      expectedCopy: '<span><b>begin</b> and <i>end</i></span>'
+      expectedCopy: '<span><strong>begin</strong> and <em>end</em></span>'
     });
 
     testCopy({

@@ -207,7 +207,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
             const staticMarkup = getStaticMarkup(
               evaluator.getCopy('functions.title', { makeExternalLink: passedFunction })
             );
-            expect(staticMarkup).toBe(`<span>${funcResult}</span>`);
+            expect(staticMarkup).toBe(funcResult);
           });
         });
       });
@@ -255,7 +255,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
             const staticMarkup = getStaticMarkup(
               evaluator.getCopy('functions.args', substitutions)
             );
-            expect(staticMarkup).toBe(`<span>${funcResult}</span>`);
+            expect(staticMarkup).toBe(funcResult);
           });
         });
       });
@@ -312,13 +312,13 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
     testCopy({
       key: 'tags.beginAndEnd',
       substitutions: { value: 100 },
-      expectedCopy: '<span><strong>begin</strong> and <em>end</em></span>'
+      expectedCopy: '<strong>begin</strong> and <em>end</em>'
     });
 
     testCopy({
       key: 'tags.nestedList',
       substitutions: { value: 100 },
-      expectedCopy: '<span>A list of <ul><li>uno</li><li>dos</li><li>tres</li></ul> things.</span>'
+      expectedCopy: 'A list of <ul><li>uno</li><li>dos</li><li>tres</li></ul> things.'
     });
   });
 });

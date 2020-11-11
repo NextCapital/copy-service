@@ -80,11 +80,11 @@ class ReactEvaluator extends Evaluator {
       let jsx = this.evalAST(this.getInitialResult(), ast.copy, substitutions);
 
       if (this.allowFunctional && method && _.isFunction(method)) {
-        // because this can return arbitrary JSX, we must wrap in a span
+        // because this can return arbitrary JSX, we must wrap in a fragment
         jsx = (
-          <span>
+          <React.Fragment>
             { method(jsx, ...ast.args) }
-          </span>
+          </React.Fragment>
         );
       }
 
@@ -93,8 +93,8 @@ class ReactEvaluator extends Evaluator {
       const jsx = this.evalAST(this.getInitialResult(), ast.copy, substitutions);
 
       if (jsx) {
-        // unwrap a span, otherwise preserve children as-is
-        const childContent = (_.isString(jsx) || jsx.type !== 'span') ?
+        // unwrap a fragment, otherwise preserve children as-is
+        const childContent = (_.isString(jsx) || jsx.type !== React.Fragment) ?
           jsx :
           jsx.props.children;
 
@@ -128,18 +128,18 @@ class ReactEvaluator extends Evaluator {
    * If either side is null, returns the other.
    * If both sides are strings, concatenates them.
    * If one side is a string, and the other JSX we:
-   *  - check if the `jsx` is a span. If so, we know it is output of _mergePrefixes or functional
-   *    copy, and thus has no props on it
-   *  - If a span, we can avoid duplicate tabs by merging children
-   *  - If not a span, we need to wrap in a new span to preserve the type
-   * If neither side is a string, we have to wrap both in a new span
-   *  - Unless both are spans, in which case we can merge children
+   *  - check if the `jsx` is a fragment. If so, we know it is output of _mergePrefixes or
+   *    functional copy, and thus has no props on it
+   *  - If a fragment, we can avoid duplicate tabs by merging children
+   *  - If not a fragment, we need to wrap in a new fragment to preserve the type
+   * If neither side is a string, we have to wrap both in a new fragment
+   *  - Unless both are fragments, in which case we can merge children
    *
    * So, in conclusion:
    *
-   *  - Any top-level span tags are specifically added by this method or functional copy
-   *  - Thus, it is *always* safe to merge the children of two spans
-   *  - If either 'left' or 'right' is a non-span element, we have to wrap
+   *  - Any top-level fragment tags are specifically added by this method or functional copy
+   *  - Thus, it is *always* safe to merge the children of two fragments
+   *  - If either 'left' or 'right' is a non-fragment element, we have to wrap
    */
   _mergePrefixes(left, right) {
     if (!right) {
@@ -153,41 +153,41 @@ class ReactEvaluator extends Evaluator {
       return left + right;
     }
 
-    // merge the two spans
-    if (left.type === 'span') {
-      // both are spans, merge children into one span
-      if (right.type === 'span') {
+    // merge the two fragments
+    if (left.type === React.Fragment) {
+      // both are fragments, merge children into one fragment
+      if (right.type === React.Fragment) {
         return (
-          <span>
+          <React.Fragment>
             { left.props.children }
             { right.props.children }
-          </span>
+          </React.Fragment>
         );
       }
 
       return (
-        <span>
+        <React.Fragment>
           { left.props.children }
           { right }
-        </span>
+        </React.Fragment>
       );
     }
 
-    if (right.type === 'span') {
+    if (right.type === React.Fragment) {
       return (
-        <span>
+        <React.Fragment>
           { left }
           { right.props.children }
-        </span>
+        </React.Fragment>
       );
     }
 
-    // have to merge both elements under a new span tag
+    // have to merge both elements under a new react fragment
     return (
-      <span>
+      <React.Fragment>
         { left }
         { right }
-      </span>
+      </React.Fragment>
     );
   }
 }

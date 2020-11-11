@@ -60,21 +60,21 @@ describe('ReactEvaluator', () => {
         const ast = new Newline({});
 
         jest.spyOn(evaluator, 'getCached').mockReturnValue(suffix);
-        expect(getStaticMarkup(copyPrefix, ast)).toBe('<span>hello<strong>world</strong></span>');
+        expect(getStaticMarkup(copyPrefix, ast)).toBe('hello<strong>world</strong>');
         expect(evaluator.getCached).toBeCalledWith(ast);
       });
     });
 
     describe('when the ast is not cached', () => {
       test('caches the fully evaluated ast, without the prefix', () => {
-        const copyPrefix = <span>hello</span>;
+        const copyPrefix = <React.Fragment>hello</React.Fragment>;
         const ast = new Verbatim({
           text: 'world',
           sibling: new Verbatim({ text: '!' })
         });
 
         jest.spyOn(evaluator, 'setCacheIfCacheable');
-        expect(getStaticMarkup(copyPrefix, ast)).toBe('<span>helloworld!</span>');
+        expect(getStaticMarkup(copyPrefix, ast)).toBe('helloworld!');
         expect(evaluator.setCacheIfCacheable).toBeCalledWith(ast, 'world!');
         expect(ReactDOMServer.renderToStaticMarkup(evaluator.getCached(ast))).toBe(
           'world!'
@@ -219,7 +219,7 @@ describe('ReactEvaluator', () => {
 
               expect(
                 getStaticMarkup(evaluator.evalAST(null, ast, new Substitutions({ func })))
-              ).toBe(`<span>${funcText}</span>`);
+              ).toBe(funcText);
             });
 
             describe('when allowFunctional is false on the evaluator', () => {
@@ -275,7 +275,7 @@ describe('ReactEvaluator', () => {
 
           describe('when the tag is empty', () => {
             test('returns the existing prefix', () => {
-              const prefix = <span>prefix</span>;
+              const prefix = <React.Fragment>prefix</React.Fragment>;
 
               const ast = new Formatting({
                 tag: 'em',
@@ -283,7 +283,7 @@ describe('ReactEvaluator', () => {
               });
 
               expect(getStaticMarkup(evaluator.evalAST(prefix, ast))).toBe(
-                '<span>prefix</span>'
+                'prefix'
               );
             });
           });

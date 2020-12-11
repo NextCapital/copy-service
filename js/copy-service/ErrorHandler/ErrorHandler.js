@@ -11,7 +11,7 @@ class ErrorHandler {
     const message = `${name}: ${error}`;
     if (options.halt) {
       throw new Error(message);
-    } else if (this.isInDevMode()) {
+    } else if (this.isInDevMode() && process.env.NODE_ENV !== 'test') {
       console.error(message); // eslint-disable-line no-console
     }
   }

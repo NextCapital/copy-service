@@ -65,7 +65,12 @@ class IntlCopyService {
    */
   setLanguage(language) {
     if (_.isUndefined(this._hierarchy[language])) {
-      throw new Error(`CopyService: language ${language} not found in hierarchy`);
+      ErrorHandler.handleError(
+        'IntlCopyService',
+        `language '${language}' not found in hierarchy`
+      );
+
+      return;
     }
 
     this.language = language;
@@ -100,9 +105,9 @@ class IntlCopyService {
    * @param {string} [language=null] Initial language to use. Will use the current if not specified.
    * @return {Object} An object of the same structure where the value is the copy key path.
    */
-  buildSubKeys(key, language = null) {
+  buildSubkeys(key, language = null) {
     const currentLanguage = language || this.language;
-    return this._mergeFromHierarchy(currentLanguage, 'buildSubKeys', key);
+    return this._mergeFromHierarchy(currentLanguage, 'buildSubkeys', key);
   }
 
   /**
@@ -112,9 +117,9 @@ class IntlCopyService {
    * @param {string} [language=null] Initial language to use. Will use the current if not specified.
    * @return {object|string} The copy object or copy AST at a given key.
    */
-  getSubKeys(key, language = null) {
+  getSubkeys(key, language = null) {
     const currentLanguage = language || this.language;
-    return this._mergeFromHierarchy(currentLanguage, 'getSubKeys', key);
+    return this._mergeFromHierarchy(currentLanguage, 'getSubkeys', key);
   }
 
   /**
@@ -169,6 +174,9 @@ class IntlCopyService {
    * See `CopyService` documentation for `getRegisteredCopy`. Will merge results up the hierarchy
    * tree.
    *
+   * This method is helpful for making clear exactly what copy will be used for each key for a
+   * given language.
+   *
    * @param {string} [language=null] Initial language to use. Will use the current if not specified.
    * @return {object} The registered copy, in un-parsed form.
    */
@@ -219,7 +227,7 @@ class IntlCopyService {
   /**
    * Yields the hierarchy from leaf to root starting at the given language. For example,
    * using the hierarchy from the comments at the top of this file, `_getHierarchy('portuguese')`
-   * would yield 'portuguese', 'spanish, and 'en-us'.
+   * would yield 'portuguese', 'spanish', and finally 'en-us'.
    *
    * NOTE: This is a generator, in order to avoid array allocations in `getAstForKey`.
    *
@@ -248,9 +256,13 @@ class IntlCopyService {
    * @private
    */
   _mergeFromHierarchy(language, method, ...args) {
-    return _.reduceRight(Array.from(this._getHierarchy(language)), (result, lang) => {
-      return _.merge(result, this.getLanguageService(lang)[method](...args));
-    }, {});
+    if (this._hierarchy[language] === null) { // root language, no merging needed
+      return this.getLanguageService(language)[method](...args);
+    }
+
+    return _.reduceRight(Array.from(this._getHierarchy(language)), (result, lang) => (
+      _.merge(result, this.getLanguageService(lang)[method](...args))
+    ), {});
   }
 
   /**

@@ -2,6 +2,8 @@ import _ from 'lodash';
 
 import CopyService from './CopyService';
 
+import ErrorHandler from './ErrorHandler/ErrorHandler';
+
 /**
  * Provides the same interface as `CopyService`, but adds support for multiple
  * languages.
@@ -45,7 +47,7 @@ class IntlCopyService {
 
     // create a copy service for each language in the hierarchy
     this._services = _.reduce(_.keys(hierarchy), (services, lang) => {
-      services[lang] = new CopyService(options.serviceOptions);
+      services[lang] = new CopyService({ language: lang, ...options.serviceOptions });
       return services;
     }, {});
 
@@ -125,7 +127,13 @@ class IntlCopyService {
    */
   hasKey(key, language = null) {
     const currentLanguage = language || this.language;
-    return this._getFromHierarchy(currentLanguage, 'hasKey', key) || false;
+
+    return this._getFromHierarchy(
+      currentLanguage,
+      'hasKey',
+      (value) => !value,
+      key
+    );
   }
 
   /**
@@ -138,7 +146,23 @@ class IntlCopyService {
    */
   getAstForKey(key, language = null) {
     const currentLanguage = language || this.language;
-    return this._getFromHierarchy(currentLanguage, 'getAstForKey', key);
+    const result = this._getFromHierarchy(
+      currentLanguage,
+      'getAstForKey',
+      (result) => _.isUndefined(result),
+      key
+    );
+
+    if (_.isUndefined(result)) {
+      ErrorHandler.handleError(
+        'IntlCopyService',
+        `No AST found for copy key for any language: ${key}. Returning null...`
+      );
+
+      return null;
+    }
+
+    return result;
   }
 
   /**
@@ -163,7 +187,22 @@ class IntlCopyService {
    */
   getRegisteredCopyForKey(key, language = null) {
     const currentLanguage = language || this.language;
-    return this._getFromHierarchy(currentLanguage, 'getRegisteredCopyForKey', key);
+
+    const result = this._getFromHierarchy(
+      currentLanguage,
+      'getRegisteredCopyForKey',
+      (result) => _.isNil(result),
+      key
+    );
+
+    if (_.isNil(result)) {
+      ErrorHandler.handleError(
+        'IntlCopyService',
+        `No AST found for copy key for any language: ${key}. Returning null...`
+      );
+    }
+
+    return result;
   }
 
   /**
@@ -215,26 +254,29 @@ class IntlCopyService {
   }
 
   /**
-   * Returns the first non-null/undefined/false result from calling the method with the args in
-   * each copy service in the hierarchy from leaf to root.
-   *
-   * If the method returns a boolean, this will either return `true` or `null`.
+   * Returns the first non-skipped result from calling the method with the args in
+   * each copy service in the hierarchy from leaf to root. The root result will be returned,
+   * even if it is skipped.
    *
    * @param {string} language Language to start the hierarchy at
    * @param {string} method Method to call on the server
+   * @param {Function} skip Method called with the result, which should return `true` if it should
+   *   not be returned. If this returns `false`, the result will be returned.
    * @param {*} args Arguments to pass to each service
-   * @return {*} The first truthy result, or null.
+   * @return {*} The first truthy result, or the final result from the the hierarchy.
    * @private
    */
-  _getFromHierarchy(language, method, ...args) {
+  _getFromHierarchy(language, method, skip, ...args) {
+    let result;
+
     for (const lang of this._getHierarchy(language)) {
-      const result = this.getLanguageService(lang)[method](...args);
-      if (!_.isNil(result) && result !== false) {
+      result = this.getLanguageService(lang)[method](...args);
+      if (!skip(result)) {
         return result;
       }
     }
 
-    return null;
+    return result;
   }
 }
 

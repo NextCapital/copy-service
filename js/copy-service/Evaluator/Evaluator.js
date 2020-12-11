@@ -8,7 +8,7 @@ import ErrorHandler from '../ErrorHandler/ErrorHandler';
 class Evaluator {
   /**
    * Takes in a copy service and provide methods for evaluating its ASTs.
-   * @param {CopyService} copyService
+   * @param {CopyService|IntlCopyService} copyService
    */
   constructor(copyService, {
     allowFunctional = true

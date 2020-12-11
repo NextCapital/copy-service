@@ -1,20 +1,18 @@
-import React from 'react';
-import ReactDOMServer from 'react-dom/server';
-
-import CopyService from '../../js/index.js';
-import ReactEvaluator from '../../ReactEvaluator';
+import { IntlCopyService } from '../../js/index.js';
+import PlainTextEvaluator from '../../PlainTextEvaluator';
 
 import copy from '../copy';
+import ukCopy from '../uk-copy';
 
-describe('CopyService - ReactEvaluator Integration Tests', () => {
+describe('IntlCopyService - Hierarchy Tests', () => {
   let copyService, evaluator;
 
   beforeEach(() => {
-    copyService = new CopyService({ copy });
-    evaluator = new ReactEvaluator(copyService);
+    copyService = new IntlCopyService('en-uk', {'en-us': null, 'en-uk': 'en-us' }, {
+      copy: { 'en-us': copy, 'en-uk': ukCopy }
+    });
+    evaluator = new PlainTextEvaluator(copyService);
   });
-
-  const getStaticMarkup = (jsx) => ReactDOMServer.renderToStaticMarkup(jsx);
 
   const testCopy = ({
     key,
@@ -22,15 +20,15 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
     expectedCopy
   }) => {
     test('returns the expected copy', () => {
-      const staticMarkup = getStaticMarkup(evaluator.getCopy(key, substitutions));
-      expect(staticMarkup).toBe(expectedCopy);
+      expect(evaluator.getCopy(key, substitutions)).toBe(expectedCopy);
     });
   };
 
   describe('simple copy with no more than one formatting symbol', () => {
     describe('noCopy', () => {
-      test('returns null', () => {
-        expect(evaluator.getCopy('noCopy')).toBeNull();
+      testCopy({
+        key: 'noCopy',
+        expectedCopy: ''
       });
     });
 
@@ -52,7 +50,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
       describe('verbatim.owner', () => {
         testCopy({
           key: 'verbatim.owner',
-          expectedCopy: 'Account Owner'
+          expectedCopy: 'Account Proprietor'
         });
       });
 
@@ -84,7 +82,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
         testCopy({
           key: 'substitutions.symbol',
           substitutions: { value: 100 },
-          expectedCopy: '$100'
+          expectedCopy: '£100'
         });
       });
 
@@ -92,7 +90,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
         testCopy({
           key: 'substitutions.min',
           substitutions: { value: 100 },
-          expectedCopy: 'input value must be no earlier than 100'
+          expectedCopy: 'input value must be after 100'
         });
       });
     });
@@ -109,14 +107,14 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
         testCopy({
           key: 'references.symbol',
           substitutions: { value: 100 },
-          expectedCopy: '$100'
+          expectedCopy: '£100'
         });
       });
 
       describe('references.owner', () => {
         testCopy({
           key: 'references.owner',
-          expectedCopy: 'Account Owner'
+          expectedCopy: 'Account Proprietor'
         });
       });
     });
@@ -137,7 +135,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
           testCopy({
             key: 'decisions.title',
             substitutions: { designObject: { current: true } },
-            expectedCopy: 'Current asset'
+            expectedCopy: 'Current holding'
           });
         });
 
@@ -145,7 +143,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
           testCopy({
             key: 'decisions.title',
             substitutions: { designObject: { current: 1 } },
-            expectedCopy: 'Current asset'
+            expectedCopy: 'Current holding'
           });
         });
 
@@ -153,7 +151,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
           testCopy({
             key: 'decisions.title',
             substitutions: { designObject: { current: false } },
-            expectedCopy: 'Proposed asset'
+            expectedCopy: 'Proposed holding'
           });
         });
 
@@ -161,13 +159,13 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
           testCopy({
             key: 'decisions.title',
             substitutions: { designObject: { current: 0 } },
-            expectedCopy: 'Proposed asset'
+            expectedCopy: 'Proposed holding'
           });
 
           testCopy({
             key: 'decisions.title',
             substitutions: { designObject: { current: 400 } },
-            expectedCopy: 'Proposed asset'
+            expectedCopy: 'Proposed holding'
           });
         });
       });
@@ -194,20 +192,16 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
     describe('copy with a function', () => {
       describe('with no arguments', () => {
         describe('functions.title', () => {
-          test('calls the passed function with the evaluated copy', () => {
-            const passedFunction = jest.fn();
-            evaluator.getCopy('functions.title', { makeExternalLink: passedFunction });
-            expect(passedFunction).toBeCalledWith('learn more');
+          testCopy({
+            key: 'functions.title',
+            substitutions: { makeExternalLink: jest.fn().mockImplementation((text) => `+ ${text}`) },
+            expectedCopy: '+ learn more'
           });
 
-          test('returns the result of the function', () => {
-            const funcResult = 'some result';
-            const passedFunction = jest.fn().mockReturnValue(funcResult);
-
-            const staticMarkup = getStaticMarkup(
-              evaluator.getCopy('functions.title', { makeExternalLink: passedFunction })
-            );
-            expect(staticMarkup).toBe(funcResult);
+          test('calls the passed function', () => {
+            const passedFunction = jest.fn().mockImplementation((text) => `+ ${text}`);
+            evaluator.getCopy('functions.title', { makeExternalLink: passedFunction });
+            expect(passedFunction).toBeCalledWith('learn more');
           });
         });
       });
@@ -217,46 +211,52 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
           evaluator.allowFunctional = false;
         });
 
-        test('returns the copy without passing to the function', () => {
-          const funcResult = 'some result';
-          const passedFunction = jest.fn().mockReturnValue(funcResult);
-
-          const staticMarkup = getStaticMarkup(
-            evaluator.getCopy('functions.title', { makeExternalLink: passedFunction })
-          );
-          expect(staticMarkup).toBe('learn more');
+        testCopy({
+          key: 'functions.title',
+          substitutions: { makeExternalLink: jest.fn().mockImplementation((text) => `+ ${text}`) },
+          expectedCopy: 'learn more'
         });
       });
 
       describe('with arguments', () => {
         describe('functions.args', () => {
-          test('calls the passed function with the evaluated copy', () => {
-            const passedFunction = jest.fn();
+          testCopy({
+            key: 'functions.args',
+            substitutions: {
+              func: jest.fn().mockImplementation((text) => `+ ${text}`),
+              arg1: 'arg1',
+              arg2: 'arg2'
+            },
+            expectedCopy: '+ show more'
+          });
+
+          test('calls the passed function with args', () => {
+            const passedFunction = jest.fn().mockImplementation((text) => `+ ${text}`);
             const substitutions = {
               func: passedFunction,
               arg1: 'arg1',
               arg2: 'arg2'
             };
+
             evaluator.getCopy('functions.args', substitutions);
-            expect(passedFunction).toBeCalledWith(
-              'learn more', substitutions.arg1, substitutions.arg2
-            );
+            expect(passedFunction).toBeCalledWith('show more', 'arg1', 'arg2');
           });
+        });
+      });
+    });
 
-          test('returns the result of the function', () => {
-            const funcResult = 'some result';
-            const passedFunction = jest.fn().mockReturnValue(funcResult);
-            const substitutions = {
-              func: passedFunction,
-              arg1: 'arg1',
-              arg2: 'arg2'
-            };
+    describe('copy with HTML tags', () => {
+      describe('tags.title', () => {
+        testCopy({
+          key: 'tags.title',
+          expectedCopy: 'Plot'
+        });
+      });
 
-            const staticMarkup = getStaticMarkup(
-              evaluator.getCopy('functions.args', substitutions)
-            );
-            expect(staticMarkup).toBe(funcResult);
-          });
+      describe('tags.nested', () => {
+        testCopy({
+          key: 'tags.nested',
+          expectedCopy: 'Plan'
         });
       });
     });
@@ -268,7 +268,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
         testCopy({
           key: 'tags.nestedReference',
           substitutions: { value: 100 },
-          expectedCopy: '<strong><em>$100</em></strong>'
+          expectedCopy: '£100'
         });
       });
     });
@@ -283,7 +283,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
               sub: 'some sub',
               value: 100
             },
-            expectedCopy: '<strong><em>$100</em></strong>'
+            expectedCopy: '£100'
           });
         });
 
@@ -299,26 +299,6 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
           });
         });
       });
-    });
-  });
-
-  describe('tags', () => {
-    testCopy({
-      key: 'tags.nested',
-      substitutions: { value: 100 },
-      expectedCopy: '<strong><em>Plan</em></strong>'
-    });
-
-    testCopy({
-      key: 'tags.beginAndEnd',
-      substitutions: { value: 100 },
-      expectedCopy: '<strong>begin</strong> and <em>end</em>'
-    });
-
-    testCopy({
-      key: 'tags.nestedList',
-      substitutions: { value: 100 },
-      expectedCopy: 'A list of <ul><li>uno</li><li>dos</li><li>tres</li></ul> things.'
     });
   });
 });

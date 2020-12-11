@@ -1,0 +1,19 @@
+{
+  "noCopy": "",
+  "verbatim": {
+    "owner": "Account Proprietor"
+  },
+  "substitutions": {
+    "symbol": "£#{value}",
+    "min": "input value must be after #{value}"
+  },
+  "decisions": {
+    "title": "*{Current}{Proposed}{designObject.current} holding"
+  },
+  "functions": {
+    "args": "^{show more}{func}[arg1, arg2]"
+  },
+  "tags": {
+    "title": "<strong>Plot</strong>"
+  }
+}

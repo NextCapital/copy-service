@@ -12,6 +12,7 @@ import Substitutions from './copy-service/Substitutions/Substitutions';
 
 import ErrorHandler from './copy-service/ErrorHandler/ErrorHandler';
 import CopyService from './copy-service/CopyService';
+import IntlCopyService from './copy-service/IntlCopyService';
 
 export {
   Formatting,
@@ -27,7 +28,8 @@ export {
   Substitutions,
 
   ErrorHandler,
-  CopyService
+  CopyService,
+  IntlCopyService
 };
 
 export default CopyService;

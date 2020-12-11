@@ -54,7 +54,7 @@ class SyntaxNode {
    *
    * This method should be overridden in a subclass.
    *
-   * @param {CopyService} copyService
+   * @param {CopyService|IntlCopyService} copyService
    * @return {boolean}
    */
   isCacheable(copyService) { // eslint-disable-line no-unused-vars

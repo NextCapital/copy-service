@@ -217,24 +217,24 @@ class IntlCopyService {
   }
 
   /**
-   * Returns the hierarchy from leaf to root starting at the given language. For example,
+   * Yields the hierarchy from leaf to root starting at the given language. For example,
    * using the hierarchy from the comments at the top of this file, `_getHierarchy('portuguese')`
-   * would produce `['portuguese', 'spanish', 'en-us']`.
+   * would yield 'portuguese', 'spanish, and 'en-us'.
+   *
+   * NOTE: This is a generator, in order to avoid array allocations in `getAstForKey`.
    *
    * @param {string} language The starting language in the hierarchy
-   * @return {string[]} The hierarchy from most leaf to root
+   * @yields {string} The current entry in the hierarchy
    * @private
    */
-  _getHierarchy(language) {
-    const result = [language];
+  * _getHierarchy(language) {
     let currentLanguage = language;
+    yield currentLanguage;
 
     while (this._hierarchy[currentLanguage]) {
       currentLanguage = this._hierarchy[currentLanguage];
-      result.push(currentLanguage);
+      yield currentLanguage;
     }
-
-    return result;
   }
 
   /**
@@ -248,7 +248,7 @@ class IntlCopyService {
    * @private
    */
   _mergeFromHierarchy(language, method, ...args) {
-    return _.reduceRight(this._getHierarchy(language), (result, lang) => {
+    return _.reduceRight(Array.from(this._getHierarchy(language)), (result, lang) => {
       return _.merge(result, this.getLanguageService(lang)[method](...args));
     }, {});
   }

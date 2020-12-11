@@ -8,6 +8,10 @@
     "PlainTextEvaluator.js",
     "ReactEvaluator.js"
   ],
+  "engines": {
+    "node": ">=12.13.1",
+    "npm": ">=6.13.0"
+  },
   "scripts": {
     "autopublish": "auto-publish-package",
     "build": "webpack",

@@ -8,7 +8,7 @@ A Javascript service for copy management. This service allows consumer to provid
 
 ## Features
 
-- Supports registration of copy from multiple sources, merging latter copy into already registered copy.
+- Supports registration of copy from multiple sources, merging later copy into already registered copy.
   - Allows for concise tenant and application overrides of abstracted, generic copy.
 - Provides a verbose syntax for dynamic feature support
   - Reference syntax to other copy, preventing duplication
@@ -17,7 +17,17 @@ A Javascript service for copy management. This service allows consumer to provid
   - Supports formatting HTML tags (e.g. `<strong>`, `<em>`)
     - NOTE: Support for `<b>` and `<i>` has been dropped to meet accessibility standards
 - Supports different output formats via Evaluators
-  - String literals, React components
+  - String literals, React components, etc...
+  - Need something else? Build your own evaluator!
+- Full support for internationalization (i18n).
+  - Switch languages dynamically at runtime
+  - Automatic fallbacks language handling
+- High performance:
+  - Copy isn't parsed until it is used. Once it is parsed, the AST is cached.
+  - Whenever an evaluator sees that an AST will always produce the same result, it will
+    cache it, preventing the need for evaluation on subsequent requests.
+  - In fact, if the evaluation for even part of an AST can be cached, it will be.
+  - Overall, the system is designed to minimize array and object allocations.
 
 ## Structure
 
@@ -179,6 +189,20 @@ The valid `substitutionKey` paths for these attributes are `value` and `nested.d
 
 - With the ReactEvaluator, `account.implement` with substitutions `{ implement: (copy, addMore) => copy + 'your NextCapital managed account' }` will resolve to `<span>You are going to implement your NextCapital managed account</span>`.
 
+## Internationalization (i18n)
+
+We reccomend two strategies for internationalization, each with their benefits and drawbacks:
+
+- static:
+  - The server knows the correct languages, and returns a copy file for that language that has the fallback hierarchy already applied to it locally.
+  - A plain `CopyService` would register this copy and be used as normal.
+  - This has the best performance, as copy for other languages never needs to be downloaded/included. However, you cannot switch languages at runtime.
+- dynamic:
+  - Use `IntlCopyService` instead of `CopyService`, provide the hierarchy and all language copy.
+  - This allows switching languages dynamically at runtime.
+  - However, it requires more bandwidth, as copy for other languages that the end user may never need is included.
+
+In either case, the copy service should support all use cases for internationalization. Whenever passing in substitutions that may need i18n support (eg: formatted dates), make sure those substitutions are also properly localized.
 
 ## Contributing to Copy Service
 

@@ -1,5 +1,5 @@
-import RefSubstitute from './RefSubstitute';
-import Verbatim from '../Verbatim/Verbatim';
+const RefSubstitute = require('./RefSubstitute');
+const Verbatim = require('../Verbatim/Verbatim');
 
 describe('RefSubstitute', () => {
   describe('constructor', () => {

@@ -1,7 +1,7 @@
-import React from 'react';
-import ReactDOMServer from 'react-dom/server';
+const React = require('react');
+const ReactDOMServer = require('react-dom/server');
 
-import {
+const {
   Formatting,
   Functional,
   Newline,
@@ -12,9 +12,9 @@ import {
   Verbatim,
   Substitutions,
   CopyService
-} from '../index.js';
+} = require('../index.js');
 
-import ReactEvaluator from './ReactEvaluator';
+const ReactEvaluator = require('./ReactEvaluator');
 
 describe('ReactEvaluator', () => {
   let evaluator, copyService, substitutions;
@@ -27,6 +27,10 @@ describe('ReactEvaluator', () => {
     jest.spyOn(substitutions, 'get');
     jest.spyOn(substitutions, 'getBoolean');
   });
+
+  function createElement(tag, ...content) {
+    return React.createElement(tag, null, ...content);
+  }
 
   describe('getInitialResult', () => {
     test('returns null', () => {
@@ -47,7 +51,7 @@ describe('ReactEvaluator', () => {
 
     describe('when no AST is passed', () => {
       test('returns copyPrefix', () => {
-        const copyPrefix = <div>hello</div>;
+        const copyPrefix = createElement('div', 'hello');
 
         expect(evaluator.evalAST(copyPrefix, null)).toBe(copyPrefix);
       });
@@ -56,7 +60,7 @@ describe('ReactEvaluator', () => {
     describe('when the ast is cached', () => {
       test('combines the cached result with the prefix', () => {
         const copyPrefix = 'hello';
-        const suffix = <strong>world</strong>;
+        const suffix = createElement('strong', 'world');
         const ast = new Newline({});
 
         jest.spyOn(evaluator, 'getCached').mockReturnValue(suffix);
@@ -67,7 +71,7 @@ describe('ReactEvaluator', () => {
 
     describe('when the ast is not cached', () => {
       test('caches the fully evaluated ast, without the prefix', () => {
-        const copyPrefix = <React.Fragment>hello</React.Fragment>;
+        const copyPrefix = createElement(React.Fragment, 'hello');
         const ast = new Verbatim({
           text: 'world',
           sibling: new Verbatim({ text: '!' })
@@ -275,7 +279,7 @@ describe('ReactEvaluator', () => {
 
           describe('when the tag is empty', () => {
             test('returns the existing prefix', () => {
-              const prefix = <React.Fragment>prefix</React.Fragment>;
+              const prefix = createElement(React.Fragment, 'prefix');
 
               const ast = new Formatting({
                 tag: 'em',

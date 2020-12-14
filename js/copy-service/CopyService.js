@@ -1,9 +1,9 @@
-import _ from 'lodash';
+const _ = require('lodash');
 
-import SyntaxNode from './SyntaxNode/SyntaxNode';
-import Parser from './Parser/Parser';
+const SyntaxNode = require('./SyntaxNode/SyntaxNode');
+const Parser = require('./Parser/Parser');
 
-import ErrorHandler from './ErrorHandler/ErrorHandler';
+const ErrorHandler = require('./ErrorHandler/ErrorHandler');
 
 /**
  * An AST class.
@@ -14,16 +14,24 @@ import ErrorHandler from './ErrorHandler/ErrorHandler';
  * Provides the ability to register, parse, and evaluate copy.
  */
 class CopyService {
+  /**
+   * Constructor for the `CopyService`.
+   *
+   * @param {object} [options]
+   * @param {object} [options.copy] Initial copy to register.
+   * @param {boolean} [options.language] If specified, defines the language this is for from
+   * `IntlCopyService`. Will be `null` otherwise.
+   */
   constructor(options = {}) {
     /**
      * The store of registered copy.
      * @type {object}
      */
     this._registeredCopy = {};
+    this.language = options.language || null;
 
     if (options.copy) {
-      const copyAsArray = _.castArray(options.copy);
-      _.forEach(copyAsArray, (copy) => this.registerCopy(copy));
+      this.registerCopy(options.copy);
     }
   }
 
@@ -92,7 +100,7 @@ class CopyService {
    * blowing up.
    *
    * @param  {string} key
-   * @return {AST}
+   * @return {AST|undefined}
    */
   getAstForKey(key) {
     const result = _.get(this._registeredCopy, key);
@@ -109,8 +117,16 @@ class CopyService {
     }
 
     if (_.isUndefined(result) || !SyntaxNode.isAST(result)) {
-      ErrorHandler.handleError('CopyService', `No AST found for copy key: ${key}. Returning null...`);
-      return null;
+      if (!this.language) {
+        ErrorHandler.handleError(
+          'CopyService',
+          `No AST found for copy key: ${key}. Returning null...`
+        );
+      }
+
+      // return undefined when a language is specified so that `IntlCopyService` can differentiate
+      // between no result and a result of null.
+      return this.language ? undefined : null;
     }
 
     return result;
@@ -162,7 +178,10 @@ class CopyService {
       return result.toSyntax();
     }
 
-    ErrorHandler.handleError('CopyService', `No AST found for copy key: ${key}. Returning null...`);
+    if (!this.language) {
+      ErrorHandler.handleError('CopyService', `No AST found for copy key: ${key}. Returning null...`);
+    }
+
     return null;
   }
 
@@ -205,4 +224,4 @@ class CopyService {
   }
 }
 
-export default CopyService;
+module.exports = CopyService;

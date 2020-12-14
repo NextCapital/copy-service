@@ -1,6 +1,6 @@
-import Newline from './Newline';
-import Verbatim from '../Verbatim/Verbatim';
-import CopyService from '../CopyService';
+const Newline = require('./Newline');
+const Verbatim = require('../Verbatim/Verbatim');
+const CopyService = require('../CopyService');
 
 describe('Newline', () => {
   describe('constructor', () => {

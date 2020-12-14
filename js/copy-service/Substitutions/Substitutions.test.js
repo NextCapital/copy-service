@@ -1,5 +1,5 @@
-import ErrorHandler from '../ErrorHandler/ErrorHandler';
-import Substitutions from './Substitutions';
+const ErrorHandler = require('../ErrorHandler/ErrorHandler');
+const Substitutions = require('./Substitutions');
 
 describe('Substitutions', () => {
   let substitutions, input;

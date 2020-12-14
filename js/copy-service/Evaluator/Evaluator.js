@@ -1,5 +1,5 @@
-import Substitutions from '../Substitutions/Substitutions';
-import ErrorHandler from '../ErrorHandler/ErrorHandler';
+const Substitutions = require('../Substitutions/Substitutions');
+const ErrorHandler = require('../ErrorHandler/ErrorHandler');
 
 /**
  * Provides an interface to recursively generate copy evaluated with substitutions.
@@ -8,7 +8,7 @@ import ErrorHandler from '../ErrorHandler/ErrorHandler';
 class Evaluator {
   /**
    * Takes in a copy service and provide methods for evaluating its ASTs.
-   * @param {CopyService} copyService
+   * @param {CopyService|IntlCopyService} copyService
    */
   constructor(copyService, {
     allowFunctional = true
@@ -100,4 +100,4 @@ class Evaluator {
   }
 }
 
-export default Evaluator;
+module.exports = Evaluator;

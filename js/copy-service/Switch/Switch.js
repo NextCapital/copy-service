@@ -1,4 +1,4 @@
-import SyntaxNode from '../SyntaxNode/SyntaxNode';
+const SyntaxNode = require('../SyntaxNode/SyntaxNode');
 
 /**
  * Represents a logic branch in an AST.
@@ -54,4 +54,4 @@ class Switch extends SyntaxNode {
   }
 }
 
-export default Switch;
+module.exports = Switch;

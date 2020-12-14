@@ -1,4 +1,4 @@
-import SyntaxNode from '../SyntaxNode/SyntaxNode';
+const SyntaxNode = require('../SyntaxNode/SyntaxNode');
 
 /**
  * Represents a substitution mapped to a substitution key in an AST.
@@ -41,4 +41,4 @@ class Substitute extends SyntaxNode {
   }
 }
 
-export default Substitute;
+module.exports = Substitute;

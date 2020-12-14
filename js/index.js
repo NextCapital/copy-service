@@ -1,19 +1,20 @@
-import Formatting from './copy-service/Formatting/Formatting';
-import Functional from './copy-service/Functional/Functional';
-import Newline from './copy-service/Newline/Newline';
-import Reference from './copy-service/Reference/Reference';
-import RefSubstitute from './copy-service/RefSubstitute/RefSubstitute';
-import Substitute from './copy-service/Substitute/Substitute';
-import Switch from './copy-service/Switch/Switch';
-import Verbatim from './copy-service/Verbatim/Verbatim';
+const Formatting = require('./copy-service/Formatting/Formatting');
+const Functional = require('./copy-service/Functional/Functional');
+const Newline = require('./copy-service/Newline/Newline');
+const Reference = require('./copy-service/Reference/Reference');
+const RefSubstitute = require('./copy-service/RefSubstitute/RefSubstitute');
+const Substitute = require('./copy-service/Substitute/Substitute');
+const Switch = require('./copy-service/Switch/Switch');
+const Verbatim = require('./copy-service/Verbatim/Verbatim');
 
-import Evaluator from './copy-service/Evaluator/Evaluator';
-import Substitutions from './copy-service/Substitutions/Substitutions';
+const Evaluator = require('./copy-service/Evaluator/Evaluator');
+const Substitutions = require('./copy-service/Substitutions/Substitutions');
 
-import ErrorHandler from './copy-service/ErrorHandler/ErrorHandler';
-import CopyService from './copy-service/CopyService';
+const ErrorHandler = require('./copy-service/ErrorHandler/ErrorHandler');
+const CopyService = require('./copy-service/CopyService');
+const IntlCopyService = require('./copy-service/IntlCopyService');
 
-export {
+module.exports = {
   Formatting,
   Functional,
   Newline,
@@ -27,7 +28,6 @@ export {
   Substitutions,
 
   ErrorHandler,
-  CopyService
+  CopyService,
+  IntlCopyService
 };
-
-export default CopyService;

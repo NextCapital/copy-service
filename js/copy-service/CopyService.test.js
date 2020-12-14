@@ -1,11 +1,11 @@
-import _ from 'lodash';
+const _ = require('lodash');
 
-import Parser from './Parser/Parser';
-import SyntaxNode from './SyntaxNode/SyntaxNode';
+const Parser = require('./Parser/Parser');
+const SyntaxNode = require('./SyntaxNode/SyntaxNode');
 
-import ErrorHandler from './ErrorHandler/ErrorHandler';
+const ErrorHandler = require('./ErrorHandler/ErrorHandler');
 
-import CopyService from './CopyService';
+const CopyService = require('./CopyService');
 
 describe('CopyService', () => {
   let copyService;

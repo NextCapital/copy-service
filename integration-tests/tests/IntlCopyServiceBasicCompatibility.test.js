@@ -1,13 +1,17 @@
-const { CopyService } = require('../../js/index.js');
+const { IntlCopyService } = require('../../js/index.js');
 const PlainTextEvaluator = require('../../PlainTextEvaluator');
 
 const copy = require('../copy');
 
-describe('CopyService - PlainTextEvaluator Integration Tests', () => {
+// Uses an IntlCopyService and ensures it basically works with the evaluator
+// for a single language. This test should help detect breaking interface changes.
+describe('IntlCopyService - Basic Compatibility Tests', () => {
   let copyService, evaluator;
 
   beforeEach(() => {
-    copyService = new CopyService({ copy });
+    copyService = new IntlCopyService('en-us', { 'en-us': null }, {
+      copy: { 'en-us': copy }
+    });
     evaluator = new PlainTextEvaluator(copyService);
   });
 

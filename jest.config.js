@@ -1,7 +1,7 @@
 module.exports = {
   collectCoverage: true,
   collectCoverageFrom: [
-    "js/**/*.{js,jsx}"
+    "js/**/*.js"
   ],
   coverageThreshold: {
     global: {
@@ -13,7 +13,6 @@ module.exports = {
   },
   moduleFileExtensions: [
     'js',
-    'jsx',
     'json'
   ],
   moduleDirectories: [
@@ -21,12 +20,9 @@ module.exports = {
     'js'
   ],
   testMatch: [
-    "<rootDir>/js/**/*.test.{js,jsx}",
-    "<rootDir>/integration-tests/**/*.test.{js,jsx}"
+    "<rootDir>/js/**/*.test.js",
+    "<rootDir>/integration-tests/**/*.test.js"
   ],
-  transform: {
-    '^.+\\.jsx?$': 'babel-jest'
-  },
   testResultsProcessor: "./node_modules/jest-junit-reporter",
   restoreMocks: true,
 };

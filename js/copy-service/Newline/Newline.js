@@ -1,4 +1,4 @@
-import SyntaxNode from '../SyntaxNode/SyntaxNode';
+const SyntaxNode = require('../SyntaxNode/SyntaxNode');
 
 /**
  * Represents a newline in an AST.
@@ -38,4 +38,4 @@ class Newline extends SyntaxNode {
   }
 }
 
-export default Newline;
+module.exports = Newline;

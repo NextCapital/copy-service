@@ -1,15 +1,19 @@
+const ReactDOMServer = require('react-dom/server');
+
 const { CopyService } = require('../../js/index.js');
-const PlainTextEvaluator = require('../../PlainTextEvaluator');
+const ReactEvaluator = require('../../ReactEvaluator');
 
 const copy = require('../copy');
 
-describe('CopyService - PlainTextEvaluator Integration Tests', () => {
+describe('CopyService - ReactEvaluator Integration Tests', () => {
   let copyService, evaluator;
 
   beforeEach(() => {
     copyService = new CopyService({ copy });
-    evaluator = new PlainTextEvaluator(copyService);
+    evaluator = new ReactEvaluator(copyService);
   });
+
+  const getStaticMarkup = (jsx) => ReactDOMServer.renderToStaticMarkup(jsx);
 
   const testCopy = ({
     key,
@@ -17,15 +21,15 @@ describe('CopyService - PlainTextEvaluator Integration Tests', () => {
     expectedCopy
   }) => {
     test('returns the expected copy', () => {
-      expect(evaluator.getCopy(key, substitutions)).toBe(expectedCopy);
+      const staticMarkup = getStaticMarkup(evaluator.getCopy(key, substitutions));
+      expect(staticMarkup).toBe(expectedCopy);
     });
   };
 
   describe('simple copy with no more than one formatting symbol', () => {
     describe('noCopy', () => {
-      testCopy({
-        key: 'noCopy',
-        expectedCopy: ''
+      test('returns null', () => {
+        expect(evaluator.getCopy('noCopy')).toBeNull();
       });
     });
 
@@ -189,16 +193,20 @@ describe('CopyService - PlainTextEvaluator Integration Tests', () => {
     describe('copy with a function', () => {
       describe('with no arguments', () => {
         describe('functions.title', () => {
-          testCopy({
-            key: 'functions.title',
-            substitutions: { makeExternalLink: jest.fn().mockImplementation((text) => `+ ${text}`) },
-            expectedCopy: '+ learn more'
-          });
-
-          test('calls the passed function', () => {
-            const passedFunction = jest.fn().mockImplementation((text) => `+ ${text}`);
+          test('calls the passed function with the evaluated copy', () => {
+            const passedFunction = jest.fn();
             evaluator.getCopy('functions.title', { makeExternalLink: passedFunction });
             expect(passedFunction).toBeCalledWith('learn more');
+          });
+
+          test('returns the result of the function', () => {
+            const funcResult = 'some result';
+            const passedFunction = jest.fn().mockReturnValue(funcResult);
+
+            const staticMarkup = getStaticMarkup(
+              evaluator.getCopy('functions.title', { makeExternalLink: passedFunction })
+            );
+            expect(staticMarkup).toBe(funcResult);
           });
         });
       });
@@ -208,52 +216,46 @@ describe('CopyService - PlainTextEvaluator Integration Tests', () => {
           evaluator.allowFunctional = false;
         });
 
-        testCopy({
-          key: 'functions.title',
-          substitutions: { makeExternalLink: jest.fn().mockImplementation((text) => `+ ${text}`) },
-          expectedCopy: 'learn more'
+        test('returns the copy without passing to the function', () => {
+          const funcResult = 'some result';
+          const passedFunction = jest.fn().mockReturnValue(funcResult);
+
+          const staticMarkup = getStaticMarkup(
+            evaluator.getCopy('functions.title', { makeExternalLink: passedFunction })
+          );
+          expect(staticMarkup).toBe('learn more');
         });
       });
 
       describe('with arguments', () => {
         describe('functions.args', () => {
-          testCopy({
-            key: 'functions.args',
-            substitutions: {
-              func: jest.fn().mockImplementation((text) => `+ ${text}`),
+          test('calls the passed function with the evaluated copy', () => {
+            const passedFunction = jest.fn();
+            const substitutions = {
+              func: passedFunction,
               arg1: 'arg1',
               arg2: 'arg2'
-            },
-            expectedCopy: '+ learn more'
+            };
+            evaluator.getCopy('functions.args', substitutions);
+            expect(passedFunction).toBeCalledWith(
+              'learn more', substitutions.arg1, substitutions.arg2
+            );
           });
 
-          test('calls the passed function with args', () => {
-            const passedFunction = jest.fn().mockImplementation((text) => `+ ${text}`);
+          test('returns the result of the function', () => {
+            const funcResult = 'some result';
+            const passedFunction = jest.fn().mockReturnValue(funcResult);
             const substitutions = {
               func: passedFunction,
               arg1: 'arg1',
               arg2: 'arg2'
             };
 
-            evaluator.getCopy('functions.args', substitutions);
-            expect(passedFunction).toBeCalledWith('learn more', 'arg1', 'arg2');
+            const staticMarkup = getStaticMarkup(
+              evaluator.getCopy('functions.args', substitutions)
+            );
+            expect(staticMarkup).toBe(funcResult);
           });
-        });
-      });
-    });
-
-    describe('copy with HTML tags', () => {
-      describe('tags.title', () => {
-        testCopy({
-          key: 'tags.title',
-          expectedCopy: 'Plan'
-        });
-      });
-
-      describe('tags.nested', () => {
-        testCopy({
-          key: 'tags.nested',
-          expectedCopy: 'Plan'
         });
       });
     });
@@ -265,7 +267,7 @@ describe('CopyService - PlainTextEvaluator Integration Tests', () => {
         testCopy({
           key: 'tags.nestedReference',
           substitutions: { value: 100 },
-          expectedCopy: '$100'
+          expectedCopy: '<strong><em>$100</em></strong>'
         });
       });
     });
@@ -280,7 +282,7 @@ describe('CopyService - PlainTextEvaluator Integration Tests', () => {
               sub: 'some sub',
               value: 100
             },
-            expectedCopy: '$100'
+            expectedCopy: '<strong><em>$100</em></strong>'
           });
         });
 
@@ -296,6 +298,26 @@ describe('CopyService - PlainTextEvaluator Integration Tests', () => {
           });
         });
       });
+    });
+  });
+
+  describe('tags', () => {
+    testCopy({
+      key: 'tags.nested',
+      substitutions: { value: 100 },
+      expectedCopy: '<strong><em>Plan</em></strong>'
+    });
+
+    testCopy({
+      key: 'tags.beginAndEnd',
+      substitutions: { value: 100 },
+      expectedCopy: '<strong>begin</strong> and <em>end</em>'
+    });
+
+    testCopy({
+      key: 'tags.nestedList',
+      substitutions: { value: 100 },
+      expectedCopy: 'A list of <ul><li>uno</li><li>dos</li><li>tres</li></ul> things.'
     });
   });
 });

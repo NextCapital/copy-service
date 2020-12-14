@@ -1,17 +1,21 @@
-import _ from 'lodash';
+const _ = require('lodash');
 
-import SyntaxNode from '../SyntaxNode/SyntaxNode';
-import Formatting from '../Formatting/Formatting';
-import Functional from '../Functional/Functional';
-import Newline from '../Newline/Newline';
-import Reference from '../Reference/Reference';
-import RefSubstitute from '../RefSubstitute/RefSubstitute';
-import Substitute from '../Substitute/Substitute';
-import Switch from '../Switch/Switch';
-import Verbatim from '../Verbatim/Verbatim';
+const SyntaxNode = require('../SyntaxNode/SyntaxNode');
+const Formatting = require('../Formatting/Formatting');
+const Functional = require('../Functional/Functional');
+const Newline = require('../Newline/Newline');
+const Reference = require('../Reference/Reference');
+const RefSubstitute = require('../RefSubstitute/RefSubstitute');
+const Substitute = require('../Substitute/Substitute');
+const Switch = require('../Switch/Switch');
+const Verbatim = require('../Verbatim/Verbatim');
 
-import ErrorHandler from '../ErrorHandler/ErrorHandler';
+const ErrorHandler = require('../ErrorHandler/ErrorHandler');
 
+/**
+ * The supported tokens in copy.
+ * @type {Object}
+ */
 const TOKENS = {
   TEXT: 'text',
   SWITCH_DELIM: '}{',
@@ -30,49 +34,45 @@ const TOKENS = {
 };
 
 /**
+ * All TOKENS that are not TEXT, TAG, or ARGS tokens.
+ * @type {Array}
+ */
+const NON_TEXT_TOKENS = _.filter(_.values(TOKENS), (token) => (
+  !_.includes([
+    TOKENS.TEXT,
+    TOKENS.HTML_TAG_START,
+    TOKENS.HTML_TAG_END,
+    TOKENS.ARGS_START,
+    TOKENS.ARGS_COMMA,
+    TOKENS.ARGS_END
+  ], token)
+));
+
+/**
+ * RegExp for the starting tag of allowed HTML tags.
+ * @type {RegExp}
+ */
+const HTML_START_TAG_REGEX = /^<(\w+)>/;
+
+/**
+ * RegExp for the ending tag of allowed HTML tags.
+ * @type {RegExp}
+ */
+const HTML_END_TAG_REGEX = /^<\/(\w+)>/;
+
+/**
+ * The supported HTML tags in copy.
+ * @type {Array}
+ */
+const ALLOWED_HTML_TAGS = [
+  // cspell:disable-next-line
+  'u', 'sup', 'sub', 's', 'em', 'strong', 'p', 'span', 'div', 'ol', 'ul', 'li'
+];
+
+/**
  * Parses raw json copy into ASTs.
  */
 class Parser {
-  /**
-   * RegExp for the starting tag of allowed HTML tags.
-   * @type {RegExp}
-   */
-  static HTML_START_TAG_REGEX = /^<(\w+)>/;
-  /**
-   * RegExp for the ending tag of allowed HTML tags.
-   * @type {RegExp}
-   */
-  static HTML_END_TAG_REGEX = /^<\/(\w+)>/;
-  /**
-   * The supported HTML tags in copy.
-   * @type {Array}
-   */
-  static ALLOWED_HTML_TAGS = [
-    // cspell:disable-next-line
-    'u', 'sup', 'sub', 's', 'em', 'strong', 'p', 'span', 'div', 'ol', 'ul', 'li'
-  ];
-
-  /**
-   * The supported tokens in copy.
-   * @type {Object}
-   */
-  static TOKENS = TOKENS;
-
-  /**
-   * All TOKENS that are not TEXT, TAG, or ARGS tokens.
-   * @type {Array}
-   */
-  static NON_TEXT_TOKENS = _.filter(_.values(TOKENS), (token) => (
-    !_.includes([
-      TOKENS.TEXT,
-      TOKENS.HTML_TAG_START,
-      TOKENS.HTML_TAG_END,
-      TOKENS.ARGS_START,
-      TOKENS.ARGS_COMMA,
-      TOKENS.ARGS_END
-    ], token)
-  ));
-
   /**
    * Transforms raw copy into ASTs. Will mutate the `tree` argument.
    *
@@ -520,4 +520,10 @@ class Parser {
   }
 }
 
-export default Parser;
+Parser.TOKENS = TOKENS;
+Parser.NON_TEXT_TOKENS = NON_TEXT_TOKENS;
+Parser.HTML_START_TAG_REGEX = HTML_START_TAG_REGEX;
+Parser.HTML_END_TAG_REGEX = HTML_END_TAG_REGEX;
+Parser.ALLOWED_HTML_TAGS = ALLOWED_HTML_TAGS;
+
+module.exports = Parser;

@@ -1,4 +1,4 @@
-import SyntaxNode from '../SyntaxNode/SyntaxNode';
+const SyntaxNode = require('../SyntaxNode/SyntaxNode');
 
 /**
  * Represents a reference to another copy key in an AST.
@@ -53,4 +53,4 @@ class Reference extends SyntaxNode {
   }
 }
 
-export default Reference;
+module.exports = Reference;

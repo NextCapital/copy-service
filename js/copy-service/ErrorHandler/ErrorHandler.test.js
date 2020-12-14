@@ -1,4 +1,4 @@
-import ErrorHandler from './ErrorHandler';
+const ErrorHandler = require('./ErrorHandler');
 
 describe('ErrorHandler', () => {
   describe('handleError', () => {
@@ -10,6 +10,11 @@ describe('ErrorHandler', () => {
       options = {};
 
       jest.spyOn(console, 'error').mockImplementation();
+      process.env.NODE_ENV = 'development';
+    });
+
+    afterEach(() => {
+      process.env.NODE_ENV = 'test';
     });
 
     describe('when options.halt is true', () => {

@@ -1,6 +1,6 @@
-import _ from 'lodash';
+const _ = require('lodash');
 
-import ErrorHandler from '../ErrorHandler/ErrorHandler';
+const ErrorHandler = require('../ErrorHandler/ErrorHandler');
 
 /**
  * Class for handling the substitution object/function passed into `getCopy`.
@@ -104,4 +104,4 @@ class Substitutions {
   }
 }
 
-export default Substitutions;
+module.exports = Substitutions;

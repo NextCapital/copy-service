@@ -1,4 +1,4 @@
-import ReactEvaluator from './js/react-evaluator/ReactEvaluator';
+const ReactEvaluator = require('./js/react-evaluator/ReactEvaluator');
 
 // this file is a shortcut for importing
-export default ReactEvaluator;
+module.exports = ReactEvaluator;

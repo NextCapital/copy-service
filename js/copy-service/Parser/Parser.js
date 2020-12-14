@@ -1,16 +1,16 @@
-import _ from 'lodash';
+const _ = require('lodash');
 
-import SyntaxNode from '../SyntaxNode/SyntaxNode';
-import Formatting from '../Formatting/Formatting';
-import Functional from '../Functional/Functional';
-import Newline from '../Newline/Newline';
-import Reference from '../Reference/Reference';
-import RefSubstitute from '../RefSubstitute/RefSubstitute';
-import Substitute from '../Substitute/Substitute';
-import Switch from '../Switch/Switch';
-import Verbatim from '../Verbatim/Verbatim';
+const SyntaxNode = require('../SyntaxNode/SyntaxNode');
+const Formatting = require('../Formatting/Formatting');
+const Functional = require('../Functional/Functional');
+const Newline = require('../Newline/Newline');
+const Reference = require('../Reference/Reference');
+const RefSubstitute = require('../RefSubstitute/RefSubstitute');
+const Substitute = require('../Substitute/Substitute');
+const Switch = require('../Switch/Switch');
+const Verbatim = require('../Verbatim/Verbatim');
 
-import ErrorHandler from '../ErrorHandler/ErrorHandler';
+const ErrorHandler = require('../ErrorHandler/ErrorHandler');
 
 const TOKENS = {
   TEXT: 'text',
@@ -520,4 +520,4 @@ class Parser {
   }
 }
 
-export default Parser;
+module.exports = Parser;

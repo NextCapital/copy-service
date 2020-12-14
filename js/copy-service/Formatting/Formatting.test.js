@@ -1,6 +1,6 @@
-import Formatting from './Formatting';
-import Verbatim from '../Verbatim/Verbatim';
-import CopyService from '../CopyService';
+const Formatting = require('./Formatting');
+const Verbatim = require('../Verbatim/Verbatim');
+const CopyService = require('../CopyService');
 
 describe('Formatting', () => {
   describe('constructor', () => {

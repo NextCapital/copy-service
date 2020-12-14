@@ -1,4 +1,4 @@
-import ErrorHandler from './ErrorHandler';
+const ErrorHandler = require('./ErrorHandler');
 
 describe('ErrorHandler', () => {
   describe('handleError', () => {

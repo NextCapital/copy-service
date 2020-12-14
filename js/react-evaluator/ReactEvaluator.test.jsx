@@ -1,7 +1,7 @@
-import React from 'react';
-import ReactDOMServer from 'react-dom/server';
+const React = require('react');
+const ReactDOMServer = require('react-dom/server');
 
-import {
+const {
   Formatting,
   Functional,
   Newline,
@@ -12,9 +12,9 @@ import {
   Verbatim,
   Substitutions,
   CopyService
-} from '../index.js';
+} = require('../index.js');
 
-import ReactEvaluator from './ReactEvaluator';
+const ReactEvaluator = require('./ReactEvaluator');
 
 describe('ReactEvaluator', () => {
   let evaluator, copyService, substitutions;

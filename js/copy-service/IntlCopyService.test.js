@@ -1,10 +1,10 @@
-import _ from 'lodash';
+const _ = require('lodash');
 
-import CopyService from './CopyService';
+const CopyService = require('./CopyService');
 
-import ErrorHandler from './ErrorHandler/ErrorHandler';
-import IntlCopyService from './IntlCopyService';
-import Verbatim from './Verbatim/Verbatim';
+const ErrorHandler = require('./ErrorHandler/ErrorHandler');
+const IntlCopyService = require('./IntlCopyService');
+const Verbatim = require('./Verbatim/Verbatim');
 
 /**
  * NOTE: Private methods are implicitly tested through other methods.

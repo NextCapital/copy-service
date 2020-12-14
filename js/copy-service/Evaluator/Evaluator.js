@@ -1,5 +1,5 @@
-import Substitutions from '../Substitutions/Substitutions';
-import ErrorHandler from '../ErrorHandler/ErrorHandler';
+const Substitutions = require('../Substitutions/Substitutions');
+const ErrorHandler = require('../ErrorHandler/ErrorHandler');
 
 /**
  * Provides an interface to recursively generate copy evaluated with substitutions.
@@ -100,4 +100,4 @@ class Evaluator {
   }
 }
 
-export default Evaluator;
+module.exports = Evaluator;

@@ -1,6 +1,6 @@
-import _ from 'lodash';
+const _ = require('lodash');
 
-import {
+const {
   Formatting,
   Functional,
   Newline,
@@ -11,7 +11,7 @@ import {
   Verbatim,
 
   Evaluator
-} from '../index.js';
+} = require('../index.js');
 
 /**
  * Provides an interface that can register copy, determine the existence of copy, and generate copy
@@ -118,4 +118,4 @@ class PlainTextEvaluator extends Evaluator {
   }
 }
 
-export default PlainTextEvaluator;
+module.exports = PlainTextEvaluator;

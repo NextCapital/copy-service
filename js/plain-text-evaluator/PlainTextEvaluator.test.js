@@ -1,4 +1,4 @@
-import {
+const {
   Formatting,
   Functional,
   Newline,
@@ -9,9 +9,9 @@ import {
   Verbatim,
   Substitutions,
   CopyService
-} from '../index.js';
+} = require('../index.js');
 
-import PlainTextEvaluator from './PlainTextEvaluator';
+const PlainTextEvaluator = require('./PlainTextEvaluator');
 
 describe('PlainTextEvaluator', () => {
   let evaluator, copyService, substitutions;

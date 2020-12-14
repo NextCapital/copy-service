@@ -1,4 +1,4 @@
-import SyntaxNode from '../SyntaxNode/SyntaxNode';
+const SyntaxNode = require('../SyntaxNode/SyntaxNode');
 
 /**
  * Represents an HTML tag in the AST.
@@ -56,4 +56,4 @@ class Formatting extends SyntaxNode {
   }
 }
 
-export default Formatting;
+module.exports = Formatting;

@@ -1,4 +1,4 @@
-import SyntaxNode from './SyntaxNode';
+const SyntaxNode = require('./SyntaxNode');
 
 describe('SyntaxNode', () => {
   let syntaxNode;

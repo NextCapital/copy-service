@@ -1,8 +1,8 @@
-import { IntlCopyService } from '../../js/index.js';
-import PlainTextEvaluator from '../../PlainTextEvaluator';
+const { IntlCopyService } = require('../../js/index.js');
+const PlainTextEvaluator = require('../../PlainTextEvaluator');
 
-import copy from '../copy';
-import ukCopy from '../uk-copy';
+const copy = require('../copy');
+const ukCopy = require('../uk-copy');
 
 describe('IntlCopyService - Hierarchy Tests', () => {
   let copyService, evaluator;

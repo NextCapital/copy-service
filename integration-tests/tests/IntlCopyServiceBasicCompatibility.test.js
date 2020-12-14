@@ -1,7 +1,7 @@
-import { IntlCopyService } from '../../js/index.js';
-import PlainTextEvaluator from '../../PlainTextEvaluator';
+const { IntlCopyService } = require('../../js/index.js');
+const PlainTextEvaluator = require('../../PlainTextEvaluator');
 
-import copy from '../copy';
+const copy = require('../copy');
 
 // Uses an IntlCopyService and ensures it basically works with the evaluator
 // for a single language. This test should help detect breaking interface changes.

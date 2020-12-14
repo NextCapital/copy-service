@@ -1,4 +1,4 @@
-import SyntaxNode from '../SyntaxNode/SyntaxNode';
+const SyntaxNode = require('../SyntaxNode/SyntaxNode');
 
 /**
  * Represents text in an AST.
@@ -44,4 +44,4 @@ class Verbatim extends SyntaxNode {
   }
 }
 
-export default Verbatim;
+module.exports = Verbatim;

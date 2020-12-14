@@ -1,8 +1,8 @@
-import _ from 'lodash';
+const _ = require('lodash');
 
-import CopyService from './CopyService';
+const CopyService = require('./CopyService');
 
-import ErrorHandler from './ErrorHandler/ErrorHandler';
+const ErrorHandler = require('./ErrorHandler/ErrorHandler');
 
 /**
  * Provides the same interface as `CopyService`, but adds support for multiple
@@ -292,4 +292,4 @@ class IntlCopyService {
   }
 }
 
-export default IntlCopyService;
+module.exports = IntlCopyService;

@@ -1,9 +1,9 @@
-import ReactDOMServer from 'react-dom/server';
+const ReactDOMServer = require('react-dom/server');
 
-import CopyService from '../../js/index.js';
-import ReactEvaluator from '../../ReactEvaluator';
+const { CopyService } = require('../../js/index.js');
+const ReactEvaluator = require('../../ReactEvaluator');
 
-import copy from '../copy';
+const copy = require('../copy');
 
 describe('CopyService - ReactEvaluator Integration Tests', () => {
   let copyService, evaluator;

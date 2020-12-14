@@ -1,7 +1,7 @@
-import CopyService from '../../js/index.js';
-import PlainTextEvaluator from '../../PlainTextEvaluator';
+const { CopyService } = require('../../js/index.js');
+const PlainTextEvaluator = require('../../PlainTextEvaluator');
 
-import copy from '../copy';
+const copy = require('../copy');
 
 describe('CopyService - PlainTextEvaluator Integration Tests', () => {
   let copyService, evaluator;

@@ -1,7 +1,7 @@
-import _ from 'lodash';
-import React from 'react';
+const _ = require('lodash');
+const React = require('react');
 
-import {
+const {
   Formatting,
   Functional,
   Newline,
@@ -12,7 +12,7 @@ import {
   Verbatim,
 
   Evaluator
-} from '../index.js';
+} = require('../index.js');
 
 /**
  * Provides an interface that can register copy, determine the existence of copy, and generate copy
@@ -192,4 +192,4 @@ class ReactEvaluator extends Evaluator {
   }
 }
 
-export default ReactEvaluator;
+module.exports = ReactEvaluator;

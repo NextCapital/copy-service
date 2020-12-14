@@ -1,5 +1,5 @@
-import Switch from './Switch';
-import Verbatim from '../Verbatim/Verbatim';
+const Switch = require('./Switch');
+const Verbatim = require('../Verbatim/Verbatim');
 
 describe('Switch', () => {
   describe('constructor', () => {

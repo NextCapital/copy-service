@@ -62,4 +62,4 @@ class SyntaxNode {
   }
 }
 
-export default SyntaxNode;
+module.exports = SyntaxNode;

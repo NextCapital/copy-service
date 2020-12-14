@@ -1,9 +1,9 @@
-import _ from 'lodash';
+const _ = require('lodash');
 
-import SyntaxNode from './SyntaxNode/SyntaxNode';
-import Parser from './Parser/Parser';
+const SyntaxNode = require('./SyntaxNode/SyntaxNode');
+const Parser = require('./Parser/Parser');
 
-import ErrorHandler from './ErrorHandler/ErrorHandler';
+const ErrorHandler = require('./ErrorHandler/ErrorHandler');
 
 /**
  * An AST class.
@@ -224,4 +224,4 @@ class CopyService {
   }
 }
 
-export default CopyService;
+module.exports = CopyService;

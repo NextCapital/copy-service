@@ -1,7 +1,7 @@
-import Evaluator from './Evaluator';
-import Substitutions from '../Substitutions/Substitutions';
-import CopyService from '../CopyService';
-import ErrorHandler from '../ErrorHandler/ErrorHandler';
+const Evaluator = require('./Evaluator');
+const Substitutions = require('../Substitutions/Substitutions');
+const CopyService = require('../CopyService');
+const ErrorHandler = require('../ErrorHandler/ErrorHandler');
 
 describe('Evaluator', () => {
   let evaluator, copyService;

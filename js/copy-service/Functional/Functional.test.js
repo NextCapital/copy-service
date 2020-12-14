@@ -1,5 +1,5 @@
-import Functional from './Functional';
-import Verbatim from '../Verbatim/Verbatim';
+const Functional = require('./Functional');
+const Verbatim = require('../Verbatim/Verbatim');
 
 describe('Functional', () => {
   describe('constructor', () => {

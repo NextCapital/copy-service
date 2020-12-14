@@ -1,5 +1,5 @@
-import _ from 'lodash';
-import SyntaxNode from '../SyntaxNode/SyntaxNode';
+const _ = require('lodash');
+const SyntaxNode = require('../SyntaxNode/SyntaxNode');
 
 /**
  * Represents a function in an AST that can be evaluated with copy and arguments from substitutions.
@@ -56,4 +56,4 @@ class Functional extends SyntaxNode {
   }
 }
 
-export default Functional;
+module.exports = Functional;

@@ -81,11 +81,7 @@ class ReactEvaluator extends Evaluator {
 
       if (this.allowFunctional && method && _.isFunction(method)) {
         // because this can return arbitrary JSX, we must wrap in a fragment
-        jsx = (
-          <React.Fragment>
-            { method(jsx, ...ast.args) }
-          </React.Fragment>
-        );
+        jsx = this._createFragment(method(jsx, ...ast.args));
       }
 
       copy = jsx;
@@ -98,7 +94,7 @@ class ReactEvaluator extends Evaluator {
           jsx :
           jsx.props.children;
 
-        copy = React.createElement(ast.tag, {}, childContent);
+        copy = React.createElement(ast.tag, null, childContent);
       } else { // empty formatting, skip tag
         copy = null;
       }
@@ -120,6 +116,16 @@ class ReactEvaluator extends Evaluator {
    */
   getInitialResult() {
     return null;
+  }
+
+  /**
+   * Returns a React fragment without using JSX syntax.
+   *
+   * @param {JSX} children Valid React children.
+   * @returns {JSX}
+   */
+  _createFragment(...children) {
+    return React.createElement(React.Fragment, null, ...children);
   }
 
   /**
@@ -157,37 +163,29 @@ class ReactEvaluator extends Evaluator {
     if (left.type === React.Fragment) {
       // both are fragments, merge children into one fragment
       if (right.type === React.Fragment) {
-        return (
-          <React.Fragment>
-            { left.props.children }
-            { right.props.children }
-          </React.Fragment>
+        return this._createFragment(
+          left.props.children,
+          right.props.children
         );
       }
 
-      return (
-        <React.Fragment>
-          { left.props.children }
-          { right }
-        </React.Fragment>
+      return this._createFragment(
+        left.props.children,
+        right
       );
     }
 
     if (right.type === React.Fragment) {
-      return (
-        <React.Fragment>
-          { left }
-          { right.props.children }
-        </React.Fragment>
+      return this._createFragment(
+        left,
+        right.props.children
       );
     }
 
     // have to merge both elements under a new react fragment
-    return (
-      <React.Fragment>
-        { left }
-        { right }
-      </React.Fragment>
+    return this._createFragment(
+      left,
+      right
     );
   }
 }

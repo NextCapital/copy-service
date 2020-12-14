@@ -28,8 +28,8 @@ describe('ReactEvaluator', () => {
     jest.spyOn(substitutions, 'getBoolean');
   });
 
-  function createElement(tag, content) {
-    return React.createElement(tag, null, content);
+  function createElement(tag, ...content) {
+    return React.createElement(tag, null, ...content);
   }
 
   describe('getInitialResult', () => {
@@ -279,7 +279,7 @@ describe('ReactEvaluator', () => {
 
           describe('when the tag is empty', () => {
             test('returns the existing prefix', () => {
-              const prefix = <React.Fragment>prefix</React.Fragment>;
+              const prefix = createElement(React.Fragment, 'prefix');
 
               const ast = new Formatting({
                 tag: 'em',

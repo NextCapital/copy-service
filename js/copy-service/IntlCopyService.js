@@ -46,10 +46,10 @@ class IntlCopyService {
     this.setLanguage(defaultLanguage);
 
     // create a copy service for each language in the hierarchy
-    this._services = _.reduce(_.keys(hierarchy), (services, lang) => {
-      services[lang] = new CopyService({ language: lang, ...options.serviceOptions });
-      return services;
-    }, {});
+    this._services = {};
+    _.forEach(_.keys(hierarchy), (lang) => {
+      this._services[lang] = new CopyService({ language: lang, ...options.serviceOptions });
+    });
 
     // register any copy provided on options
     _.forEach(options.copy, (copy, lang) => {
@@ -136,7 +136,7 @@ class IntlCopyService {
     return this._getFromHierarchy(
       currentLanguage,
       'hasKey',
-      (value) => !value,
+      (value) => !value, // keep looking if false
       key
     );
   }
@@ -154,7 +154,7 @@ class IntlCopyService {
     const result = this._getFromHierarchy(
       currentLanguage,
       'getAstForKey',
-      (result) => _.isUndefined(result),
+      (result) => _.isUndefined(result), // keep looking if undefined
       key
     );
 
@@ -199,7 +199,7 @@ class IntlCopyService {
     const result = this._getFromHierarchy(
       currentLanguage,
       'getRegisteredCopyForKey',
-      (result) => _.isNil(result),
+      (result) => _.isNil(result), // keep looking if null
       key
     );
 

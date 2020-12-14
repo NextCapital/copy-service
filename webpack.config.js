@@ -1,6 +1,5 @@
 const _ = require('lodash');
 const path = require('path');
-const webpack = require('webpack');
 
 // NOTE: Build exists for example purposes only. Typically, import directly from source.
 module.exports = {
@@ -13,19 +12,9 @@ module.exports = {
     libraryTarget: 'umd'
   },
 
-  module: {
-    rules: [{
-      test: /\.jsx?$/,
-      include: [
-        path.resolve(__dirname, 'js')
-      ],
-      loader: 'babel-loader'
-    }]
-  },
-
   resolve: {
     modules: ['node_modules'],
-    extensions: ['.js', 'jsx', '.json']
+    extensions: ['.js', '.json']
   },
 
   context: __dirname,

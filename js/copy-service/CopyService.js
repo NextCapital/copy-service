@@ -100,7 +100,7 @@ class CopyService {
    * blowing up.
    *
    * @param  {string} key
-   * @return {AST}
+   * @return {AST|undefined}
    */
   getAstForKey(key) {
     const result = _.get(this._registeredCopy, key);
@@ -124,7 +124,7 @@ class CopyService {
         );
       }
 
-      // return undefined when a language is specified to `IntlCopyService` can differentiate
+      // return undefined when a language is specified so that `IntlCopyService` can differentiate
       // between no result and a result of null.
       return this.language ? undefined : null;
     }

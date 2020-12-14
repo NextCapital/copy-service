@@ -235,7 +235,7 @@ describe('IntlCopyService', () => {
       expect(copyService.hasKey('example.keys.indeed')).toBe(true);
     });
 
-    test('returns false if the key exists according to the hierarchy', () => {
+    test('returns false if the key does not exist according to the hierarchy', () => {
       expect(copyService.hasKey('example.keys.fake')).toBe(false);
     });
 
@@ -244,7 +244,7 @@ describe('IntlCopyService', () => {
         expect(copyService.hasKey('example.keys.indeed', 'en-us')).toBe(true);
       });
 
-      test('returns false if the key exists according to the hierarchy', () => {
+      test('returns false if the key does not exist according to the hierarchy', () => {
         expect(copyService.hasKey('example.keys.additional', 'en-us')).toBe(false);
       });
     });

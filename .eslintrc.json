@@ -1,17 +1,13 @@
 {
   "env": {
-    "browser": true,
+    "browser": false,
     "es6": true,
     "jest": true,
     "node": true
   },
-  "parser": "babel-eslint",
   "parserOptions": {
-    "ecmaVersion": 6,
-    "sourceType": "module",
-    "ecmaFeatures": {
-      "jsx": true
-    }
+    "ecmaVersion": 9,
+    "sourceType": "module"
   },
   "rules": {
     "no-bitwise": 2,

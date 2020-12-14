@@ -42,7 +42,7 @@ class ReactEvaluator extends Evaluator {
     let copy;
 
     if (ast instanceof Newline) {
-      copy = <br />;
+      copy = React.createElement('br', null);
     } else if (ast instanceof Verbatim) {
       copy = ast.text;
     } else if (ast instanceof Reference) {

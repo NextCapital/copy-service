@@ -5,6 +5,7 @@
   "main": "js/index.js",
   "files": [
     "js",
+    "HtmlEvaluator.js",
     "PlainTextEvaluator.js",
     "ReactEvaluator.js"
   ],

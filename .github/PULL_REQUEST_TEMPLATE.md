@@ -2,6 +2,7 @@
 
 **Components modified (add appropriate labels)**
 - [ ] copy-service
+- [ ] html-evaluator
 - [ ] plain-text-evaluator
 - [ ] react-evaluator
 

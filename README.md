@@ -41,8 +41,9 @@ The Copy Service project is made up of two primary parts: the `CopyService` clas
 
 ### Evaluators
 
-Currently, this project provides two evaluators:
+Currently, this project provides three evaluators:
 
+- `HtmlEvaluator` returns copy formatted as a string of HTML elements.
 - `PlainTextEvaluator` returns copy formatted as string literals.
 - `ReactEvaluator` returns copy formatted as React components (JSX).
 
@@ -58,6 +59,7 @@ npm install --save @nextcapital/copy-service
 
 ```javascript
 import { CopyService } from '@nextcapital/copy-service';
+import HtmlEvaluator from '@nextcapital/copy-service/HtmlEvaluator';
 import PlainTextEvaluator from '@nextcapital/copy-service/PlainTextEvaluator';
 import ReactEvaluator from '@nextcapital/copy-service/ReactEvaluator';
 
@@ -66,9 +68,11 @@ import copy from './some/path/to/copy.json';
 const copyService = new CopyService();
 copyService.registerCopy(copy);
 
+const htmlEvaluator = new HtmlTextEvaluator(copyService);
 const textEvaluator = new PlainTextEvaluator(copyService);
 const reactEvaluator = new ReactEvaluator(copyService);
 
+const htmlCopy = htmlEvaluator.getCopy('some.copy.key', { some: 'substitutions' });
 const stringCopy = textEvaluator.getCopy('some.copy.key', { some: 'substitutions' });
 const jsxCopy = reactEvaluator.getCopy('some.copy.key', { some: 'substitutions' });
 ```
@@ -165,12 +169,16 @@ Valid HTML tags are  `<strong>`, `<u>`, `<sup>`, `<sub>`, `<s>`, `<em>`, `<p>`, 
 - `account.owner` with substitutions `{ isSpouse: true }` will resolve to `'Spouse'`.
 - `account.owner` with substitutions `{ isSpouse: false }` will resolve to `'Primary'`.
 - `account.switchedCharacter` with substitutions `{ characterSwitch: true }` will resolve to `'Checking Account'`.
+- With the `HtmlEvaluator`, `account.save` will resolve to `'<span><strong>Save</strong></span>'`.
 - With the `PlainTextEvaluator`, `account.save` will resolve to `'Save'`.
 - With the `ReactEvaluator`, `account.save` will resolve to `<span><strong>Save</strong></span>`.
+- With the `HtmlEvaluator`, `account.cancel` will resolve to `'<span>Cancel</span>'`.
 - With the `PlainTextEvaluator`, `account.cancel` will resolve to `'Cancel'`.
 - With the `ReactEvaluator`, `account.cancel` will resolve to `<span>Cancel</span>`.
+- With the `HtmlEvaluator`, `account.rollover` will resolve to `'<span>You may rollover your external IRA</span>'`.
 - With the `PlainTextEvaluator`, `account.rollover` with substitutions `{ rollover: (copy) => copy + 'your external IRA' }` will resolve to `'You may rollover'`.
 - With the `ReactEvaluator`, `account.rollover` will resolve to `<span>You may rollover your external IRA</span>`.
+- With the `HtmlEvaluator`, `account.implement` with substitutions `{ implement: (copy, addMore) => copy + 'your NextCapital managed account' }` will resolve to `'<span>You are going to implement your NextCapital managed account</span>'`.
 - With the `PlainTextEvaluator`, `account.implement` with substitutions `{ implement: (copy, addMore) => copy + 'your NextCapital managed account' }` will resolve to `'You are going to implement'`.
 - With the `ReactEvaluator`, `account.implement` with substitutions `{ implement: (copy, addMore) => copy + 'your NextCapital managed account' }` will resolve to `<span>You are going to implement your NextCapital managed account</span>`.
 
@@ -215,5 +223,3 @@ VERBATIM :: any string that does not begin with *{, #{, ^{, or ${
 ```
 
 **NOTE: Many bothans died to bring you this grammar.**
-
-

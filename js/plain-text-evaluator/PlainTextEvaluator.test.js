@@ -76,7 +76,11 @@ describe('PlainTextEvaluator', () => {
           test('returns a newline character', () => {
             const ast = new Newline({});
 
-            expect(evaluator.evalAST('', ast)).toBe('\n');
+            const newlineResult = 'newline';
+            jest.spyOn(evaluator, 'getNewline').mockReturnValue(newlineResult);
+
+            expect(evaluator.evalAST('', ast)).toBe(newlineResult);
+            expect(evaluator.getNewline).toBeCalled();
           });
         });
 
@@ -222,6 +226,34 @@ describe('PlainTextEvaluator', () => {
 
             expect(evaluator.evalAST('', ast, substitutions)).toBe(ast.copy.text);
           });
+
+          describe('when allowsFormattingTags is true', () => {
+            beforeEach(() => {
+              jest.spyOn(evaluator, 'allowsFormattingTags').mockReturnValue(true);
+            });
+
+            test('returns the evaluated copy of the Formatting, including the HTML tags', () => {
+              const ast = new Formatting({
+                copy: new Verbatim({ text: 'functional text' }),
+                tag: 'strong'
+              });
+
+              expect(evaluator.evalAST('', ast, substitutions)).toBe(
+                `<strong>${ast.copy.text}</strong>`
+              );
+            });
+
+            describe('when the copy is empty', () => {
+              test('does not apply the tags', () => {
+                const ast = new Formatting({
+                  copy: new Verbatim({ text: '' }),
+                  tag: 'strong'
+                });
+
+                expect(evaluator.evalAST('', ast, substitutions)).toBe('');
+              });
+            });
+          });
         });
 
         describe('when the AST is not a known AST class', () => {
@@ -269,6 +301,18 @@ describe('PlainTextEvaluator', () => {
           });
         });
       });
+    });
+  });
+
+  describe('allowsFormattingTags', () => {
+    test('returns false', () => {
+      expect(evaluator.allowsFormattingTags()).toBe(false);
+    });
+  });
+
+  describe('getNewline', () => {
+    test('returns a newline character', () => {
+      expect(evaluator.getNewline()).toBe('\n');
     });
   });
 });

@@ -43,7 +43,7 @@ class PlainTextEvaluator extends Evaluator {
 
     // Append a newline character.
     if (ast instanceof Newline) {
-      copy = '\n';
+      copy = this.getNewline();
     }
     // Append the text of the Verbatim.
     else if (ast instanceof Verbatim) {
@@ -93,7 +93,13 @@ class PlainTextEvaluator extends Evaluator {
     }
     // Evaluate the copy, ignoring the HTML tags, and append the evaluated copy.
     else if (ast instanceof Formatting) {
-      copy = this.evalAST(this.getInitialResult(), ast.copy, substitutions);
+      const text = this.evalAST(this.getInitialResult(), ast.copy, substitutions);
+
+      if (text && this.allowsFormattingTags()) {
+        copy = `<${ast.tag}>${text}</${ast.tag}>`;
+      } else {
+        copy = text;
+      }
     }
     // Log error and stop evaluating
     else {
@@ -108,6 +114,24 @@ class PlainTextEvaluator extends Evaluator {
     return copyPrefix + evaluated;
   }
   /* eslint-enable brace-style */
+
+  /**
+   * Allows `HtmlEvaluator` to set this to true, enabling formatting tags to appear in the
+   * result.
+   *
+   * @returns {boolean}
+   */
+  allowsFormattingTags() {
+    return false;
+  }
+
+  /**
+   * The output for the `Newline` AST not. Overridden by `HtmlEvaluator`.
+   * @returns {string}
+   */
+  getNewline() {
+    return '\n';
+  }
 
   /**
    * Returns the default copy (usually an empty string).

@@ -1,0 +1,22 @@
+name: 'Publish NPM'
+on:
+  push:
+    branches: [ $default-branch ]
+
+jobs:
+  test:
+    name: Publish NPM Package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '12.x'
+      - name: Publish
+        run: |
+          npm config set '//registry.npmjs.org/:_authToken' "${NPM_TOKEN}"
+          npm run autopublish
+        env: # Or as an environment variable
+          NPM_TOKEN: ${{ secrets.NPM_PUBLISH_KEY }}

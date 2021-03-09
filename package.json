@@ -1,13 +1,20 @@
 {
   "name": "@nextcapital/copy-service",
   "version": "5.1.1",
-  "description": "The base copy service that provides copy parsing and evaluating.",
+  "description": "A modern library for UI copy management.",
   "main": "js/index.js",
   "files": [
     "js",
     "HtmlEvaluator.js",
     "PlainTextEvaluator.js",
     "ReactEvaluator.js"
+  ],
+  "keywords": [
+    "copy",
+    "copy management",
+    "internationalization",
+    "i18n",
+    "interpolation"
   ],
   "engines": {
     "node": ">=12.13.1",
@@ -25,13 +32,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/BLC/copy-service.git"
+    "url": "git+https://github.com/nextcapital/copy-service.git"
   },
-  "author": "piercej@nextcapital.com",
+  "author": {
+    "name": "NextCapital Group",
+    "url": "https://nextcapital.com"
+  },
   "bugs": {
-    "url": "https://github.com/BLC/copy-service/issues"
+    "url": "https://github.com/nextcapital/copy-service/issues"
   },
-  "homepage": "https://github.com/BLC/copy-service#readme",
+  "homepage": "https://github.com/nextcapital/copy-service#readme",
   "publishConfig": {
     "registry": "https://npm.nextcapital.com"
   },

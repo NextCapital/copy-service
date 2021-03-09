@@ -42,9 +42,6 @@
     "url": "https://github.com/nextcapital/copy-service/issues"
   },
   "homepage": "https://github.com/nextcapital/copy-service#readme",
-  "publishConfig": {
-    "registry": "https://npm.nextcapital.com"
-  },
   "dependencies": {
     "lodash": "^4.17.21"
   },

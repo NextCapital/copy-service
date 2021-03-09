@@ -1,0 +1,23 @@
+name: 'Copy Service CI'
+on:
+  push:
+    branches: [ $default-branch ]
+  pull_request:
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - name: Install Dependencies
+        run: npm install
+      - name: Lint
+        run: npm run lint
+      - name: Test
+        run: npm run test

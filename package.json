@@ -1,13 +1,20 @@
 {
   "name": "@nextcapital/copy-service",
   "version": "5.1.1",
-  "description": "The base copy service that provides copy parsing and evaluating.",
+  "description": "A modern library for UI copy management.",
   "main": "js/index.js",
   "files": [
     "js",
     "HtmlEvaluator.js",
     "PlainTextEvaluator.js",
     "ReactEvaluator.js"
+  ],
+  "keywords": [
+    "copy",
+    "copy management",
+    "internationalization",
+    "i18n",
+    "interpolation"
   ],
   "engines": {
     "node": ">=12.13.1",
@@ -25,21 +32,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/BLC/copy-service.git"
+    "url": "git+https://github.com/nextcapital/copy-service.git"
   },
-  "author": "piercej@nextcapital.com",
+  "author": {
+    "name": "NextCapital Group",
+    "url": "https://nextcapital.com"
+  },
   "bugs": {
-    "url": "https://github.com/BLC/copy-service/issues"
+    "url": "https://github.com/nextcapital/copy-service/issues"
   },
-  "homepage": "https://github.com/BLC/copy-service#readme",
-  "publishConfig": {
-    "registry": "https://npm.nextcapital.com"
-  },
+  "homepage": "https://github.com/nextcapital/copy-service#readme",
   "dependencies": {
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@nextcapital/eslint-config-js-linter": "^2.0.3",
     "@pixi/jsdoc-template": "^2.6.0",
     "auto-publish-package": "^0.1.0",
     "cspell": "^4.2.8",
@@ -56,7 +62,7 @@
     "webpack-cli": "^4.5.0"
   },
   "peerDependencies": {
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0"
+    "react": "^16.14.0 || ^17.0.0",
+    "react-dom": "^16.14.0 || ^17.0.0"
   }
 }

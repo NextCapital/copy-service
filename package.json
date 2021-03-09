@@ -39,7 +39,6 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@nextcapital/eslint-config-js-linter": "^2.0.3",
     "@pixi/jsdoc-template": "^2.6.0",
     "auto-publish-package": "^0.1.0",
     "cspell": "^4.2.8",

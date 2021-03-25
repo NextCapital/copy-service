@@ -26,6 +26,6 @@ jobs:
       - name: Publish
         run: |
           npm config set '//registry.npmjs.org/:_authToken' "${NPM_TOKEN}"
-          npm run autopublish
+          npm run autopublish || true
         env: # Or as an environment variable
           NPM_TOKEN: ${{ secrets.NPM_PUBLISH_KEY }}

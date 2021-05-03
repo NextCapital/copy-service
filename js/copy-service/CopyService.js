@@ -67,7 +67,7 @@ class CopyService {
     const subkeys = this.getSubkeys(key);
 
     return _.mapValues(subkeys, (obj, path) => {
-      const subPath = `${key}.${path}`;
+      const subPath = `${key}${Parser.KEY_DELIMITER}${path}`;
       if (_.isPlainObject(obj)) {
         return this.buildSubkeys(subPath);
       }
@@ -107,7 +107,7 @@ class CopyService {
 
     if (_.isString(result)) { // need to parse to an AST
       try {
-        const ast = Parser.parseSingle(result);
+        const ast = Parser.parseSingle(key, result);
         _.set(this._registeredCopy, key, ast);
         return ast;
       } catch (ex) {

@@ -114,6 +114,15 @@ describe('CopyService - PlainTextEvaluator Integration Tests', () => {
           expectedCopy: 'Account Owner'
         });
       });
+
+      describe('when the reference is relative', () => {
+        describe('references.relative.primary', () => {
+          testCopy({
+            key: 'references.relative.primary',
+            expectedCopy: 'And it\'s me you need to show; how deep is your love?'
+          });
+        });
+      });
     });
 
     describe('copy with copy key substitutions', () => {
@@ -294,6 +303,16 @@ describe('CopyService - PlainTextEvaluator Integration Tests', () => {
             },
             expectedCopy: 'some sub'
           });
+        });
+      });
+    });
+
+    describe('copy with multi-level relative references', () => {
+      describe('references.relative.deeperStill.further', () => {
+        testCopy({
+          key: 'references.relative.deeperStill.further',
+          expectedCopy: 'I really mean to learn. Cause we\'re livin in a world of fools,' +
+          ' breaking us down, when they all should let us be...'
         });
       });
     });

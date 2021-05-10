@@ -19,7 +19,21 @@
   "references": {
     "title": "${verbatim.balance} and ${verbatim.pluralTitle}",
     "owner": "${verbatim.owner}",
-    "symbol": "${substitutions.symbol}"
+    "symbol": "${substitutions.symbol}",
+    "relative": {
+      "primary": "${.first}; ${.second}?",
+      "first": "And it's me you need to show",
+      "second": "how deep ${.deeperStill.infinite}",
+      "causeWere": "Cause we're livin in a world of fools, ${..so.broken}, when they all should let us be...",
+      "lyric": "I really mean to learn. ${.causeWere}",
+      "deeperStill": {
+        "infinite": "is your love",
+        "further": "${..lyric}"
+      }
+    },
+    "so": {
+      "broken": "breaking us down"
+    }
   },
   "referenceSubstitutions": {
     "title": "%{substitution}"

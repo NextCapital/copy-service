@@ -143,6 +143,8 @@ describe('CopyService', () => {
     });
 
     describe('when the copy at the key has not been parsed', () => {
+      const key = 'some.key';
+
       beforeEach(() => {
         copyService.registerCopy({
           some: {
@@ -156,19 +158,19 @@ describe('CopyService', () => {
         const parsed = new SyntaxNode();
 
         jest.spyOn(Parser, 'parseSingle').mockReturnValue(parsed);
-        expect(copyService.getAstForKey('some.key')).toBe(parsed);
+        expect(copyService.getAstForKey(key)).toBe(parsed);
         expect(copyService._registeredCopy.some.key).toBe(parsed);
-        expect(Parser.parseSingle).toBeCalledWith(rawCopy);
+        expect(Parser.parseSingle).toBeCalledWith(key, rawCopy);
       });
 
       describe('when the copy fails to parse', () => {
         test('logs a waring and returns nil', () => {
           jest.spyOn(Parser, 'parseSingle').mockImplementation(() => { throw new Error(); });
 
-          expect(copyService.getAstForKey('some.key')).toBeNull();
+          expect(copyService.getAstForKey(key)).toBeNull();
           expect(ErrorHandler.handleError).toBeCalledWith(
             'CopyService',
-            'Failed to parse copy key: some.key. Returning null...'
+            `Failed to parse copy key: ${key}. Returning null...`
           );
         });
       });
@@ -312,8 +314,10 @@ describe('CopyService', () => {
     });
 
     describe('when an AST', () => {
+      const key = 'some.key';
+
       beforeEach(() => {
-        _.set(copyService._registeredCopy, 'some.key', Parser.parseSingle('some #{key} yo!'));
+        _.set(copyService._registeredCopy, key, Parser.parseSingle(key, 'some #{key} yo!'));
       });
 
       test('returns the corresponding string', () => {

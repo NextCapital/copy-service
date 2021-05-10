@@ -157,7 +157,14 @@ Valid HTML tags are  `<strong>`, `<u>`, `<sup>`, `<sub>`, `<s>`, `<em>`, `<p>`, 
     "save": "<strong>Save</strong>",
     "cancel": "<q>Cancel</q>",
     "rollover": "^{You may rollover}[rollover]",
-    "implement": "^{You are going to implement}[implement][true]"
+    "implement": "^{You are going to implement}[implement][true]",
+  },
+  "relativeKeyProof": {
+    "two": "in a ${.nested.three}",
+    "nested": {
+      "one": "You can reference keys ${..two}.",
+      "three": "relative way",
+    }
   }
 }
 ```
@@ -165,6 +172,7 @@ Valid HTML tags are  `<strong>`, `<u>`, `<sup>`, `<sub>`, `<s>`, `<em>`, `<p>`, 
 - `account.name` will resolve to `'Account'`.
 - `account.description` will resolve to `'Checking Account'`.
 - `account.recursiveProof` will resolve to `'Checking Account'`.
+- `relativeKeyProof.nested.one` will resolve to `'You can reference keys in a relative way.'`.
 - `account.value` with substitutions `{ accountValue: 100 }` will resolve to `'$100'`.
 - `account.subbedCharacter` with substitutions `{ character: 'account.characters.savings' }` will resolve to `'Savings Account'`.
 - `account.owner` with substitutions `{ isSpouse: true }` will resolve to `'Spouse'`.

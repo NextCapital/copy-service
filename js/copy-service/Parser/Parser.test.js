@@ -575,6 +575,7 @@ describe('Parser', () => {
 
     describe('when the value is a string', () => {
       test('tokenizes and parses the string', () => {
+        const key = 'some key';
         const result = { some: 'ast' };
         jest.spyOn(Parser, '_parse').mockReturnValue(result);
 
@@ -582,10 +583,10 @@ describe('Parser', () => {
         jest.spyOn(Parser, '_tokenize').mockReturnValue(tokens);
 
         const copy = 'some copy';
-        expect(Parser.parseSingle(copy)).toBe(result);
+        expect(Parser.parseSingle(key, copy)).toBe(result);
 
         expect(Parser._tokenize).toBeCalledWith(copy);
-        expect(Parser._parse).toBeCalledWith(tokens, copy);
+        expect(Parser._parse).toBeCalledWith(tokens, key, copy);
       });
     });
   });

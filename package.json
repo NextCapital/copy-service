@@ -15,7 +15,9 @@
     "copy management",
     "internationalization",
     "i18n",
-    "interpolation"
+    "interpolation",
+    "i18next",
+    "i18next-react"
   ],
   "engines": {
     "node": ">=12.13.1",
@@ -50,17 +52,17 @@
     "@pixi/jsdoc-template": "^2.6.0",
     "auto-publish-package": "^0.1.0",
     "cspell": "^4.2.8",
-    "eslint": "^7.21.0",
+    "eslint": "^7.27.0",
     "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-import": "^2.23.3",
+    "eslint-plugin-react": "^7.23.2",
     "jest": "^26.6.3",
     "jest-junit-reporter": "^1.1.0",
-    "jsdoc": "^3.6.6",
+    "jsdoc": "^3.6.7",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
-    "webpack": "^5.0.0",
-    "webpack-cli": "^4.5.0"
+    "webpack": "^5.38.0",
+    "webpack-cli": "^4.7.0"
   },
   "peerDependencies": {
     "react": "^16.14.0 || ^17.0.0",

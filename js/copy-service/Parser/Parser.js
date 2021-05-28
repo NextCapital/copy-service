@@ -66,7 +66,7 @@ const HTML_END_TAG_REGEX = /^<\/(\w+)>/;
  */
 const ALLOWED_HTML_TAGS = [
   // cspell:disable-next-line
-  'u', 'sup', 'sub', 's', 'em', 'strong', 'p', 'span', 'div', 'ol', 'ul', 'li'
+  'u', 'sup', 'sub', 's', 'em', 'strong', 'p', 'span', 'div', 'ol', 'ul', 'li', 'b', 'i', 'u'
 ];
 
 /**

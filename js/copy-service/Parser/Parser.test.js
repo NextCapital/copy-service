@@ -483,22 +483,6 @@ describe('Parser', () => {
               'Parser: Unknown HTML tag \'<invalid>\' found in formatting'
             );
           });
-
-          test('throws error', () => {
-            const tree = { tag: '<b></b>' };
-
-            expect(() => Parser.parseLeaves(tree)).toThrow(
-              'Parser: Unknown HTML tag \'<b>\' found in formatting'
-            );
-          });
-
-          test('throws error', () => {
-            const tree = { tag: '<i></i>' };
-
-            expect(() => Parser.parseLeaves(tree)).toThrow(
-              'Parser: Unknown HTML tag \'<i>\' found in formatting'
-            );
-          });
         });
 
         describe('when the tree contains copy with missing text', () => {

@@ -50,7 +50,7 @@
   },
   "devDependencies": {
     "@pixi/jsdoc-template": "^2.6.0",
-    "auto-publish-package": "^0.1.0",
+    "auto-publish-package": "^1.0.1",
     "cspell": "^4.2.8",
     "eslint": "^7.27.0",
     "eslint-config-airbnb-base": "^14.2.1",

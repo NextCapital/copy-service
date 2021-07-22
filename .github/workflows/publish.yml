@@ -3,11 +3,14 @@ on:
   push:
     branches:
       - main
+  pull_request:
 
 jobs:
   test:
     name: Publish NPM Package
     runs-on: ubuntu-latest
+    env: # Or as an environment variable
+        NPM_TOKEN: ${{ secrets.NPM_PUBLISH_KEY }}
     steps:
       - name: Check out code
         uses: actions/checkout@v2
@@ -25,7 +28,5 @@ jobs:
         run: npm ci
       - name: Publish
         run: |
-          npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
+          npm whoami
           npm run autopublish || true
-        env: # Or as an environment variable
-          NPM_TOKEN: ${{ secrets.NPM_PUBLISH_KEY }}

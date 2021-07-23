@@ -24,8 +24,8 @@ jobs:
       - name: Install Dependencies
         run: npm ci
       - name: Publish
-        run: |
-          npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
-          npm run autopublish || true
-        env: # Or as an environment variable
-          NPM_TOKEN: ${{ secrets.NPM_PUBLISH_KEY }}
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          access: public
+          check-version: true

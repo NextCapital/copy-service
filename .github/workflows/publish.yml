@@ -1,4 +1,4 @@
-name: 'Publish NPM'
+name: Autopublish
 on:
   push:
     branches:

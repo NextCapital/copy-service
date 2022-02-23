@@ -26,8 +26,11 @@
   "scripts": {
     "autopublish": "auto-publish-package",
     "build": "webpack",
-    "ci": "npm run lint && npm run test && npm run build",
+    "ci:local": "npm run lint && npm run test && npm run build",
     "docs": "rm -rf docs/ && jsdoc js/**/*.js -c .jsdoc.json",
+    "license": "npm run license:production && npm run license:development",
+    "license:development": "license-checker-rseidelsohn --summary --development --failOn='AGPL;CAL;CC BY-NC;CC BY-SA;CC BY-NC-SA;CC BY-NC-ND;CPAL;CPOL;EUPL;GPL;LGPL;NGPL;OSL;QPL;SISSL;Sleepycat;SSPL'",
+    "license:production": "license-checker-rseidelsohn --summary --production --failOn='AGPL;CAL;CC BY-NC;CC BY-SA;CC BY-NC-SA;CC BY-NC-ND;CPAL;CPOL;EUPL;GPL;LGPL;NGPL;OSL;QPL;SISSL;Sleepycat;SSPL'",
     "lint": "npm run lint:js && npm run lint:spelling",
     "lint:js": "eslint \"js/**/*.{js,jsx}\" --cache",
     "lint:spelling": "cspell \"js/**/*.{js,jsx}\"",
@@ -50,7 +53,6 @@
   },
   "devDependencies": {
     "@pixi/jsdoc-template": "^2.6.0",
-    "auto-publish-package": "^1.0.1",
     "cspell": "^4.2.8",
     "eslint": "^7.27.0",
     "eslint-config-airbnb-base": "^14.2.1",
@@ -59,6 +61,7 @@
     "jest": "^26.6.3",
     "jest-junit-reporter": "^1.1.0",
     "jsdoc": "^3.6.7",
+    "license-checker-rseidelsohn": "^1.2.2",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "webpack": "^5.38.0",

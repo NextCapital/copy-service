@@ -1,6 +1,6 @@
 {
   "name": "@nextcapital/copy-service",
-  "version": "5.2.1",
+  "version": "5.2.2",
   "description": "A modern library for UI copy management.",
   "license": "Apache-2.0",
   "main": "js/index.js",
@@ -68,7 +68,7 @@
     "webpack-cli": "^4.7.0"
   },
   "peerDependencies": {
-    "react": "^16.14.0 || ^17.0.0",
-    "react-dom": "^16.14.0 || ^17.0.0"
+    "react": "^16.14.0 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.14.0 || ^17.0.0 || ^18.0.0"
   }
 }

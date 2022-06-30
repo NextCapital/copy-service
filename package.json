@@ -49,7 +49,7 @@
   },
   "homepage": "https://github.com/nextcapital/copy-service#readme",
   "dependencies": {
-    "babel-jest": "^28.1.0",
+    "babel-jest": "^28.1.1",
     "lodash": "^4.17.21"
   },
   "devDependencies": {

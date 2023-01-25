@@ -4,4 +4,5 @@ docs/
 dist/
 node_modules/
 test-report.xml
+.cspellcache
 .eslintcache

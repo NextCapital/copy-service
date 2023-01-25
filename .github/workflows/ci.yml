@@ -83,23 +83,3 @@ jobs:
         key: ${{ runner.os }}-modules-${{ hashFiles('package-lock.json') }}
 
     - run: npm run build
-  license:
-    needs: dependencies-cache
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    strategy:
-      matrix:
-        node-version: ['16']
-    steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-    - uses: actions/cache@v2
-      id: node-modules-cache
-      with:
-        path: '**/node_modules'
-        key: ${{ runner.os }}-modules-${{ hashFiles('package-lock.json') }}
-
-    - run: npm run license

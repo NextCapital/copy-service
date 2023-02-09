@@ -85,7 +85,7 @@ import copy from './some/path/to/copy.json'; // or load from a URL async
 const copyService = new CopyService();
 copyService.registerCopy(copy);
 
-const htmlEvaluator = new HtmlTextEvaluator(copyService);
+const htmlEvaluator = new HtmlEvaluator(copyService);
 const textEvaluator = new PlainTextEvaluator(copyService);
 const reactEvaluator = new ReactEvaluator(copyService);
 

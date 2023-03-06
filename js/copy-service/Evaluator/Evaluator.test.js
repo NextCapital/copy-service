@@ -43,12 +43,16 @@ describe('Evaluator', () => {
   });
 
   describe('setCacheIfCacheable', () => {
-    const result = { some: 'result' };
+    let result;
+
+    beforeEach(() => {
+      result = { some: 'result' };
+    });
 
     describe('when the ast is cacheable', () => {
-      const ast = { an: 'ast', isCacheable: jest.fn().mockReturnValue(true) };
-
       test('sets the result in the cache', () => {
+        const ast = { an: 'ast', isCacheable: jest.fn().mockReturnValue(true) };
+
         evaluator.setCacheIfCacheable(ast, result);
         expect(evaluator.getCached(ast)).toBe(result);
         expect(ast.isCacheable).toBeCalledWith(copyService);
@@ -56,9 +60,9 @@ describe('Evaluator', () => {
     });
 
     describe('when the ast is not cacheable', () => {
-      const ast = { an: 'ast', isCacheable: jest.fn().mockReturnValue(false) };
-
       test('does not set the result in the cache', () => {
+        const ast = { an: 'ast', isCacheable: jest.fn().mockReturnValue(false) };
+
         evaluator.setCacheIfCacheable(ast, result);
         expect(evaluator.getCached(ast)).toBeUndefined();
         expect(ast.isCacheable).toBeCalledWith(copyService);

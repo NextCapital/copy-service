@@ -194,7 +194,7 @@ describe('IntlCopyService - Hierarchy Tests', () => {
         describe('functions.title', () => {
           testCopy({
             key: 'functions.title',
-            substitutions: { makeExternalLink: jest.fn().mockImplementation((text) => `+ ${text}`) },
+            substitutions: { makeExternalLink: (text) => `+ ${text}` },
             expectedCopy: '+ learn more'
           });
 
@@ -213,7 +213,7 @@ describe('IntlCopyService - Hierarchy Tests', () => {
 
         testCopy({
           key: 'functions.title',
-          substitutions: { makeExternalLink: jest.fn().mockImplementation((text) => `+ ${text}`) },
+          substitutions: { makeExternalLink: (text) => `+ ${text}` },
           expectedCopy: 'learn more'
         });
       });
@@ -223,7 +223,7 @@ describe('IntlCopyService - Hierarchy Tests', () => {
           testCopy({
             key: 'functions.args',
             substitutions: {
-              func: jest.fn().mockImplementation((text) => `+ ${text}`),
+              func: (text) => `+ ${text}`,
               arg1: 'arg1',
               arg2: 'arg2'
             },

@@ -33,4 +33,10 @@ describe('HTMLEvaluator', () => {
       expect(evaluator.getNewline()).toBe('<br/>');
     });
   });
+
+  describe('getWordBreak', () => {
+    test('returns a wbr tag', () => {
+      expect(evaluator.getWordBreak()).toBe('<wbr/>');
+    });
+  });
 });

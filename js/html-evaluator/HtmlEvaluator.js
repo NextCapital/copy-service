@@ -16,6 +16,15 @@ class HtmlEvaluator extends PlainTextEvaluator {
   }
 
   /**
+   * `HtmlEvaluator` treats `WordBreak` nodes as `<wbr/>` tags.
+   *
+   * @returns {string}
+   */
+  getWordBreak() {
+    return '<wbr/>';
+  }
+
+  /**
    * `HtmlEvaluator` allows `Formatting` AST nodes to include their tags.
    *
    * @returns {boolean}

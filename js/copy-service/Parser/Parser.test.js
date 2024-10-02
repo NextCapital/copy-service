@@ -12,6 +12,7 @@ const Switch = require('../Switch/Switch');
 const Verbatim = require('../Verbatim/Verbatim');
 
 const Parser = require('./Parser');
+const WordBreak = require('../WordBreak/WordBreak');
 
 describe('Parser', () => {
   afterEach(() => {
@@ -110,6 +111,21 @@ describe('Parser', () => {
               };
               const expectedTree = {
                 newline: new Newline({
+                  sibling: null
+                })
+              };
+
+              expect(Parser.parseLeaves(initialTree)).toEqual(expectedTree);
+            });
+          });
+
+          describe('when the tree contains a wordbreak', () => {
+            test('completes a parse with an AST containing a WordBreak node', () => {
+              const initialTree = {
+                wordbreak: '\b'
+              };
+              const expectedTree = {
+                wordbreak: new WordBreak({
                   sibling: null
                 })
               };
@@ -283,7 +299,7 @@ describe('Parser', () => {
           describe('when a tree contains copy nested inside HTML tags', () => {
             test('parses the nested copy successfully', () => {
               const initialTree = {
-                tags: '<strong><em>${hello}\n#{sub}</em></strong>'
+                tags: '<strong><em>${hello}\n#{sub}\bgood bye</em></strong>'
               };
               const expectedTree = {
                 tags: new Formatting({
@@ -293,7 +309,12 @@ describe('Parser', () => {
                       sibling: new Newline({
                         sibling: new Substitute({
                           key: 'sub',
-                          sibling: null
+                          sibling: new WordBreak({
+                            sibling: new Verbatim({
+                              text: 'good bye',
+                              sibling: null
+                            })
+                          })
                         })
                       })
                     }),

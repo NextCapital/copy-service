@@ -8,7 +8,8 @@ const {
   Switch,
   Verbatim,
   Substitutions,
-  CopyService
+  CopyService,
+  WordBreak
 } = require('../index.js');
 
 const PlainTextEvaluator = require('./PlainTextEvaluator');
@@ -81,6 +82,18 @@ describe('PlainTextEvaluator', () => {
 
             expect(evaluator.evalAST('', ast)).toBe(newlineResult);
             expect(evaluator.getNewline).toBeCalled();
+          });
+        });
+
+        describe('when the AST is a WordBreak', () => {
+          test('defers to getWordBreak', () => {
+            const ast = new WordBreak({});
+
+            const wordbreakResult = '';
+            jest.spyOn(evaluator, 'getWordBreak').mockReturnValue(wordbreakResult);
+
+            expect(evaluator.evalAST('', ast)).toBe(wordbreakResult);
+            expect(evaluator.getWordBreak).toBeCalled();
           });
         });
 
@@ -313,6 +326,12 @@ describe('PlainTextEvaluator', () => {
   describe('getNewline', () => {
     test('returns a newline character', () => {
       expect(evaluator.getNewline()).toBe('\n');
+    });
+  });
+
+  describe('getWordBreak', () => {
+    test('returns an empty string', () => {
+      expect(evaluator.getWordBreak()).toBe('');
     });
   });
 });

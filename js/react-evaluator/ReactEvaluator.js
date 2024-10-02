@@ -10,6 +10,7 @@ const {
   Substitute,
   Switch,
   Verbatim,
+  WordBreak,
 
   Evaluator
 } = require('../index.js');
@@ -43,6 +44,8 @@ class ReactEvaluator extends Evaluator {
 
     if (ast instanceof Newline) {
       copy = React.createElement('br', null);
+    } else if (ast instanceof WordBreak) {
+      copy = React.createElement('wbr', null);
     } else if (ast instanceof Verbatim) {
       copy = ast.text;
     } else if (ast instanceof Reference) {

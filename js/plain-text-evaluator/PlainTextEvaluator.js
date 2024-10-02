@@ -9,6 +9,7 @@ const {
   Substitute,
   Switch,
   Verbatim,
+  WordBreak,
 
   Evaluator
 } = require('../index.js');
@@ -44,6 +45,10 @@ class PlainTextEvaluator extends Evaluator {
     // Append a newline character.
     if (ast instanceof Newline) {
       copy = this.getNewline();
+    }
+    // Append a WordBreak character.
+    else if (ast instanceof WordBreak) {
+      copy = this.getWordBreak();
     }
     // Append the text of the Verbatim.
     else if (ast instanceof Verbatim) {
@@ -131,6 +136,14 @@ class PlainTextEvaluator extends Evaluator {
    */
   getNewline() {
     return '\n';
+  }
+
+  /**
+   * The output for the `WordBreak` AST node. Overridden by `HtmlEvaluator`.
+   * @returns {string}
+   */
+  getWordBreak() {
+    return '';
   }
 
   /**

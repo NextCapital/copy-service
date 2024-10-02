@@ -9,6 +9,7 @@ const RefSubstitute = require('../RefSubstitute/RefSubstitute');
 const Substitute = require('../Substitute/Substitute');
 const Switch = require('../Switch/Switch');
 const Verbatim = require('../Verbatim/Verbatim');
+const WordBreak = require('../WordBreak/WordBreak');
 
 const ErrorHandler = require('../ErrorHandler/ErrorHandler');
 
@@ -30,7 +31,8 @@ const TOKENS = {
   ARGS_START: '}[',
   ARGS_COMMA: ',',
   ARGS_END: ']',
-  NEWLINE: '\n'
+  NEWLINE: '\n',
+  WORD_BREAK: '\b'
 };
 
 /**
@@ -421,6 +423,16 @@ class Parser {
         this._parseTokens(tokensToParse, key);
       return {
         ast: new Newline({ sibling: parsed.ast }),
+        tokens: parsed.tokens
+      };
+    }
+
+    else if (token.type === this.TOKENS.WORD_BREAK) {
+      const parsed = isRestricted ?
+        this._parseTokens(tokensToParse, key, true, expectedEndingToken) :
+        this._parseTokens(tokensToParse, key);
+      return {
+        ast: new WordBreak({ sibling: parsed.ast }),
         tokens: parsed.tokens
       };
     }

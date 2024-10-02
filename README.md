@@ -176,7 +176,8 @@ Valid HTML tags are  `<strong>`, `<u>`, `<sup>`, `<sub>`, `<s>`, `<em>`, `<p>`, 
     "save": "<strong>Save</strong>",
     "cancel": "<q>Cancel</q>",
     "rollover": "^{You may rollover}[rollover]",
-    "implement": "^{You are going to implement}[implement][true]"
+    "implement": "^{You are going to implement}[implement][true]",
+    "wordbreak": "Step\b 3 of 10"
   },
   "relativeKeyProof": {
     "two": "in a ${.nested.three}",
@@ -211,6 +212,7 @@ Valid HTML tags are  `<strong>`, `<u>`, `<sup>`, `<sub>`, `<s>`, `<em>`, `<p>`, 
 - With the `PlainTextEvaluator`, `account.rollover` with substitutions `{ rollover: (copy) => copy + 'your external IRA' }` will resolve to `'You may rollover'` if `allowFormatting` is false, and `'You may rollover your external IRA'` if it is `true`.
 - With the `ReactEvaluator`, `account.rollover` will resolve to `You may rollover your external IRA`.
 - With the `HtmlEvaluator`, `account.implement` with substitutions `{ implement: (copy, addMore) => copy + 'your NextCapital managed account' }` will resolve to `'You are going to implement your NextCapital managed account'`.
+- With the `HtmlEvaluator` and `ReactEvaluator`, `account.wordbreak` will resolve to `Step<wbr/> 3 of 10`. Note: `\b` is custom language syntax to this project.
 - With the `ReactEvaluator`, `link.example` with substitutions `{ makeLink: (copy, url) => (<a href={ url }>{ copy }</a>) }` will resolve to `Visit our <a href="https://nextcapital.com">fancy website</a>!`.
 
 ## Internationalization (i18n)

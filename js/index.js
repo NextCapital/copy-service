@@ -6,6 +6,7 @@ const RefSubstitute = require('./copy-service/RefSubstitute/RefSubstitute');
 const Substitute = require('./copy-service/Substitute/Substitute');
 const Switch = require('./copy-service/Switch/Switch');
 const Verbatim = require('./copy-service/Verbatim/Verbatim');
+const WordBreak = require('./copy-service/WordBreak/WordBreak');
 
 const Evaluator = require('./copy-service/Evaluator/Evaluator');
 const Substitutions = require('./copy-service/Substitutions/Substitutions');
@@ -23,6 +24,7 @@ module.exports = {
   Substitute,
   Switch,
   Verbatim,
+  WordBreak,
 
   Evaluator,
   Substitutions,

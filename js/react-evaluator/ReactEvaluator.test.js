@@ -11,7 +11,8 @@ const {
   Switch,
   Verbatim,
   Substitutions,
-  CopyService
+  CopyService,
+  WordBreak
 } = require('../index.js');
 
 const ReactEvaluator = require('./ReactEvaluator');
@@ -93,6 +94,14 @@ describe('ReactEvaluator', () => {
             const ast = new Newline({});
 
             expect(getStaticMarkup(null, ast)).toBe('<br/>');
+          });
+        });
+
+        describe('when the AST is a WordBreak', () => {
+          test('returns a span with a wbr element', () => {
+            const ast = new WordBreak({});
+
+            expect(getStaticMarkup(null, ast)).toBe('<wbr/>');
           });
         });
 

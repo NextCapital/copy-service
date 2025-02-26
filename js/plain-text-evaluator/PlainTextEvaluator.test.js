@@ -53,7 +53,7 @@ describe('PlainTextEvaluator', () => {
 
         jest.spyOn(evaluator, 'getCached').mockReturnValue(suffix);
         expect(evaluator.evalAST(copyPrefix, ast)).toBe(copyPrefix + suffix);
-        expect(evaluator.getCached).toBeCalledWith(ast);
+        expect(evaluator.getCached).toHaveBeenCalledWith(ast);
       });
     });
 
@@ -67,7 +67,7 @@ describe('PlainTextEvaluator', () => {
 
         jest.spyOn(evaluator, 'setCacheIfCacheable').mockImplementation();
         expect(evaluator.evalAST(copyPrefix, ast)).toBe('helloworld!');
-        expect(evaluator.setCacheIfCacheable).toBeCalledWith(ast, 'world!');
+        expect(evaluator.setCacheIfCacheable).toHaveBeenCalledWith(ast, 'world!');
       });
     });
 
@@ -81,7 +81,7 @@ describe('PlainTextEvaluator', () => {
             jest.spyOn(evaluator, 'getNewline').mockReturnValue(newlineResult);
 
             expect(evaluator.evalAST('', ast)).toBe(newlineResult);
-            expect(evaluator.getNewline).toBeCalled();
+            expect(evaluator.getNewline).toHaveBeenCalled();
           });
         });
 
@@ -93,7 +93,7 @@ describe('PlainTextEvaluator', () => {
             jest.spyOn(evaluator, 'getWordBreak').mockReturnValue(wordbreakResult);
 
             expect(evaluator.evalAST('', ast)).toBe(wordbreakResult);
-            expect(evaluator.getWordBreak).toBeCalled();
+            expect(evaluator.getWordBreak).toHaveBeenCalled();
           });
         });
 
@@ -204,7 +204,7 @@ describe('PlainTextEvaluator', () => {
               evaluator.evalAST('', ast, new Substitutions({ func }))
             ).toBe(funcText);
 
-            expect(func).toBeCalledWith(ast.copy.text);
+            expect(func).toHaveBeenCalledWith(ast.copy.text);
           });
 
           describe('when allowFunctional is disabled on the evaluator', () => {
@@ -225,7 +225,7 @@ describe('PlainTextEvaluator', () => {
                 evaluator.evalAST('', ast, new Substitutions({ func }))
               ).toBe(ast.copy.text);
 
-              expect(func).not.toBeCalled();
+              expect(func).not.toHaveBeenCalled();
             });
           });
         });
@@ -276,7 +276,7 @@ describe('PlainTextEvaluator', () => {
 
           test('logs error', () => {
             evaluator.evalAST('', {});
-            expect(evaluator._handleError).toBeCalledWith('Unknown node detected');
+            expect(evaluator._handleError).toHaveBeenCalledWith('Unknown node detected');
           });
 
           test('returns empty string', () => {
@@ -302,7 +302,7 @@ describe('PlainTextEvaluator', () => {
               key: 'initialDecider'
             });
 
-            const substitutions = new Substitutions({
+            substitutions = new Substitutions({
               initialDecider: true,
               nestedLeft: false,
               nestedRight: true

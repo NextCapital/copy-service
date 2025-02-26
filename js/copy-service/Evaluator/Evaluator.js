@@ -3,12 +3,16 @@ const ErrorHandler = require('../ErrorHandler/ErrorHandler');
 
 /**
  * Provides an interface to recursively generate copy evaluated with substitutions.
+ *
  * @interface
  */
 class Evaluator {
   /**
    * Takes in a copy service and provide methods for evaluating its ASTs.
+   *
    * @param {CopyService|IntlCopyService} copyService
+   * @param root0
+   * @param root0.allowFunctional
    */
   constructor(copyService, {
     allowFunctional = true
@@ -29,7 +33,7 @@ class Evaluator {
    * Gets the cached evaluation result for the given ast, if it exists.
    *
    * @param {AST} ast
-   * @returns {*} The evaluated copy
+   * @returns {*} The evaluated copy.
    */
   getCached(ast) {
     return this.evaluationCache.get(ast);
@@ -40,8 +44,8 @@ class Evaluator {
    *
    * NOTE: The evaluated result should be the result of fully evaluating the ast with no prefix.
    *
-   * @param {AST} ast node being cached
-   * @param {*} evaluated fully-evaluated result for the node
+   * @param {AST} ast Node being cached.
+   * @param {*} evaluated Fully-evaluated result for the node.
    */
   setCacheIfCacheable(ast, evaluated) {
     if (ast.isCacheable(this.copyService)) {
@@ -51,10 +55,11 @@ class Evaluator {
 
   /**
    * Returns evaluated copy got the given copy key and substitutions.
+   *
    * @param  {string} key
-   * @param  {object|function} [rawSubstitutions] Substitutions to be used by the evaluator when
+   * @param  {object | Function} [rawSubstitutions] Substitutions to be used by the evaluator when
    * evaluating the AST. Must either be an object or a function returning the object.
-   * @return {*} The evaluated copy
+   * @returns {*} The evaluated copy.
    */
   getCopy(key, rawSubstitutions) {
     const substitutions = new Substitutions(rawSubstitutions);
@@ -63,14 +68,16 @@ class Evaluator {
     return this.evalAST(this.getInitialResult(), ast, substitutions);
   }
 
+  /* eslint-disable jsdoc/check-param-names */
   /**
-   * Evaluates the AST with given substitutions
+   * Evaluates the AST with given substitutions.
+   *
+   * @abstract
    * @param  {*} copyPrefix The evaluated copy in process of being recursively built.
    * @param  {AST} ast The AST to be evaluated. This AST must be constructed by Parser.
    * @param  {Substitutions} substitutions An object containing substitutions for keys specified in
    * the AST.
-   * @return {*} The evaluated copy.
-   * @abstract
+   * @returns {*} The evaluated copy.
    */
   evalAST() {
     this._handleError(
@@ -78,12 +85,12 @@ class Evaluator {
       { halt: true }
     );
   }
-  /* eslint-enable brace-style */
 
   /**
    * Returns the default copy (usually an empty string).
-   * @return {*}
+   *
    * @abstract
+   * @returns {*}
    */
   getInitialResult() {
     this._handleError(
@@ -91,9 +98,12 @@ class Evaluator {
       { halt: true }
     );
   }
+  /* eslint-enable jsdoc/check-param-names */
 
   /**
    * Defers to ErrorHandler.handleError with the constructor name and any args.
+   *
+   * @param {...any} args
    */
   _handleError(...args) {
     ErrorHandler.handleError(this.constructor.name, ...args);

@@ -44,7 +44,7 @@ describe('Newline', () => {
 
         jest.spyOn(newline.sibling, 'isCacheable').mockReturnValue(false);
         expect(newline.isCacheable(copyService)).toBe(false);
-        expect(newline.sibling.isCacheable).toBeCalledWith(copyService);
+        expect(newline.sibling.isCacheable).toHaveBeenCalledWith(copyService);
       });
     });
 

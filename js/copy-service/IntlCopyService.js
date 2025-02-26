@@ -20,7 +20,7 @@ const ErrorHandler = require('./ErrorHandler/ErrorHandler');
  *   "spanish": "en-us",
  *   "portuguese": "spanish",
  *   "german": null
- * }
+ * }.
  *
  * Here, `en-us` and `german` are root languages. Missing copy for `en-uk` will fall back to
  * `en-us`. Likewise, missing copy for `portuguese` will fall back to spanish then english.
@@ -32,12 +32,12 @@ const ErrorHandler = require('./ErrorHandler/ErrorHandler');
  */
 class IntlCopyService {
   /**
-   * Constructor for `IntlCopyService`
+   * Constructor for `IntlCopyService`.
    *
-   * @param {string} defaultLanguage Language to set as the default
+   * @param {string} defaultLanguage Language to set as the default.
    * @param {object} hierarchy Language hierarchy. See the example above.
-   * @param {object} options Additional options
-   * @param {object} [options.serviceOptions] Options for each language's CopyService
+   * @param {object} options Additional options.
+   * @param {object} [options.serviceOptions] Options for each language's CopyService.
    * @param {object} [options.copy] Initial copy for each language, where the key is the language
    *   and the value is the copy for that language.
    */
@@ -61,7 +61,7 @@ class IntlCopyService {
    * Sets the current `language`, which is the language that will be used if none is
    * otherwise specified.
    *
-   * @param {string} language The language to set
+   * @param {string} language The language to set.
    */
   setLanguage(language) {
     if (_.isUndefined(this._hierarchy[language])) {
@@ -81,6 +81,7 @@ class IntlCopyService {
    * language from `setLanguage` will be used.
    *
    * @param {string} [language=null]
+   * @returns {CopyService}
    */
   getLanguageService(language = null) {
     const currentLanguage = language || this.language;
@@ -90,7 +91,7 @@ class IntlCopyService {
   /**
    * See `CopyService` documentation for `registerCopy`.
    *
-   * @param {object} jsonCopyConfig Copy to register
+   * @param {object} jsonCopyConfig Copy to register.
    * @param {string} [language=null] Language to register the copy for. Will use the current if not
    *   specified.
    */
@@ -103,7 +104,7 @@ class IntlCopyService {
    *
    * @param {string} key
    * @param {string} [language=null] Initial language to use. Will use the current if not specified.
-   * @return {Object} An object of the same structure where the value is the copy key path.
+   * @returns {object} An object of the same structure where the value is the copy key path.
    */
   buildSubkeys(key, language = null) {
     const currentLanguage = language || this.language;
@@ -115,7 +116,7 @@ class IntlCopyService {
    *
    * @param {string} key
    * @param {string} [language=null] Initial language to use. Will use the current if not specified.
-   * @return {object|string} The copy object or copy AST at a given key.
+   * @returns {object|string} The copy object or copy AST at a given key.
    */
   getSubkeys(key, language = null) {
     const currentLanguage = language || this.language;
@@ -128,7 +129,7 @@ class IntlCopyService {
    *
    * @param {string} key
    * @param {string} [language=null] Initial language to use. Will use the current if not specified.
-   * @return {boolean}
+   * @returns {boolean}
    */
   hasKey(key, language = null) {
     const currentLanguage = language || this.language;
@@ -147,14 +148,14 @@ class IntlCopyService {
    *
    * @param {string} key
    * @param {string} [language=null] Initial language to use. Will use the current if not specified.
-   * @return {AST}
+   * @returns {AST}
    */
   getAstForKey(key, language = null) {
     const currentLanguage = language || this.language;
     const result = this._getFromHierarchy(
       currentLanguage,
       'getAstForKey',
-      (result) => _.isUndefined(result), // keep looking if undefined
+      (r) => _.isUndefined(r), // keep looking if undefined
       key
     );
 
@@ -178,7 +179,7 @@ class IntlCopyService {
    * given language.
    *
    * @param {string} [language=null] Initial language to use. Will use the current if not specified.
-   * @return {object} The registered copy, in un-parsed form.
+   * @returns {object} The registered copy, in un-parsed form.
    */
   getRegisteredCopy(language = null) {
     const currentLanguage = language || this.language;
@@ -191,7 +192,7 @@ class IntlCopyService {
    *
    * @param {string} key
    * @param {string} [language=null] Initial language to use. Will use the current if not specified.
-   * @return {string|null} Registered copy at the key, or null if none.
+   * @returns {string|null} Registered copy at the key, or null if none.
    */
   getRegisteredCopyForKey(key, language = null) {
     const currentLanguage = language || this.language;
@@ -199,7 +200,7 @@ class IntlCopyService {
     const result = this._getFromHierarchy(
       currentLanguage,
       'getRegisteredCopyForKey',
-      (result) => _.isNil(result), // keep looking if null
+      (r) => _.isNil(r), // keep looking if null
       key
     );
 
@@ -231,8 +232,8 @@ class IntlCopyService {
    *
    * NOTE: This is a generator, in order to avoid array allocations in `getAstForKey`.
    *
-   * @param {string} language The starting language in the hierarchy
-   * @yields {string} The current entry in the hierarchy
+   * @param {string} language The starting language in the hierarchy.
+   * @yields {string} The current entry in the hierarchy.
    * @private
    */
   * _getHierarchy(language) {
@@ -249,10 +250,10 @@ class IntlCopyService {
    * Calls the method with the args on each copy service in the hierarchy, merging the results
    * such that the most specific (eg: `portuguese`) overrides the most general (eg: `en-us`).
    *
-   * @param {string} language Language to start the hierarchy at
-   * @param {string} method Method to call on the server
-   * @param {*} args Arguments to pass to each service
-   * @return {object} The merged result.
+   * @param {string} language Language to start the hierarchy at.
+   * @param {string} method Method to call on the server.
+   * @param {*} args Arguments to pass to each service.
+   * @returns {object} The merged result.
    * @private
    */
   _mergeFromHierarchy(language, method, ...args) {
@@ -270,17 +271,18 @@ class IntlCopyService {
    * each copy service in the hierarchy from leaf to root. The root result will be returned,
    * even if it is skipped.
    *
-   * @param {string} language Language to start the hierarchy at
-   * @param {string} method Method to call on the server
+   * @param {string} language Language to start the hierarchy at.
+   * @param {string} method Method to call on the server.
    * @param {Function} skip Method called with the result, which should return `true` if it should
    *   not be returned. If this returns `false`, the result will be returned.
-   * @param {*} args Arguments to pass to each service
-   * @return {*} The first truthy result, or the final result from the the hierarchy.
+   * @param {*} args Arguments to pass to each service.
+   * @returns {*} The first truthy result, or the final result from the the hierarchy.
    * @private
    */
   _getFromHierarchy(language, method, skip, ...args) {
     let result;
 
+    // eslint-disable-next-line no-restricted-syntax
     for (const lang of this._getHierarchy(language)) {
       result = this.getLanguageService(lang)[method](...args);
       if (!skip(result)) {

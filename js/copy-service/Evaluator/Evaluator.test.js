@@ -55,7 +55,7 @@ describe('Evaluator', () => {
 
         evaluator.setCacheIfCacheable(ast, result);
         expect(evaluator.getCached(ast)).toBe(result);
-        expect(ast.isCacheable).toBeCalledWith(copyService);
+        expect(ast.isCacheable).toHaveBeenCalledWith(copyService);
       });
     });
 
@@ -65,7 +65,7 @@ describe('Evaluator', () => {
 
         evaluator.setCacheIfCacheable(ast, result);
         expect(evaluator.getCached(ast)).toBeUndefined();
-        expect(ast.isCacheable).toBeCalledWith(copyService);
+        expect(ast.isCacheable).toHaveBeenCalledWith(copyService);
       });
     });
   });
@@ -82,15 +82,15 @@ describe('Evaluator', () => {
       jest.spyOn(evaluator, 'getInitialResult').mockReturnValue(initialCopy);
 
       const copy = 'result copy';
-      jest.spyOn(evaluator, 'evalAST').mockImplementation((init, ast, subs) => {
+      jest.spyOn(evaluator, 'evalAST').mockImplementation((init, a, subs) => {
         expect(subs.substitutions).toEqual(rawSubstitutions);
         return copy;
       });
 
       expect(evaluator.getCopy(key, rawSubstitutions)).toBe(copy);
-      expect(evaluator.evalAST).toBeCalledWith(initialCopy, ast, expect.any(Substitutions));
-      expect(copyService.getAstForKey).toBeCalledWith(key);
-      expect(evaluator.getInitialResult).toBeCalled();
+      expect(evaluator.evalAST).toHaveBeenCalledWith(initialCopy, ast, expect.any(Substitutions));
+      expect(copyService.getAstForKey).toHaveBeenCalledWith(key);
+      expect(evaluator.getInitialResult).toHaveBeenCalled();
     });
   });
 
@@ -115,7 +115,7 @@ describe('Evaluator', () => {
       const args = ['some error message', { halt: true }];
       jest.spyOn(ErrorHandler, 'handleError').mockImplementation();
       evaluator._handleError(...args);
-      expect(ErrorHandler.handleError).toBeCalledWith(Evaluator.name, ...args);
+      expect(ErrorHandler.handleError).toHaveBeenCalledWith(Evaluator.name, ...args);
     });
   });
 });

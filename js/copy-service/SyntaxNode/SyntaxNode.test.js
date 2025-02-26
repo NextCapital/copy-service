@@ -55,7 +55,7 @@ describe('SyntaxNode', () => {
       jest.spyOn(SyntaxNode, 'safeToSyntax').mockReturnValue(result);
 
       expect(syntaxNode.safeToSyntax(syntaxNode)).toBe(result);
-      expect(SyntaxNode.safeToSyntax).toBeCalledWith(syntaxNode);
+      expect(SyntaxNode.safeToSyntax).toHaveBeenCalledWith(syntaxNode);
     });
   });
 

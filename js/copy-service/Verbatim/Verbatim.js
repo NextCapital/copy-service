@@ -16,13 +16,15 @@ class Verbatim extends SyntaxNode {
     this.text = options.text;
     /**
      * The neighboring AST.
+     *
      * @type {SyntaxNode|null}
      */
     this.sibling = options.sibling || null;
   }
 
   /**
-   * @returns {boolean} true if this node can be cached after evaluation
+   * @param copyService
+   * @returns {boolean} True if this node can be cached after evaluation.
    */
   isCacheable(copyService) {
     if (this.sibling) {
@@ -35,7 +37,7 @@ class Verbatim extends SyntaxNode {
   /**
    * Converts the AST node to the syntax that made it.
    *
-   * @return {string}
+   * @returns {string}
    */
   toSyntax() {
     return (

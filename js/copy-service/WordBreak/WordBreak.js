@@ -12,13 +12,15 @@ class WordBreak extends SyntaxNode {
 
     /**
      * The neighboring AST.
+     *
      * @type {SyntaxNode|null}
      */
     this.sibling = options.sibling || null;
   }
 
   /**
-   * @returns {boolean} true if this node can be cached after evaluation
+   * @param copyService
+   * @returns {boolean} True if this node can be cached after evaluation.
    */
   isCacheable(copyService) {
     if (this.sibling) {
@@ -31,7 +33,7 @@ class WordBreak extends SyntaxNode {
   /**
    * Converts the AST node to the syntax that made it.
    *
-   * @return {string}
+   * @returns {string}
    */
   toSyntax() {
     return `\b${this.safeToSyntax(this.sibling)}`;

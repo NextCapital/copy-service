@@ -20,7 +20,7 @@ describe('CopyService', () => {
         test('sets _registeredCopy with the passed copy', () => {
           const copy = { some: 'unparsed copy' };
 
-          const copyService = new CopyService({ copy });
+          copyService = new CopyService({ copy });
           expect(copyService._registeredCopy).toEqual(copy);
         });
       });
@@ -35,7 +35,7 @@ describe('CopyService', () => {
 
       test('logs error', () => {
         copyService.registerCopy();
-        expect(ErrorHandler.handleError).toBeCalledWith(
+        expect(ErrorHandler.handleError).toHaveBeenCalledWith(
           'CopyService', 'Copy provided in wrong format.'
         );
       });
@@ -59,7 +59,7 @@ describe('CopyService', () => {
         const alreadyParsedCopy = {
           some: 'already parsedCopy',
           more: {
-            'stuff': 'copy'
+            stuff: 'copy'
           }
         };
         copyService._registeredCopy = alreadyParsedCopy;
@@ -92,7 +92,7 @@ describe('CopyService', () => {
       const key = 'level2';
 
       copyService.buildSubkeys(key);
-      expect(copyService.getSubkeys).toBeCalledWith(key);
+      expect(copyService.getSubkeys).toHaveBeenCalledWith(key);
     });
 
     test('returns the paths of every subkey of the passed key', () => {
@@ -113,7 +113,7 @@ describe('CopyService', () => {
         some: 'parsed copy',
         more: 'stuff'
       };
-      const parsedCopy = { 'key': key };
+      const parsedCopy = { key };
       copyService._registeredCopy = parsedCopy;
 
       expect(copyService.getSubkeys('key')).toBe(key);
@@ -160,7 +160,7 @@ describe('CopyService', () => {
         jest.spyOn(Parser, 'parseSingle').mockReturnValue(parsed);
         expect(copyService.getAstForKey(key)).toBe(parsed);
         expect(copyService._registeredCopy.some.key).toBe(parsed);
-        expect(Parser.parseSingle).toBeCalledWith(key, rawCopy);
+        expect(Parser.parseSingle).toHaveBeenCalledWith(key, rawCopy);
       });
 
       describe('when the copy fails to parse', () => {
@@ -168,7 +168,7 @@ describe('CopyService', () => {
           jest.spyOn(Parser, 'parseSingle').mockImplementation(() => { throw new Error(); });
 
           expect(copyService.getAstForKey(key)).toBeNull();
-          expect(ErrorHandler.handleError).toBeCalledWith(
+          expect(ErrorHandler.handleError).toHaveBeenCalledWith(
             'CopyService',
             `Failed to parse copy key: ${key}. Returning null...`
           );
@@ -202,7 +202,7 @@ describe('CopyService', () => {
       test('warns and returns null', () => {
         expect(copyService.getAstForKey('some.key')).toBeNull();
 
-        expect(ErrorHandler.handleError).toBeCalledWith(
+        expect(ErrorHandler.handleError).toHaveBeenCalledWith(
           'CopyService',
           'No AST found for copy key: some.key. Returning null...'
         );
@@ -223,7 +223,7 @@ describe('CopyService', () => {
       test('warns and returns null', () => {
         expect(copyService.getAstForKey('some.key')).toBeNull();
 
-        expect(ErrorHandler.handleError).toBeCalledWith(
+        expect(ErrorHandler.handleError).toHaveBeenCalledWith(
           'CopyService',
           'No AST found for copy key: some.key. Returning null...'
         );
@@ -279,7 +279,7 @@ describe('CopyService', () => {
       test('returns null and logs a warning', () => {
         expect(copyService.getRegisteredCopyForKey('some.fake')).toBeNull();
 
-        expect(ErrorHandler.handleError).toBeCalledWith(
+        expect(ErrorHandler.handleError).toHaveBeenCalledWith(
           'CopyService',
           'No AST found for copy key: some.fake. Returning null...'
         );
@@ -290,7 +290,7 @@ describe('CopyService', () => {
       test('returns null and logs a warning', () => {
         expect(copyService.getRegisteredCopyForKey('some.deep')).toBeNull();
 
-        expect(ErrorHandler.handleError).toBeCalledWith(
+        expect(ErrorHandler.handleError).toHaveBeenCalledWith(
           'CopyService',
           'No AST found for copy key: some.deep. Returning null...'
         );
@@ -330,7 +330,7 @@ describe('CopyService', () => {
     test('calls Parser.parseLeaves on the registered copy', () => {
       jest.spyOn(Parser, 'parseLeaves').mockImplementation();
       copyService.parseAllCopy();
-      expect(Parser.parseLeaves).toBeCalledWith(copyService._registeredCopy);
+      expect(Parser.parseLeaves).toHaveBeenCalledWith(copyService._registeredCopy);
     });
   });
 });

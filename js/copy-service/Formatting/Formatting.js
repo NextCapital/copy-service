@@ -12,23 +12,27 @@ class Formatting extends SyntaxNode {
 
     /**
      * The neighboring AST.
+     *
      * @type {SyntaxNode|null}
      */
     this.sibling = options.sibling || null;
     /**
      * An AST representing the string displayed inside the HTML tag.
+     *
      * @type {SyntaxNode|null}
      */
     this.copy = options.copy || null;
     /**
      * The tag as a string.
+     *
      * @type {string}
      */
     this.tag = options.tag;
   }
 
   /**
-   * @returns {boolean} true if this node can be cached after evaluation
+   * @param copyService
+   * @returns {boolean} True if this node can be cached after evaluation.
    */
   isCacheable(copyService) {
     if (this.sibling) {
@@ -47,7 +51,7 @@ class Formatting extends SyntaxNode {
   /**
    * Converts the AST node to the syntax that made it.
    *
-   * @return {string}
+   * @returns {string}
    */
   toSyntax() {
     return (

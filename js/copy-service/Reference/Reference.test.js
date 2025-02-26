@@ -64,7 +64,7 @@ describe('Reference', () => {
               jest.spyOn(reference.sibling, 'isCacheable').mockReturnValue(true);
 
               expect(reference.isCacheable(copyService)).toBe(true);
-              expect(reference.sibling.isCacheable).toBeCalledWith(copyService);
+              expect(reference.sibling.isCacheable).toHaveBeenCalledWith(copyService);
             });
           });
 
@@ -79,7 +79,7 @@ describe('Reference', () => {
               jest.spyOn(reference.sibling, 'isCacheable').mockReturnValue(false);
 
               expect(reference.isCacheable(copyService)).toBe(false);
-              expect(reference.sibling.isCacheable).toBeCalledWith(copyService);
+              expect(reference.sibling.isCacheable).toHaveBeenCalledWith(copyService);
             });
           });
         });
@@ -112,7 +112,7 @@ describe('Reference', () => {
           const reference = new Reference(options);
 
           expect(reference.isCacheable(copyService)).toBe(false);
-          expect(node.isCacheable).toBeCalledWith(copyService);
+          expect(node.isCacheable).toHaveBeenCalledWith(copyService);
         });
       });
     });

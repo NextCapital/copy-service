@@ -66,7 +66,7 @@ describe('ReactEvaluator', () => {
 
         jest.spyOn(evaluator, 'getCached').mockReturnValue(suffix);
         expect(getStaticMarkup(copyPrefix, ast)).toBe('hello<strong>world</strong>');
-        expect(evaluator.getCached).toBeCalledWith(ast);
+        expect(evaluator.getCached).toHaveBeenCalledWith(ast);
       });
     });
 
@@ -80,7 +80,7 @@ describe('ReactEvaluator', () => {
 
         jest.spyOn(evaluator, 'setCacheIfCacheable');
         expect(getStaticMarkup(copyPrefix, ast)).toBe('helloworld!');
-        expect(evaluator.setCacheIfCacheable).toBeCalledWith(ast, 'world!');
+        expect(evaluator.setCacheIfCacheable).toHaveBeenCalledWith(ast, 'world!');
         expect(ReactDOMServer.renderToStaticMarkup(evaluator.getCached(ast))).toBe(
           'world!'
         );
@@ -218,7 +218,7 @@ describe('ReactEvaluator', () => {
               });
 
               evaluator.evalAST(null, ast, new Substitutions({ func }));
-              expect(func).toBeCalledWith(ast.copy.text, 'arg1', 'arg2');
+              expect(func).toHaveBeenCalledWith(ast.copy.text, 'arg1', 'arg2');
             });
 
             test('returns the result of the function method formatted as JSX', () => {
@@ -254,7 +254,7 @@ describe('ReactEvaluator', () => {
                   getStaticMarkup(evaluator.evalAST(null, ast, new Substitutions({ func })))
                 ).toBe(ast.copy.text);
 
-                expect(func).not.toBeCalled();
+                expect(func).not.toHaveBeenCalled();
               });
             });
           });
@@ -309,7 +309,7 @@ describe('ReactEvaluator', () => {
 
           test('logs error', () => {
             evaluator.evalAST(null, {});
-            expect(evaluator._handleError).toBeCalledWith('Unknown node detected');
+            expect(evaluator._handleError).toHaveBeenCalledWith('Unknown node detected');
           });
 
           test('returns null', () => {
@@ -335,7 +335,7 @@ describe('ReactEvaluator', () => {
               key: 'initialDecider'
             });
 
-            const substitutions = new Substitutions({
+            substitutions = new Substitutions({
               initialDecider: true,
               nestedLeft: false,
               nestedRight: true

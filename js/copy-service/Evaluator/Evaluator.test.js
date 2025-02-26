@@ -82,7 +82,7 @@ describe('Evaluator', () => {
       jest.spyOn(evaluator, 'getInitialResult').mockReturnValue(initialCopy);
 
       const copy = 'result copy';
-      jest.spyOn(evaluator, 'evalAST').mockImplementation((init, ast, subs) => {
+      jest.spyOn(evaluator, 'evalAST').mockImplementation((init, a, subs) => {
         expect(subs.substitutions).toEqual(rawSubstitutions);
         return copy;
       });

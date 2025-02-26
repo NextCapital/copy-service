@@ -302,7 +302,7 @@ describe('PlainTextEvaluator', () => {
               key: 'initialDecider'
             });
 
-            const substitutions = new Substitutions({
+            substitutions = new Substitutions({
               initialDecider: true,
               nestedLeft: false,
               nestedRight: true

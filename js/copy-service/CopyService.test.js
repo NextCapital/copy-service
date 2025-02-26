@@ -20,7 +20,7 @@ describe('CopyService', () => {
         test('sets _registeredCopy with the passed copy', () => {
           const copy = { some: 'unparsed copy' };
 
-          const copyService = new CopyService({ copy });
+          copyService = new CopyService({ copy });
           expect(copyService._registeredCopy).toEqual(copy);
         });
       });

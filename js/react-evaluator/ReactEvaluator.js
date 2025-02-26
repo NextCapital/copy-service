@@ -152,8 +152,9 @@ class ReactEvaluator extends Evaluator {
    * - Thus, it is *always* safe to merge the children of two fragments
    * - If either 'left' or 'right' is a non-fragment element, we have to wrap.
    *
-   * @param left
-   * @param right
+   * @param {string|JSX} left The first prefix to merge.
+   * @param {string|JSX} right The other prefix the merge.
+   * @returns {string|JSX}
    */
   _mergePrefixes(left, right) {
     if (!right) {

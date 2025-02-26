@@ -98,9 +98,11 @@ class Parser {
       if (SyntaxNode.isAST(node)) {
         // already parsed
       } else if (_.isPlainObject(node)) {
+        // eslint-disable-next-line no-param-reassign
         tree[key] = this.parseLeaves(node);
       } else if (_.isString(node)) {
         const tokens = this._tokenize(node);
+        // eslint-disable-next-line no-param-reassign
         tree[key] = this._parse(tokens, key, node);
       } else {
         ErrorHandler.handleError(
@@ -137,8 +139,7 @@ class Parser {
   /**
    * Validates the tag is an allowed HTML tag.
    *
-   * @param  {string} string
-   * @param tag
+   * @param tag String.
    * @private
    */
   static _validateTag(tag) {
@@ -205,6 +206,7 @@ class Parser {
         tokens.push({ type: this.TOKENS.ARGS_END });
         remainder = remainder.slice(this.TOKENS.ARGS_END.length);
         withinArgs = false;
+        // eslint-disable-next-line no-cond-assign
       } else if (regexMatch = remainder.match(this.HTML_START_TAG_REGEX)) {
         const tag = regexMatch[1];
         this._validateTag(tag);
@@ -214,6 +216,7 @@ class Parser {
           tag
         });
         remainder = remainder.slice(regexMatch[0].length);
+        // eslint-disable-next-line no-cond-assign
       } else if (regexMatch = remainder.match(this.HTML_END_TAG_REGEX)) {
         const tag = regexMatch[1];
         this._validateTag(tag);
@@ -239,13 +242,15 @@ class Parser {
     return tokens;
   }
 
+  /* eslint-disable jsdoc/require-returns-check */
+
   /**
    * Parses an array of tokens into an AST.
    *
    * @param  {Array} tokens
    * @param  {string} key The copy key being parsed.
    * @param  {string} string The raw copy string that was tokenized.
-   * @returns {AST}
+   * @returns {AST} The constructed AST.
    * @throws If the string is not fully parsed.
    */
   static _parse(tokens, key, string) {
@@ -380,7 +385,6 @@ class Parser {
    * @param {string} key The original copy key being parsed.
    * @param {Array} tokens
    * @returns {object} A parsed text token.
-   * @throws If a text token is not found.
    */
   static _getReferenceKeyToken(key, tokens) {
     const textParsed = this._getTextToken(tokens);
@@ -566,6 +570,8 @@ class Parser {
       `Unexpected token ${token.type}`;
     ErrorHandler.handleError('Parser', errorMessage, { halt: true });
   }
+
+  /* eslint-enable jsdoc/require-returns-check */
 
   /**
    * Parser is a singleton and will error when trying to create an instance.

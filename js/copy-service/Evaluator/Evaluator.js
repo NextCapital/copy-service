@@ -68,6 +68,7 @@ class Evaluator {
     return this.evalAST(this.getInitialResult(), ast, substitutions);
   }
 
+  /* eslint-disable jsdoc/check-param-names */
   /**
    * Evaluates the AST with given substitutions.
    *
@@ -97,6 +98,7 @@ class Evaluator {
       { halt: true }
     );
   }
+  /* eslint-enable jsdoc/check-param-names */
 
   /**
    * Defers to ErrorHandler.handleError with the constructor name and any args.

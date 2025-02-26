@@ -81,6 +81,7 @@ class IntlCopyService {
    * language from `setLanguage` will be used.
    *
    * @param {string} [language=null]
+   * @returns {CopyService}
    */
   getLanguageService(language = null) {
     const currentLanguage = language || this.language;
@@ -154,7 +155,7 @@ class IntlCopyService {
     const result = this._getFromHierarchy(
       currentLanguage,
       'getAstForKey',
-      (result) => _.isUndefined(result), // keep looking if undefined
+      (r) => _.isUndefined(r), // keep looking if undefined
       key
     );
 
@@ -199,7 +200,7 @@ class IntlCopyService {
     const result = this._getFromHierarchy(
       currentLanguage,
       'getRegisteredCopyForKey',
-      (result) => _.isNil(result), // keep looking if null
+      (r) => _.isNil(r), // keep looking if null
       key
     );
 
@@ -281,6 +282,7 @@ class IntlCopyService {
   _getFromHierarchy(language, method, skip, ...args) {
     let result;
 
+    // eslint-disable-next-line no-restricted-syntax
     for (const lang of this._getHierarchy(language)) {
       result = this.getLanguageService(lang)[method](...args);
       if (!skip(result)) {

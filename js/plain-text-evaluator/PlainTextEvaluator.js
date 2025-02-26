@@ -21,6 +21,7 @@ const {
  * @interface
  */
 class PlainTextEvaluator extends Evaluator {
+  /* eslint-disable @stylistic/brace-style */
   /**
    * Evaluates the AST with given substitutions.
    *
@@ -118,6 +119,7 @@ class PlainTextEvaluator extends Evaluator {
 
     return copyPrefix + evaluated;
   }
+  /* eslint-enable @stylistic/brace-style */
 
   /**
    * Allows `HtmlEvaluator` to set this to true, enabling formatting tags to appear in the

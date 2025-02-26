@@ -80,34 +80,27 @@ describe('Substitutions', () => {
       expect(substitutions.get).toHaveBeenCalledWith(key);
     });
 
-    const testValue = (value, expectedResult) => {
-      jest.spyOn(substitutions, 'get').mockReturnValue(value);
-      expect(substitutions.getBoolean('some.key')).toBe(expectedResult);
+    const testValue = (testMessage, value, expectedResult) => {
+      test(testMessage, () => { // eslint-disable-line jest/valid-title
+        jest.spyOn(substitutions, 'get').mockReturnValue(value);
+        expect(substitutions.getBoolean('some.key')).toBe(expectedResult);
+      });
     };
 
     describe('when a number', () => {
-      test('returns true for 1', () => {
-        testValue(1, true);
-      });
-
-      test('returns false for other numbers', () => {
-        testValue(0, false);
-        testValue(2, false);
-      });
+      testValue('returns true for 1', 1, true);
+      testValue('returns false for other numbers', 0, false);
+      testValue('returns false for other numbers', 2, false);
     });
 
     describe('when not a number', () => {
-      test('returns true for truthy values', () => {
-        testValue(true, true);
-        testValue('test', true);
-        testValue(() => 42, true);
-      });
+      testValue('returns true for truthy values', true, true);
+      testValue('returns true for truthy values', 'test', true);
+      testValue('returns true for truthy values', () => 42, true);
 
-      test('returns false for falsy ones', () => {
-        testValue(false, false);
-        testValue('', false);
-        testValue(null, false);
-      });
+      testValue('returns false for falsy ones', false, false);
+      testValue('returns false for falsy ones', '', false);
+      testValue('returns false for falsy ones', null, false);
     });
   });
 });

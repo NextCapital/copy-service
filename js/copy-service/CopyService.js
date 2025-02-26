@@ -115,7 +115,7 @@ class CopyService {
         const ast = Parser.parseSingle(key, result);
         _.set(this._registeredCopy, key, ast);
         return ast;
-      } catch (ex) {
+      } catch {
         ErrorHandler.handleError('CopyService', `Failed to parse copy key: ${key}. Returning null...`);
         return null;
       }

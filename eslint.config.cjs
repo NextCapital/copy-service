@@ -28,7 +28,13 @@ module.exports = [
     rules: {
       'no-template-curly-in-string': 'off',
 
-      'import/extensions': 'off'
+      'import/extensions': 'off',
+
+      'jsdoc/require-param-description': 'off',
+      'jsdoc/require-returns-description': 'off',
+
+      'jsdoc/require-param-type': 'off',
+      'jsdoc/require-returns-type': 'off'
     }
   }
 ];

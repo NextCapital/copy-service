@@ -7,7 +7,7 @@ const ErrorHandler = require('../ErrorHandler/ErrorHandler');
  */
 class Substitutions {
   /**
-   * @param {object|function} substitutions The substitutions. If a function, it should return an
+   * @param {object | Function} substitutions The substitutions. If a function, it should return an
    * object.
    */
   constructor(substitutions) {
@@ -18,6 +18,7 @@ class Substitutions {
    * If the substitutions are a function, evaluates it and replaces the function with the result.
    * This way, the function does not get called until substitutions are used, and the function
    * only ever gets called once. This allows expensive substitutions not to be called unless needed.
+   *
    * @type {object}
    */
   get substitutions() {
@@ -34,8 +35,8 @@ class Substitutions {
    *
    * If the value at the substitutions key is a function, it will be evaluated to a value.
    *
-   * @param {string} key path to substitution on the substitutions object
-   * @return {*} The value from the substitutions
+   * @param {string} key Path to substitution on the substitutions object.
+   * @returns {*} The value from the substitutions.
    */
   get(key) {
     const value = _.result(this.substitutions, key);
@@ -51,8 +52,8 @@ class Substitutions {
    * Works like `get`, but if the value is a function, it will not be called. Will also print a
    * warning if the value is not a function.
    *
-   * @param {string} key path to substitution on the substitutions object
-   * @return {*} The function from the substitutions
+   * @param {string} key Path to substitution on the substitutions object.
+   * @returns {*} The function from the substitutions.
    */
   getFunction(key) {
     const value = _.get(this.substitutions, key);
@@ -75,7 +76,7 @@ class Substitutions {
    * Prints a warning then returns an empty string.
    *
    * @param {string} key
-   * @returns {string} an empty string
+   * @returns {string} An empty string.
    * @private
    */
   _handleMissing(key) {
@@ -90,8 +91,9 @@ class Substitutions {
   /**
    * Finds the substitutions, then return true if the number 1 (singular) or truthy, and false
    * otherwise. Useful for evaluating Switch AST nodes.
-   * @param {string} key path to substitution on the substitutions object
-   * @return {Boolean} The evaluated boolean value of the substitution
+   *
+   * @param {string} key Path to substitution on the substitutions object.
+   * @returns {boolean} The evaluated boolean value of the substitution.
    */
   getBoolean(key) {
     const value = this.get(key);

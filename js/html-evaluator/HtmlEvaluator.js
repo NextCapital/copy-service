@@ -3,6 +3,7 @@ const PlainTextEvaluator = require('../plain-text-evaluator/PlainTextEvaluator')
 /**
  * Provides an interface that can register copy, determine the existence of copy, and generate copy
  * recursively evaluated with substitutions.
+ *
  * @interface
  */
 class HtmlEvaluator extends PlainTextEvaluator {

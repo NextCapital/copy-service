@@ -15,7 +15,8 @@ const ErrorHandler = require('../ErrorHandler/ErrorHandler');
 
 /**
  * The supported tokens in copy.
- * @type {Object}
+ *
+ * @type {object}
  */
 const TOKENS = {
   TEXT: 'text',
@@ -37,6 +38,7 @@ const TOKENS = {
 
 /**
  * All TOKENS that are not TEXT, TAG, or ARGS tokens.
+ *
  * @type {Array}
  */
 const NON_TEXT_TOKENS = _.filter(_.values(TOKENS), (token) => (
@@ -52,18 +54,21 @@ const NON_TEXT_TOKENS = _.filter(_.values(TOKENS), (token) => (
 
 /**
  * RegExp for the starting tag of allowed HTML tags.
+ *
  * @type {RegExp}
  */
 const HTML_START_TAG_REGEX = /^<(\w+)>/;
 
 /**
  * RegExp for the ending tag of allowed HTML tags.
+ *
  * @type {RegExp}
  */
 const HTML_END_TAG_REGEX = /^<\/(\w+)>/;
 
 /**
  * The supported HTML tags in copy.
+ *
  * @type {Array}
  */
 const ALLOWED_HTML_TAGS = [
@@ -73,6 +78,7 @@ const ALLOWED_HTML_TAGS = [
 
 /**
  * The supported delimiter for subkeys.
+ *
  * @type {string}
  */
 const KEY_DELIMITER = '.';
@@ -85,12 +91,12 @@ class Parser {
    * Transforms raw copy into ASTs. Will mutate the `tree` argument.
    *
    * @param  {object} tree
-   * @return {object} the same object, with leaves parsed to ASTs
+   * @returns {object} The same object, with leaves parsed to ASTs.
    */
   static parseLeaves(tree) {
     _.forEach(tree, (node, key) => {
       if (SyntaxNode.isAST(node)) {
-        return; // already parsed
+        // already parsed
       } else if (_.isPlainObject(node)) {
         tree[key] = this.parseLeaves(node);
       } else if (_.isString(node)) {
@@ -113,7 +119,7 @@ class Parser {
    *
    * @param {string} key
    * @param {string} copy
-   * @return {SyntaxNode|null}
+   * @returns {SyntaxNode|null}
    */
   static parseSingle(key, copy) {
     if (!_.isString(copy)) {
@@ -130,7 +136,9 @@ class Parser {
 
   /**
    * Validates the tag is an allowed HTML tag.
+   *
    * @param  {string} string
+   * @param tag
    * @private
    */
   static _validateTag(tag) {
@@ -145,8 +153,9 @@ class Parser {
 
   /**
    * Turns a string into an array of tokens to be parsed.
+   *
    * @param  {string} string
-   * @return {array} The array of tokens.
+   * @returns {Array} The array of tokens.
    */
   static _tokenize(string) {
     const tokens = [];
@@ -232,10 +241,11 @@ class Parser {
 
   /**
    * Parses an array of tokens into an AST.
-   * @param  {array} tokens
+   *
+   * @param  {Array} tokens
    * @param  {string} key The copy key being parsed.
    * @param  {string} string The raw copy string that was tokenized.
-   * @return {AST}
+   * @returns {AST}
    * @throws If the string is not fully parsed.
    */
   static _parse(tokens, key, string) {
@@ -264,9 +274,10 @@ class Parser {
 
   /**
    * Returns a parsed text token.
-   * @param  {array} tokens
-   * @return {object} A parsed text token.
-   * @throws If a text token is not found
+   *
+   * @param  {Array} tokens
+   * @returns {object} A parsed text token.
+   * @throws If a text token is not found.
    */
   static _getTextToken(tokens) {
     const token = _.first(tokens);
@@ -286,8 +297,9 @@ class Parser {
 
   /**
    * Removes a close token from the passed tokens. Errors .
-   * @param  {array} tokens
-   * @return {array}
+   *
+   * @param  {Array} tokens
+   * @returns {Array}
    * @throws If a close token is not found.
    */
   static _processCloseToken(tokens) {
@@ -305,8 +317,9 @@ class Parser {
 
   /**
    * Recursively parses arguments from a Functional token.
-   * @param  {array} tokens
-   * @return {object} The parsed arguments.
+   *
+   * @param  {Array} tokens
+   * @returns {object} The parsed arguments.
    * @throws If a token other than ARGS_COMMA or ARGS_END is found.
    */
   static _parseArguments(tokens) {
@@ -336,10 +349,9 @@ class Parser {
     };
   }
 
-  /* eslint-disable brace-style */
-
   /**
    * Returns an absolute version of `relativeKey` built on the structure of `key`.
+   *
    * @param {string} key The original copy key being parsed.
    * @param {string} relativeKey The key to find relative to `key`.
    * @returns {string} The absolute version of relativeKey.
@@ -364,9 +376,10 @@ class Parser {
 
   /**
    * Returns a parsed text token. Attempts to resolve relative key references.
+   *
    * @param {string} key The original copy key being parsed.
-   * @param {array} tokens
-   * @return {object} A parsed text token.
+   * @param {Array} tokens
+   * @returns {object} A parsed text token.
    * @throws If a text token is not found.
    */
   static _getReferenceKeyToken(key, tokens) {
@@ -378,11 +391,12 @@ class Parser {
 
   /**
    * Recursively processes an array of tokens to build an AST optionally expecting an ending token.
-   * @param {array} tokens
+   *
+   * @param {Array} tokens
    * @param {string} key The copy key being parsed.
    * @param {boolean} [isRestricted]
    * @param {TOKENS} [expectedEndingToken]
-   * @return {object} Contains the AST and any remaining tokens.
+   * @returns {object} Contains the AST and any remaining tokens.
    * @throws If an ending token is expected and not found.
    * @throws If an unsupported token is found.
    */
@@ -415,9 +429,7 @@ class Parser {
         ast: null,
         tokens: tokensToParse
       };
-    }
-
-    else if (token.type === this.TOKENS.NEWLINE) {
+    } else if (token.type === this.TOKENS.NEWLINE) {
       const parsed = isRestricted ?
         this._parseTokens(tokensToParse, key, true, expectedEndingToken) :
         this._parseTokens(tokensToParse, key);
@@ -425,9 +437,7 @@ class Parser {
         ast: new Newline({ sibling: parsed.ast }),
         tokens: parsed.tokens
       };
-    }
-
-    else if (token.type === this.TOKENS.WORD_BREAK) {
+    } else if (token.type === this.TOKENS.WORD_BREAK) {
       const parsed = isRestricted ?
         this._parseTokens(tokensToParse, key, true, expectedEndingToken) :
         this._parseTokens(tokensToParse, key);
@@ -435,9 +445,7 @@ class Parser {
         ast: new WordBreak({ sibling: parsed.ast }),
         tokens: parsed.tokens
       };
-    }
-
-    else if (token.type === this.TOKENS.SWITCH_START) {
+    } else if (token.type === this.TOKENS.SWITCH_START) {
       const leftParsed = this._parseTokens(tokensToParse, key, true);
       const rightParsed = this._parseTokens(leftParsed.tokens, key, true);
       const deciderParsed = this._getTextToken(rightParsed.tokens);
@@ -456,9 +464,7 @@ class Parser {
         }),
         tokens: parsed.tokens
       };
-    }
-
-    else if (token.type === this.TOKENS.SUB_START) {
+    } else if (token.type === this.TOKENS.SUB_START) {
       const textParsed = this._getTextToken(tokensToParse);
       const closeParsedTokens = this._processCloseToken(textParsed.tokens);
       const parsed = isRestricted ?
@@ -472,9 +478,7 @@ class Parser {
         }),
         tokens: parsed.tokens
       };
-    }
-
-    else if (token.type === this.TOKENS.REF_START) {
+    } else if (token.type === this.TOKENS.REF_START) {
       const textParsed = this._getReferenceKeyToken(key, tokensToParse);
       const closeParsedTokens = this._processCloseToken(textParsed.tokens);
       const parsed = isRestricted ?
@@ -488,9 +492,7 @@ class Parser {
         }),
         tokens: parsed.tokens
       };
-    }
-
-    else if (token.type === this.TOKENS.REF_SUB_START) {
+    } else if (token.type === this.TOKENS.REF_SUB_START) {
       const textParsed = this._getTextToken(tokensToParse);
       const closeParsedTokens = this._processCloseToken(textParsed.tokens);
       const parsed = isRestricted ?
@@ -504,9 +506,7 @@ class Parser {
         }),
         tokens: parsed.tokens
       };
-    }
-
-    else if (token.type === this.TOKENS.FUNC_START) {
+    } else if (token.type === this.TOKENS.FUNC_START) {
       const firstParsed = this._parseTokens(tokensToParse, key, true);
       const textParsed = this._getTextToken(firstParsed.tokens);
 
@@ -531,9 +531,7 @@ class Parser {
         }),
         tokens: parsed.tokens
       };
-    }
-
-    else if (token.type === this.TOKENS.HTML_TAG_START) {
+    } else if (token.type === this.TOKENS.HTML_TAG_START) {
       const tag = token.tag;
       const tagParsed = this._parseTokens(tokensToParse, key, true, this.TOKENS.HTML_TAG_END);
       const parsed = isRestricted ?
@@ -548,9 +546,7 @@ class Parser {
         }),
         tokens: parsed.tokens
       };
-    }
-
-    else if (token.type === this.TOKENS.TEXT) {
+    } else if (token.type === this.TOKENS.TEXT) {
       const textParsed = this._getTextToken(tokens);
       const parsed = isRestricted ?
         this._parseTokens(textParsed.tokens, key, true, expectedEndingToken) :
@@ -571,10 +567,9 @@ class Parser {
     ErrorHandler.handleError('Parser', errorMessage, { halt: true });
   }
 
-  /* eslint-enable brace-style */
-
   /**
    * Parser is a singleton and will error when trying to create an instance.
+   *
    * @throws {Error}
    */
   constructor() {

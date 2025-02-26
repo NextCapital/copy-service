@@ -6,7 +6,7 @@ class SyntaxNode {
    * Returns `true` if the param is an AST node.
    *
    * @param {SyntaxNode|null} node
-   * @return {boolean}
+   * @returns {boolean}
    */
   static isAST(node) {
     return node === null || node instanceof SyntaxNode;
@@ -16,7 +16,7 @@ class SyntaxNode {
    * If `null`, returns an empty string. Otherwise, calls `toSyntax` on the node.
    *
    * @param {SyntaxNode|null} node
-   * @return {string}
+   * @returns {string}
    */
   static safeToSyntax(node) {
     if (node === null) {
@@ -31,7 +31,7 @@ class SyntaxNode {
    *
    * This method should be overridden in a subclass.
    *
-   * @return {string}
+   * @returns {string}
    */
   toSyntax() {
     return '';
@@ -41,7 +41,7 @@ class SyntaxNode {
    * Shortcut to the static `safeToSyntax` method.
    *
    * @param {SyntaxNode|null} node
-   * @return {string}
+   * @returns {string}
    */
   safeToSyntax(node) {
     return this.constructor.safeToSyntax(node);
@@ -55,7 +55,7 @@ class SyntaxNode {
    * This method should be overridden in a subclass.
    *
    * @param {CopyService|IntlCopyService} copyService
-   * @return {boolean}
+   * @returns {boolean}
    */
   isCacheable(copyService) { // eslint-disable-line no-unused-vars
     return false;

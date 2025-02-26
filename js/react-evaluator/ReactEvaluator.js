@@ -18,17 +18,19 @@ const {
 /**
  * Provides an interface that can register copy, determine the existence of copy, and generate copy
  * recursively evaluated with substitutions.
+ *
  * @interface
  */
 class ReactEvaluator extends Evaluator {
   /**
-   * Evaluates the AST with given substitutions
+   * Evaluates the AST with given substitutions.
+   *
    * @param  {string} copyPrefix The copy string being recursively built.
    * @param  {SyntaxNode|null} ast
    * The AST to be evaluated. This AST must be constructed by Parser.
    * @param  {Substitutions} substitutions An object containing substitutions for keys specified in
    * the AST.
-   * @return {JSX} The evaluated copy.
+   * @returns {JSX} The evaluated copy.
    */
   evalAST(copyPrefix, ast, substitutions) {
     if (!ast) {
@@ -111,11 +113,11 @@ class ReactEvaluator extends Evaluator {
 
     return this._mergePrefixes(copyPrefix, evaluated);
   }
-  /* eslint-enable brace-style */
 
   /**
    * Returns the default copy (usually an empty string).
-   * @return {null}
+   *
+   * @returns {null}
    */
   getInitialResult() {
     return null;
@@ -137,18 +139,21 @@ class ReactEvaluator extends Evaluator {
    * If either side is null, returns the other.
    * If both sides are strings, concatenates them.
    * If one side is a string, and the other JSX we:
-   *  - check if the `jsx` is a fragment. If so, we know it is output of _mergePrefixes or
-   *    functional copy, and thus has no props on it
-   *  - If a fragment, we can avoid duplicate tabs by merging children
-   *  - If not a fragment, we need to wrap in a new fragment to preserve the type
+   * - check if the `jsx` is a fragment. If so, we know it is output of _mergePrefixes or
+   * functional copy, and thus has no props on it
+   * - If a fragment, we can avoid duplicate tabs by merging children
+   * - If not a fragment, we need to wrap in a new fragment to preserve the type
    * If neither side is a string, we have to wrap both in a new fragment
-   *  - Unless both are fragments, in which case we can merge children
+   * - Unless both are fragments, in which case we can merge children.
    *
    * So, in conclusion:
    *
-   *  - Any top-level fragment tags are specifically added by this method or functional copy
-   *  - Thus, it is *always* safe to merge the children of two fragments
-   *  - If either 'left' or 'right' is a non-fragment element, we have to wrap
+   * - Any top-level fragment tags are specifically added by this method or functional copy
+   * - Thus, it is *always* safe to merge the children of two fragments
+   * - If either 'left' or 'right' is a non-fragment element, we have to wrap.
+   *
+   * @param left
+   * @param right
    */
   _mergePrefixes(left, right) {
     if (!right) {

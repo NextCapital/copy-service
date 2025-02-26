@@ -12,18 +12,21 @@ class Reference extends SyntaxNode {
 
     /**
      * The copy key being referenced, with leading and trailing whitespace trimmed.
+     *
      * @type {string}
      */
     this.key = options.key.trim();
     /**
      * The neighboring AST.
+     *
      * @type {SyntaxNode|null}
      */
     this.sibling = options.sibling || null;
   }
 
   /**
-   * @returns {boolean} true if this node can be cached after evaluation
+   * @param copyService
+   * @returns {boolean} True if this node can be cached after evaluation.
    */
   isCacheable(copyService) {
     const ast = copyService.getAstForKey(this.key);
@@ -44,7 +47,7 @@ class Reference extends SyntaxNode {
   /**
    * Converts the AST node to the syntax that made it.
    *
-   * @return {string}
+   * @returns {string}
    */
   toSyntax() {
     return (

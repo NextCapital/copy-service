@@ -44,7 +44,7 @@ describe('WordBreak', () => {
 
         jest.spyOn(wordbreak.sibling, 'isCacheable').mockReturnValue(false);
         expect(wordbreak.isCacheable(copyService)).toBe(false);
-        expect(wordbreak.sibling.isCacheable).toBeCalledWith(copyService);
+        expect(wordbreak.sibling.isCacheable).toHaveBeenCalledWith(copyService);
       });
     });
 

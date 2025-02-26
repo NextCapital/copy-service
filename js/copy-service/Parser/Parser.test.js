@@ -1,5 +1,3 @@
-/* eslint-disable object-curly-newline */
-
 const _ = require('lodash');
 
 const Formatting = require('../Formatting/Formatting');
@@ -590,8 +588,8 @@ describe('Parser', () => {
         const copy = 'some copy';
         expect(Parser.parseSingle(key, copy)).toBe(result);
 
-        expect(Parser._tokenize).toBeCalledWith(copy);
-        expect(Parser._parse).toBeCalledWith(tokens, key, copy);
+        expect(Parser._tokenize).toHaveBeenCalledWith(copy);
+        expect(Parser._parse).toHaveBeenCalledWith(tokens, key, copy);
       });
     });
   });

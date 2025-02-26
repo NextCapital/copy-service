@@ -53,7 +53,7 @@ describe('IntlCopyService', () => {
         copyService = new IntlCopyService(language, hierarchy, { copy });
 
         _.forEach(copy, (langCopy, lang) => {
-          expect(IntlCopyService.prototype.registerCopy).toBeCalledWith(langCopy, lang);
+          expect(IntlCopyService.prototype.registerCopy).toHaveBeenCalledWith(langCopy, lang);
         });
       });
     });
@@ -74,7 +74,7 @@ describe('IntlCopyService', () => {
         copyService.setLanguage('fake');
         expect(copyService.language).toBe(language);
 
-        expect(ErrorHandler.handleError).toBeCalledWith(
+        expect(ErrorHandler.handleError).toHaveBeenCalledWith(
           'IntlCopyService',
           'language \'fake\' not found in hierarchy'
         );
@@ -108,14 +108,14 @@ describe('IntlCopyService', () => {
     describe('when no language is specified', () => {
       test('registers copy for the current language', () => {
         copyService.registerCopy(copy);
-        expect(copyService._services[language].registerCopy).toBeCalledWith(copy);
+        expect(copyService._services[language].registerCopy).toHaveBeenCalledWith(copy);
       });
     });
 
     describe('when a language is specified', () => {
       test('registers copy for the provided language', () => {
         copyService.registerCopy(copy, 'en-us');
-        expect(copyService._services['en-us'].registerCopy).toBeCalledWith(copy);
+        expect(copyService._services['en-us'].registerCopy).toHaveBeenCalledWith(copy);
       });
     });
   });
@@ -284,12 +284,12 @@ describe('IntlCopyService', () => {
 
     test('handles null ASTs correctly', () => {
       expect(copyService.getAstForKey('example.empty')).toBeNull();
-      expect(ErrorHandler.handleError).not.toBeCalled();
+      expect(ErrorHandler.handleError).not.toHaveBeenCalled();
     });
 
     test('returns null and handles error when all languages have missing copy', () => {
       expect(copyService.getAstForKey('example.fake')).toBeNull();
-      expect(ErrorHandler.handleError).toBeCalledWith(
+      expect(ErrorHandler.handleError).toHaveBeenCalledWith(
         'IntlCopyService',
         'No AST found for copy key for any language: example.fake. Returning null...'
       );
@@ -373,12 +373,12 @@ describe('IntlCopyService', () => {
 
     test('handles empty copy correctly', () => {
       expect(copyService.getRegisteredCopyForKey('example.empty')).toEqual('');
-      expect(ErrorHandler.handleError).not.toBeCalled();
+      expect(ErrorHandler.handleError).not.toHaveBeenCalled();
     });
 
     test('returns null and logs an error if no language has copy', () => {
       expect(copyService.getRegisteredCopyForKey('example.fake')).toBeNull();
-      expect(ErrorHandler.handleError).toBeCalledWith(
+      expect(ErrorHandler.handleError).toHaveBeenCalledWith(
         'IntlCopyService',
         'No AST found for copy key for any language: example.fake. Returning null...'
       );
@@ -402,7 +402,7 @@ describe('IntlCopyService', () => {
 
       _.forEach(
         copyService._services,
-        (service) => expect(service.parseAllCopy).toBeCalled()
+        (service) => expect(service.parseAllCopy).toHaveBeenCalled()
       );
     });
   });

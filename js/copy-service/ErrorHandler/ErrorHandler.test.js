@@ -37,7 +37,7 @@ describe('ErrorHandler', () => {
 
         test('logs the error', () => {
           ErrorHandler.handleError(name, error, options);
-          expect(console.error).toBeCalledWith(`${name}: ${error}`);
+          expect(console.error).toHaveBeenCalledWith(`${name}: ${error}`);
         });
       });
 
@@ -48,7 +48,7 @@ describe('ErrorHandler', () => {
 
         test('does nothing', () => {
           ErrorHandler.handleError(name, error, options);
-          expect(console.error).not.toBeCalled();
+          expect(console.error).not.toHaveBeenCalled();
         });
       });
     });

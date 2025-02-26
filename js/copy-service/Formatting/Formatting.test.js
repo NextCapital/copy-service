@@ -49,7 +49,7 @@ describe('Formatting', () => {
 
           jest.spyOn(formatting.sibling, 'isCacheable').mockReturnValue(false);
           expect(formatting.isCacheable(copyService)).toBe(false);
-          expect(formatting.sibling.isCacheable).toBeCalledWith(copyService);
+          expect(formatting.sibling.isCacheable).toHaveBeenCalledWith(copyService);
         });
       });
 
@@ -119,7 +119,7 @@ describe('Formatting', () => {
           jest.spyOn(formatting.copy, 'isCacheable').mockReturnValue(false);
 
           expect(formatting.isCacheable(copyService)).toBe(false);
-          expect(formatting.copy.isCacheable).toBeCalledWith(copyService);
+          expect(formatting.copy.isCacheable).toHaveBeenCalledWith(copyService);
         });
       });
 

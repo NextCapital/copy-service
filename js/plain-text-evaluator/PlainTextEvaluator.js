@@ -17,18 +17,19 @@ const {
 /**
  * Provides an interface that can register copy, determine the existence of copy, and generate copy
  * recursively evaluated with substitutions.
+ *
  * @interface
  */
 class PlainTextEvaluator extends Evaluator {
-  /* eslint-disable brace-style */
   /**
-   * Evaluates the AST with given substitutions
+   * Evaluates the AST with given substitutions.
+   *
    * @param  {string} copyPrefix    The copy string being recursively built.
    * @param  {SyntaxNode|null} ast
    *                                The AST to be evaluated. This AST must be constructed by Parser.
    * @param  {object} substitutions An object containing substitutions for keys specified in the
    *                                AST.
-   * @return {string}               The evaluated copy.
+   * @returns {string}               The evaluated copy.
    */
   evalAST(copyPrefix, ast, substitutions) {
     if (!ast) {
@@ -64,8 +65,7 @@ class PlainTextEvaluator extends Evaluator {
     else if (ast instanceof Substitute) {
       const value = substitutions.get(ast.key);
       copy = _.isNil(value) ? '' : value.toString();
-    }
-    else if (ast instanceof RefSubstitute) {
+    } else if (ast instanceof RefSubstitute) {
       const copyKey = substitutions.get(ast.key);
       copy = this.evalAST(
         this.getInitialResult(), this.copyService.getAstForKey(copyKey), substitutions
@@ -118,7 +118,6 @@ class PlainTextEvaluator extends Evaluator {
 
     return copyPrefix + evaluated;
   }
-  /* eslint-enable brace-style */
 
   /**
    * Allows `HtmlEvaluator` to set this to true, enabling formatting tags to appear in the
@@ -132,6 +131,7 @@ class PlainTextEvaluator extends Evaluator {
 
   /**
    * The output for the `Newline` AST not. Overridden by `HtmlEvaluator`.
+   *
    * @returns {string}
    */
   getNewline() {
@@ -140,6 +140,7 @@ class PlainTextEvaluator extends Evaluator {
 
   /**
    * The output for the `WordBreak` AST node. Overridden by `HtmlEvaluator`.
+   *
    * @returns {string}
    */
   getWordBreak() {
@@ -148,7 +149,8 @@ class PlainTextEvaluator extends Evaluator {
 
   /**
    * Returns the default copy (usually an empty string).
-   * @return {*}
+   *
+   * @returns {*}
    */
   getInitialResult() {
     return '';

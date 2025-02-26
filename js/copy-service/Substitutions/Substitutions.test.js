@@ -60,7 +60,7 @@ describe('Substitutions', () => {
 
       test('handles the error', () => {
         substitutions.get('fake');
-        expect(ErrorHandler.handleError).toBeCalledWith(
+        expect(ErrorHandler.handleError).toHaveBeenCalledWith(
           'Substitutions',
           'No value for substitution at key \'fake\' provided'
         );
@@ -77,7 +77,7 @@ describe('Substitutions', () => {
       const key = 'some.key';
       jest.spyOn(substitutions, 'get').mockReturnValue('');
       substitutions.getBoolean(key);
-      expect(substitutions.get).toBeCalledWith(key);
+      expect(substitutions.get).toHaveBeenCalledWith(key);
     });
 
     const testValue = (value, expectedResult) => {

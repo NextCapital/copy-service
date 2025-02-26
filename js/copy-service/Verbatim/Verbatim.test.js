@@ -47,7 +47,7 @@ describe('Verbatim', () => {
 
         jest.spyOn(verbatim.sibling, 'isCacheable').mockReturnValue(false);
         expect(verbatim.isCacheable(copyService)).toBe(false);
-        expect(verbatim.sibling.isCacheable).toBeCalledWith(copyService);
+        expect(verbatim.sibling.isCacheable).toHaveBeenCalledWith(copyService);
       });
     });
 

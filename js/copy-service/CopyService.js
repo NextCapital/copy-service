@@ -7,6 +7,7 @@ const ErrorHandler = require('./ErrorHandler/ErrorHandler');
 
 /**
  * An AST class.
+ *
  * @typedef {SyntaxNode|null} AST
  */
 
@@ -25,6 +26,7 @@ class CopyService {
   constructor(options = {}) {
     /**
      * The store of registered copy.
+     *
      * @type {object}
      */
     this._registeredCopy = {};
@@ -60,8 +62,9 @@ class CopyService {
 
   /**
    * Recursively builds all subkeys at which copy exists.
+   *
    * @param  {string} key
-   * @return {Object} An object of the same structure where the value is the copy key path.
+   * @returns {object} An object of the same structure where the value is the copy key path.
    */
   buildSubkeys(key) {
     const subkeys = this.getSubkeys(key);
@@ -77,9 +80,10 @@ class CopyService {
   }
 
   /**
-   * Returns the value at a passed key
+   * Returns the value at a passed key.
+   *
    * @param  {string} key
-   * @return {object|string} The copy object or copy AST at a given key.
+   * @returns {object|string} The copy object or copy AST at a given key.
    */
   getSubkeys(key) {
     return _.get(this._registeredCopy, key);
@@ -87,8 +91,9 @@ class CopyService {
 
   /**
    * Determines if the key exists in the registered copy.
+   *
    * @param  {string} key
-   * @return {boolean}
+   * @returns {boolean}
    */
   hasKey(key) {
     return !_.isNil(this.getSubkeys(key));
@@ -100,7 +105,7 @@ class CopyService {
    * blowing up.
    *
    * @param  {string} key
-   * @return {AST|undefined}
+   * @returns {AST|undefined}
    */
   getAstForKey(key) {
     const result = _.get(this._registeredCopy, key);
@@ -137,7 +142,7 @@ class CopyService {
    * set of registered copy when copy is registered via many sources.
    *
    * @param {AST} _node [PRIVATE] Node of the registered copy to get keys from when recursing.
-   * @return {object} The registered copy, in un-parsed form.
+   * @returns {object} The registered copy, in un-parsed form.
    */
   getRegisteredCopy(_node = null) {
     const tree = {};
@@ -161,7 +166,7 @@ class CopyService {
    * Gets the registered copy for a given copy key.
    *
    * @param {string} key
-   * @return {string|null} Registered copy at the key, or null if none.
+   * @returns {string|null} Registered copy at the key, or null if none.
    */
   getRegisteredCopyForKey(key) {
     const result = _.get(this._registeredCopy, key);
@@ -200,7 +205,7 @@ class CopyService {
    *
    * @param {object} existingCopy
    * @param {object} newCopy
-   * @return {object}
+   * @returns {object}
    * @private
    */
   _mergeParsedCopy(existingCopy, newCopy) {

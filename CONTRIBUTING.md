@@ -16,7 +16,7 @@ For new ideas, feature requests, and bugs, please use our GitHub issue tracker. 
 
 - Ensure cross-platform compatibility for every change that is accepted: 
   - Windows, Mac, Ubuntu Linux, 
-  - NodeJS 12+
+  - NodeJS 18+
   - Latest two major versions of Chrome, Firefox, Safari and Edge browsers, and Edge 18
 - Create issues for any major changes and enhancements that you wish to make. 
   - Discuss things transparently and get community feedback.

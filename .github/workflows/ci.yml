@@ -8,7 +8,7 @@ jobs:
     timeout-minutes: 5
     strategy:
       matrix:
-        node-version: ['22']
+        node-version: [22, 20, 18]
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
@@ -19,7 +19,7 @@ jobs:
       id: node-modules-cache
       with:
         path: '**/node_modules'
-        key: ${{ runner.os }}-modules-${{ hashFiles('package-lock.json') }}
+        key: ${{ runner.os }}-modules-${{ hashFiles('package-lock.json') }}-${{ matrix.node-version }}
 
     - if: steps.node-modules-cache.outputs.cache-hit != 'true'
       run: npm ci
@@ -29,7 +29,7 @@ jobs:
     timeout-minutes: 5
     strategy:
       matrix:
-        node-version: ['22']
+        node-version: [22, 20, 18]
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
@@ -40,7 +40,7 @@ jobs:
       id: node-modules-cache
       with:
         path: '**/node_modules'
-        key: ${{ runner.os }}-modules-${{ hashFiles('package-lock.json') }}
+        key: ${{ runner.os }}-modules-${{ hashFiles('package-lock.json') }}-${{ matrix.node-version }}
 
     - run: npm run lint
   test:
@@ -49,7 +49,7 @@ jobs:
     timeout-minutes: 5
     strategy:
       matrix:
-        node-version: ['22']
+        node-version: [22, 20, 18]
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
@@ -60,7 +60,7 @@ jobs:
       id: node-modules-cache
       with:
         path: '**/node_modules'
-        key: ${{ runner.os }}-modules-${{ hashFiles('package-lock.json') }}
+        key: ${{ runner.os }}-modules-${{ hashFiles('package-lock.json') }}-${{ matrix.node-version }}
 
     - run: npm run test
   build:
@@ -69,7 +69,7 @@ jobs:
     timeout-minutes: 5
     strategy:
       matrix:
-        node-version: ['22']
+        node-version: [22, 20, 18]
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
@@ -80,6 +80,6 @@ jobs:
       id: node-modules-cache
       with:
         path: '**/node_modules'
-        key: ${{ runner.os }}-modules-${{ hashFiles('package-lock.json') }}
+        key: ${{ runner.os }}-modules-${{ hashFiles('package-lock.json') }}-${{ matrix.node-version }}
 
     - run: npm run build

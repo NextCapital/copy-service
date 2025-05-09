@@ -1,9 +1,8 @@
-const _ = require('lodash');
 const path = require('path');
 
 // NOTE: Build exists for example purposes only. Typically, import directly from source.
 module.exports = {
-  entry: './js/index.js',
+  entry: './js/index.ts',
 
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -12,9 +11,19 @@ module.exports = {
     libraryTarget: 'umd'
   },
 
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
+    ],
+  },
+
   resolve: {
     modules: ['node_modules'],
-    extensions: ['.js', '.json']
+    extensions: ['.js', '.json', '.ts']
   },
 
   context: __dirname,

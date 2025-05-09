@@ -8,7 +8,7 @@ class ErrorHandler {
    * @param {boolean} [options.halt]  Whether or not to throw a halting error.
    * @private
    */
-  static handleError(name, error, options = {}) {
+  static handleError(name: string, error: string, options: { halt?: boolean; } = {}): void | never {
     const message = `${name}: ${error}`;
     if (options.halt) {
       throw new Error(message);
@@ -22,9 +22,9 @@ class ErrorHandler {
    *
    * @returns {boolean} DEV_MODE.
    */
-  static isInDevMode() {
+  static isInDevMode(): boolean {
     return process.env.NODE_ENV !== 'production';
   }
 }
 
-module.exports = ErrorHandler;
+export default ErrorHandler;

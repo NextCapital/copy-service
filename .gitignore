@@ -6,3 +6,5 @@ node_modules/
 test-report.xml
 .cspellcache
 .eslintcache
+.eslintcache-ts
+ts-output

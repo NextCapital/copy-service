@@ -2,7 +2,7 @@ const path = require('path');
 
 // NOTE: Build exists for example purposes only. Typically, import directly from source.
 module.exports = {
-  entry: './js/index.ts',
+  entry: './js/index.js',
 
   output: {
     path: path.resolve(__dirname, 'dist'),

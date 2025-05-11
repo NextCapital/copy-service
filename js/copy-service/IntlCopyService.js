@@ -2,7 +2,7 @@ const _ = require('lodash');
 
 const CopyService = require('./CopyService');
 
-const ErrorHandler = require('./ErrorHandler/ErrorHandler');
+const ErrorHandler = require('./ErrorHandler/ErrorHandler').default;
 
 /**
  * Provides the same interface as `CopyService`, but adds support for multiple

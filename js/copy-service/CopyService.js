@@ -3,7 +3,7 @@ const _ = require('lodash');
 const SyntaxNode = require('./SyntaxNode/SyntaxNode');
 const Parser = require('./Parser/Parser');
 
-const ErrorHandler = require('./ErrorHandler/ErrorHandler');
+const ErrorHandler = require('./ErrorHandler/ErrorHandler').default;
 
 /**
  * An AST class.

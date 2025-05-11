@@ -1,5 +1,5 @@
 const Substitutions = require('../Substitutions/Substitutions');
-const ErrorHandler = require('../ErrorHandler/ErrorHandler');
+const ErrorHandler = require('../ErrorHandler/ErrorHandler').default;
 
 /**
  * Provides an interface to recursively generate copy evaluated with substitutions.

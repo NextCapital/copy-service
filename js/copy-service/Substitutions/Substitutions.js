@@ -1,6 +1,6 @@
 const _ = require('lodash');
 
-const ErrorHandler = require('../ErrorHandler/ErrorHandler');
+const ErrorHandler = require('../ErrorHandler/ErrorHandler').default;
 
 /**
  * Class for handling the substitution object/function passed into `getCopy`.

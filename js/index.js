@@ -11,7 +11,7 @@ const WordBreak = require('./copy-service/WordBreak/WordBreak');
 const Evaluator = require('./copy-service/Evaluator/Evaluator');
 const Substitutions = require('./copy-service/Substitutions/Substitutions');
 
-const ErrorHandler = require('./copy-service/ErrorHandler/ErrorHandler');
+const ErrorHandler = require('./copy-service/ErrorHandler/ErrorHandler').default;
 const CopyService = require('./copy-service/CopyService');
 const IntlCopyService = require('./copy-service/IntlCopyService');
 

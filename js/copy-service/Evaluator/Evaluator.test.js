@@ -1,7 +1,7 @@
 const Evaluator = require('./Evaluator');
 const Substitutions = require('../Substitutions/Substitutions');
 const CopyService = require('../CopyService');
-const ErrorHandler = require('../ErrorHandler/ErrorHandler');
+const ErrorHandler = require('../ErrorHandler/ErrorHandler').default;
 
 describe('Evaluator', () => {
   let evaluator, copyService;

@@ -5,11 +5,17 @@
   "license": "Apache-2.0",
   "main": "js/index.js",
   "files": [
-    "js",
-    "HtmlEvaluator.js",
-    "PlainTextEvaluator.js",
-    "ReactEvaluator.js"
+    "js"
   ],
+  "exports": {
+    ".": "./js/index.js",
+    "./HtmlEvaluator": "./js/HtmlEvaluator.js",
+    "./HtmlEvaluator.js": "./js/HtmlEvaluator.js",
+    "./PlainTextEvaluator": "./js/PlainTextEvaluator.js",
+    "./PlainTextEvaluator.js": "./js/PlainTextEvaluator.js",
+    "./ReactEvaluator": "./js/ReactEvaluator.js",
+    "./ReactEvaluator.js": "./js/ReactEvaluator.js"
+  },
   "keywords": [
     "copy",
     "copy management",

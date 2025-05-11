@@ -21,6 +21,8 @@ module.exports = {
     'node_modules',
     'js'
   ],
+  restoreMocks: true,
+  testEnvironment: 'node',
   testMatch: [
     "<rootDir>/js/**/*.test.js",
     "<rootDir>/js/**/*.test.ts",
@@ -28,5 +30,7 @@ module.exports = {
     "<rootDir>/integration-tests/**/*.test.ts",
   ],
   testResultsProcessor: "./node_modules/jest-junit-reporter",
-  restoreMocks: true,
+  transform: {
+    '^.+\.tsx?$': ['ts-jest',{}]
+  }
 };

@@ -7,6 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     strategy:
+      fail-fast: false
       matrix:
         node-version: [22, 20, 18]
     steps:
@@ -28,6 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     strategy:
+      fail-fast: false
       matrix:
         node-version: [22, 20, 18]
     steps:
@@ -48,6 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     strategy:
+      fail-fast: false
       matrix:
         node-version: [22, 20, 18]
     steps:
@@ -68,6 +71,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     strategy:
+      fail-fast: false
       matrix:
         node-version: [22, 20, 18]
     steps:
@@ -88,6 +92,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     strategy:
+      fail-fast: false
       matrix:
         node-version: [22, 20, 18]
     steps:

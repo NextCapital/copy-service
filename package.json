@@ -33,14 +33,15 @@
     "autopublish": "auto-publish-package",
     "build": "webpack",
     "clean": "rm -rf ./ts-output",
-    "ci:local": "npm run lint && npm run test && npm run build && npm run tsc",
+    "ci:local": "npm run lint && npm run test && npm run build && npm run tsc && npm run tsc:test",
     "docs": "rm -rf docs/ && jsdoc js/**/*.js -c .jsdoc.json",
     "lint": "npm run lint:js && npm run lint:ts && npm run lint:spelling",
     "lint:js": "eslint \"js/**/*.{js,jsx}\" --cache",
     "lint:ts": "eslint \"js/**/*.{ts,tsx}\" --config=eslint-ts.config.cjs --cache --cache-location=.eslintcache-ts",
     "lint:spelling": "cspell \"js/**/*.{js,jsx}\" --cache --no-progress",
     "test": "jest",
-    "tsc": "npm run clean && tsc"
+    "tsc": "npm run clean && tsc",
+    "tsc:test": "tsc --project tsconfig.test.json"
   },
   "repository": {
     "type": "git",

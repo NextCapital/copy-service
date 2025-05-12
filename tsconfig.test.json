@@ -6,8 +6,7 @@
     "allowJs": true,
     "checkJs": false,
     "jsx": "react-jsx",
-    "sourceMap": true,
-    "outDir": "./ts-output",
+    "noEmit": true,
 
     "module": "es6",
     "moduleResolution": "node",

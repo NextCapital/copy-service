@@ -1,7 +1,9 @@
-const SyntaxNode = require('./SyntaxNode');
+import CopyService from '../CopyService';
+
+import SyntaxNode from './SyntaxNode';
 
 describe('SyntaxNode', () => {
-  let syntaxNode;
+  let syntaxNode: SyntaxNode;
 
   beforeEach(() => {
     syntaxNode = new SyntaxNode();
@@ -61,7 +63,7 @@ describe('SyntaxNode', () => {
 
   describe('isCacheable', () => {
     test('returns false', () => {
-      expect(syntaxNode.isCacheable()).toBe(false);
+      expect(syntaxNode.isCacheable(new CopyService())).toBe(false);
     });
   });
 });

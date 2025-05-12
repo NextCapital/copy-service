@@ -1,4 +1,4 @@
-const SyntaxNode = require('../SyntaxNode/SyntaxNode');
+const SyntaxNode = require('../SyntaxNode/SyntaxNode').default;
 
 /**
  * Represents a newline in an AST.

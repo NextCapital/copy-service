@@ -1,4 +1,4 @@
-const SyntaxNode = require('../SyntaxNode/SyntaxNode');
+const SyntaxNode = require('../SyntaxNode/SyntaxNode').default;
 
 /**
  * Represents a logic branch in an AST.

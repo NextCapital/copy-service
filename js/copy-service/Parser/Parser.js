@@ -1,6 +1,6 @@
 const _ = require('lodash');
 
-const SyntaxNode = require('../SyntaxNode/SyntaxNode');
+const SyntaxNode = require('../SyntaxNode/SyntaxNode').default;
 const Formatting = require('../Formatting/Formatting');
 const Functional = require('../Functional/Functional');
 const Newline = require('../Newline/Newline');

@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const SyntaxNode = require('../SyntaxNode/SyntaxNode');
+const SyntaxNode = require('../SyntaxNode/SyntaxNode').default;
 
 /**
  * Represents a function in an AST that can be evaluated with copy and arguments from substitutions.

@@ -8,7 +8,7 @@ class SyntaxNode {
   /**
    * Returns `true` if the param is an AST node.
    */
-  static isAST(maybeNode: any): boolean {
+  static isAST(maybeNode: any): boolean { // eslint-disable-line @typescript-eslint/no-explicit-any
     return maybeNode === null || maybeNode instanceof SyntaxNode;
   }
 
@@ -28,14 +28,14 @@ class SyntaxNode {
    *
    * This method should be overridden in a subclass.
    */
-  toSyntax() : string {
+  toSyntax(): string {
     return '';
   }
 
   /**
    * Shortcut to the static `safeToSyntax` method.
    */
-  safeToSyntax(node: SyntaxNode | null) : string {
+  safeToSyntax(node: SyntaxNode | null): string {
     return (this.constructor as typeof SyntaxNode).safeToSyntax(node);
   }
 
@@ -46,7 +46,10 @@ class SyntaxNode {
    *
    * This method should be overridden in a subclass.
    */
-  isCacheable(copyService: CopyService | IntlCopyService) : boolean { // eslint-disable-line no-unused-vars
+  isCacheable(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    copyService: CopyService | IntlCopyService
+  ): boolean {
     return false;
   }
 }

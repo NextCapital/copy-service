@@ -1,18 +1,15 @@
 const _ = require('lodash');
 
-const {
-  Formatting,
-  Functional,
-  Newline,
-  Reference,
-  RefSubstitute,
-  Substitute,
-  Switch,
-  Verbatim,
-  WordBreak,
-
-  Evaluator
-} = require('../index.js');
+const Evaluator = require('../copy-service/Evaluator/Evaluator');
+const Formatting = require('../copy-service/Formatting/Formatting');
+const Functional = require('../copy-service/Functional/Functional');
+const Newline = require('../copy-service/Newline/Newline');
+const Reference = require('../copy-service/Reference/Reference');
+const RefSubstitute = require('../copy-service/RefSubstitute/RefSubstitute');
+const Substitute = require('../copy-service/Substitute/Substitute');
+const Switch = require('../copy-service/Switch/Switch');
+const Verbatim = require('../copy-service/Verbatim/Verbatim');
+const WordBreak = require('../copy-service/WordBreak/WordBreak');
 
 /**
  * Provides an interface that can register copy, determine the existence of copy, and generate copy

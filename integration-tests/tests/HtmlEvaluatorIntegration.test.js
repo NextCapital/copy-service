@@ -1,5 +1,5 @@
 const { CopyService } = require('../../js/index.js');
-const HtmlEvaluator = require('../../HtmlEvaluator');
+const HtmlEvaluator = require('../../js/html-evaluator/HtmlEvaluator');
 
 const copy = require('../copy');
 

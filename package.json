@@ -3,18 +3,18 @@
   "version": "6.0.0",
   "description": "A modern library for UI copy management.",
   "license": "Apache-2.0",
-  "main": "js/index.js",
+  "main": "./ts-output/index.js",
   "files": [
-    "js"
+    "ts-output"
   ],
   "exports": {
-    ".": "./js/index.js",
-    "./HtmlEvaluator": "./js/HtmlEvaluator.js",
-    "./HtmlEvaluator.js": "./js/HtmlEvaluator.js",
-    "./PlainTextEvaluator": "./js/PlainTextEvaluator.js",
-    "./PlainTextEvaluator.js": "./js/PlainTextEvaluator.js",
-    "./ReactEvaluator": "./js/ReactEvaluator.js",
-    "./ReactEvaluator.js": "./js/ReactEvaluator.js"
+    ".": "./ts-output/index.js",
+    "./HtmlEvaluator": "./ts-output/html-evaluator/HtmlEvaluator.js",
+    "./HtmlEvaluator.js": "./ts-output/html-evaluator/HtmlEvaluator.js",
+    "./PlainTextEvaluator": "./ts-output/plain-text-evaluator/PlainTextEvaluator.js",
+    "./PlainTextEvaluator.js": "./ts-output/plain-text-evaluator/PlainTextEvaluator.js",
+    "./ReactEvaluator": "./ts-output/react-evaluator/ReactEvaluator.js",
+    "./ReactEvaluator.js": "./ts-output/react-evaluator/ReactEvaluator.js"
   },
   "keywords": [
     "copy",

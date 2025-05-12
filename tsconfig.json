@@ -6,7 +6,8 @@
     "allowJs": true,
     "checkJs": false,
     "jsx": "react-jsx",
-    "sourceMap": true,
+    "sourceMap": false,
+    "declaration": true,
     "outDir": "./ts-output",
 
     "module": "es6",
@@ -22,11 +23,13 @@
     "forceConsistentCasingInFileNames": true
   },
   "include": [
-    "./**/*.ts",
-    "./**/*.tsx"
+    "./js/**/*.js",
+    "./js/**/*.ts",
+    "./js/**/*.tsx"
   ],
   "exclude": [
-    "./**/*.test.ts",
-    "./**/*.test.tsx"
+    "./js/**/*.test.js",
+    "./js/**/*.test.ts",
+    "./js/**/*.test.tsx"
   ]
 }

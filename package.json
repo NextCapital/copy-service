@@ -32,6 +32,7 @@
   "scripts": {
     "autopublish": "auto-publish-package",
     "build": "webpack",
+    "clean": "rm -rf ./ts-output",
     "ci:local": "npm run lint && npm run test && npm run build && npm run tsc",
     "docs": "rm -rf docs/ && jsdoc js/**/*.js -c .jsdoc.json",
     "lint": "npm run lint:js && npm run lint:ts && npm run lint:spelling",
@@ -39,7 +40,7 @@
     "lint:ts": "eslint \"js/**/*.{ts,tsx}\" --config=eslint-ts.config.cjs --cache --cache-location=.eslintcache-ts",
     "lint:spelling": "cspell \"js/**/*.{js,jsx}\" --cache --no-progress",
     "test": "jest",
-    "tsc": "tsc"
+    "tsc": "npm run clean && tsc"
   },
   "repository": {
     "type": "git",

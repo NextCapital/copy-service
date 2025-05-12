@@ -1,8 +1,8 @@
-const ErrorHandler = require('./ErrorHandler').default;
+import ErrorHandler from './ErrorHandler';
 
 describe('ErrorHandler', () => {
   describe('handleError', () => {
-    let name, error, options;
+    let name: string, error: string, options: { halt?: boolean; };
 
     beforeEach(() => {
       name = 'some name';

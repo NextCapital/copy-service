@@ -1,4 +1,4 @@
-const SyntaxNode = require('./SyntaxNode');
+const SyntaxNode = require('./SyntaxNode').default;
 
 describe('SyntaxNode', () => {
   let syntaxNode;

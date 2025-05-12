@@ -1,4 +1,4 @@
-const SyntaxNode = require('../SyntaxNode/SyntaxNode');
+const SyntaxNode = require('../SyntaxNode/SyntaxNode').default;
 
 /**
  * Represents an HTML tag in the AST.

@@ -1,4 +1,4 @@
-const SyntaxNode = require('../SyntaxNode/SyntaxNode');
+const SyntaxNode = require('../SyntaxNode/SyntaxNode').default;
 
 /**
  * Represents text in an AST.

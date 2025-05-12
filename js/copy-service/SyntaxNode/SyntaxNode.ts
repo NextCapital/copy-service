@@ -8,8 +8,8 @@ class SyntaxNode {
   /**
    * Returns `true` if the param is an AST node.
    */
-  static isAST(node: SyntaxNode | null): boolean {
-    return node === null || node instanceof SyntaxNode;
+  static isAST(maybeNode: any): boolean {
+    return maybeNode === null || maybeNode instanceof SyntaxNode;
   }
 
   /**

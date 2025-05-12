@@ -3,7 +3,7 @@ const _ = require('lodash');
 const Parser = require('./Parser/Parser');
 const SyntaxNode = require('./SyntaxNode/SyntaxNode');
 
-const ErrorHandler = require('./ErrorHandler/ErrorHandler');
+const ErrorHandler = require('./ErrorHandler/ErrorHandler').default;
 
 const CopyService = require('./CopyService');
 

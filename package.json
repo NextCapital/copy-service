@@ -3,13 +3,19 @@
   "version": "6.0.0",
   "description": "A modern library for UI copy management.",
   "license": "Apache-2.0",
-  "main": "js/index.js",
+  "main": "./ts-output/index.js",
   "files": [
-    "js",
-    "HtmlEvaluator.js",
-    "PlainTextEvaluator.js",
-    "ReactEvaluator.js"
+    "ts-output"
   ],
+  "exports": {
+    ".": "./ts-output/index.js",
+    "./HtmlEvaluator": "./ts-output/html-evaluator/HtmlEvaluator.js",
+    "./HtmlEvaluator.js": "./ts-output/html-evaluator/HtmlEvaluator.js",
+    "./PlainTextEvaluator": "./ts-output/plain-text-evaluator/PlainTextEvaluator.js",
+    "./PlainTextEvaluator.js": "./ts-output/plain-text-evaluator/PlainTextEvaluator.js",
+    "./ReactEvaluator": "./ts-output/react-evaluator/ReactEvaluator.js",
+    "./ReactEvaluator.js": "./ts-output/react-evaluator/ReactEvaluator.js"
+  },
   "keywords": [
     "copy",
     "copy management",
@@ -26,12 +32,15 @@
   "scripts": {
     "autopublish": "auto-publish-package",
     "build": "webpack",
-    "ci:local": "npm run lint && npm run test && npm run build",
+    "clean": "rm -rf ./ts-output",
+    "ci:local": "npm run lint && npm run test && npm run build && npm run tsc",
     "docs": "rm -rf docs/ && jsdoc js/**/*.js -c .jsdoc.json",
-    "lint": "npm run lint:js && npm run lint:spelling",
+    "lint": "npm run lint:js && npm run lint:ts && npm run lint:spelling",
     "lint:js": "eslint \"js/**/*.{js,jsx}\" --cache",
+    "lint:ts": "eslint \"js/**/*.{ts,tsx}\" --config=eslint-ts.config.cjs --cache --cache-location=.eslintcache-ts",
     "lint:spelling": "cspell \"js/**/*.{js,jsx}\" --cache --no-progress",
-    "test": "jest"
+    "test": "jest",
+    "tsc": "npm run clean && tsc"
   },
   "repository": {
     "type": "git",
@@ -51,8 +60,14 @@
   "devDependencies": {
     "@babel/core": "^7.26.10",
     "@babel/eslint-parser": "^7.27.0",
+    "@babel/preset-typescript": "^7.27.1",
     "@nextcapital/eslint-config": "^0.1.6",
+    "@nextcapital/eslint-config-typescript": "^0.1.8",
     "@pixi/jsdoc-template": "^2.6.0",
+    "@types/jest": "^29.5.14",
+    "@types/react": "^16.14.63",
+    "@types/react-dom": "^16.9.25",
+    "@typescript-eslint/parser": "^8.32.0",
     "babel-jest": "^29.7.0",
     "cspell": "^8.19.2",
     "eslint": "^9.25.1",
@@ -63,6 +78,9 @@
     "license-checker-rseidelsohn": "^1.2.2",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
+    "ts-jest": "^29.3.2",
+    "ts-loader": "^9.5.2",
+    "typescript": "^5.8.3",
     "webpack": "^5.99.6",
     "webpack-cli": "^6.0.1"
   },

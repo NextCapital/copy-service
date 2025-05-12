@@ -1,7 +1,7 @@
 const ReactDOMServer = require('react-dom/server');
 
 const { CopyService } = require('../../js/index.js');
-const ReactEvaluator = require('../../ReactEvaluator');
+const ReactEvaluator = require('../../js/react-evaluator/ReactEvaluator');
 
 const copy = require('../copy');
 

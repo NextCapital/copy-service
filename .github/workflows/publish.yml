@@ -23,6 +23,8 @@ jobs:
           restore-keys: npm-
       - name: Install Dependencies
         run: npm ci
+      - name: Build with tsc
+        run: npm run tsc
       - name: Publish
         uses: JS-DevTools/npm-publish@v3
         with:

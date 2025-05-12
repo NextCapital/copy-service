@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "umd",
+
+    "allowJs": true,
+    "checkJs": false,
+    "jsx": "react-jsx",
+    "sourceMap": false,
+    "declaration": true,
+    "outDir": "./ts-output",
+
+    "module": "es6",
+    "moduleResolution": "node",
+
+    "strict": true,
+    "noImplicitAny": true,
+    "useUnknownInCatchVariables": false,
+
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": [
+    "./js/**/*.js",
+    "./js/**/*.ts",
+    "./js/**/*.tsx"
+  ],
+  "exclude": [
+    "./js/**/*.test.js",
+    "./js/**/*.test.ts",
+    "./js/**/*.test.tsx"
+  ]
+}

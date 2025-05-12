@@ -1,4 +1,4 @@
-const ErrorHandler = require('./ErrorHandler');
+const ErrorHandler = require('./ErrorHandler').default;
 
 describe('ErrorHandler', () => {
   describe('handleError', () => {

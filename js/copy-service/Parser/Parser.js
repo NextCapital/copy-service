@@ -11,7 +11,7 @@ const Switch = require('../Switch/Switch');
 const Verbatim = require('../Verbatim/Verbatim');
 const WordBreak = require('../WordBreak/WordBreak');
 
-const ErrorHandler = require('../ErrorHandler/ErrorHandler');
+const ErrorHandler = require('../ErrorHandler/ErrorHandler').default;
 
 /**
  * The supported tokens in copy.

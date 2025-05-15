@@ -1,5 +1,6 @@
-const Functional = require('./Functional');
-const Verbatim = require('../Verbatim/Verbatim');
+import Verbatim from '../Verbatim/Verbatim';
+
+import Functional from './Functional';
 
 describe('Functional', () => {
   describe('constructor', () => {
@@ -30,9 +31,9 @@ describe('Functional', () => {
       };
 
       const functional = new Functional(options);
-      expect(functional.ast).toBeUndefined();
-      expect(functional.text).toBeUndefined();
-      expect(functional.arg).toBeUndefined();
+      expect('ast' in functional).toBe(false);
+      expect('test' in functional).toBe(false);
+      expect('arg' in functional).toBe(false);
     });
   });
 

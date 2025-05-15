@@ -6,7 +6,7 @@
     "allowJs": true,
     "checkJs": false,
     "jsx": "react-jsx",
-    "sourceMap": false,
+    "sourceMap": true,
     "declaration": true,
     "outDir": "./ts-output",
 

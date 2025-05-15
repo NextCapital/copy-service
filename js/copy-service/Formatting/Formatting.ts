@@ -1,40 +1,49 @@
-const SyntaxNode = require('../SyntaxNode/SyntaxNode').default;
+import SyntaxNode from '../SyntaxNode/SyntaxNode';
+
+import CopyService from '../CopyService';
+import IntlCopyService from '../IntlCopyService';
 
 /**
  * Represents an HTML tag in the AST.
  */
 class Formatting extends SyntaxNode {
   /**
+   * The neighboring AST.
+   *
+   * @type {SyntaxNode|null}
+   */
+  sibling: SyntaxNode | null;
+
+  /**
+   * An AST representing the string displayed inside the HTML tag.
+   *
+   * @type {SyntaxNode|null}
+   */
+  copy: SyntaxNode | null;
+
+  /**
+   * The tag as a string.
+   *
+   * @type {string}
+   */
+  tag: string;
+
+  /**
    * @param  {object} options
    */
-  constructor(options) {
-    super(options);
+  constructor(options: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
+    super();
 
-    /**
-     * The neighboring AST.
-     *
-     * @type {SyntaxNode|null}
-     */
     this.sibling = options.sibling || null;
-    /**
-     * An AST representing the string displayed inside the HTML tag.
-     *
-     * @type {SyntaxNode|null}
-     */
     this.copy = options.copy || null;
-    /**
-     * The tag as a string.
-     *
-     * @type {string}
-     */
     this.tag = options.tag;
   }
 
   /**
-   * @param copyService
+   * @param {CopyService | IntlCopyService} copyService
    * @returns {boolean} True if this node can be cached after evaluation.
    */
-  isCacheable(copyService) {
+  override isCacheable(copyService: CopyService | IntlCopyService): boolean {
     if (this.sibling) {
       if (this.copy) {
         return this.sibling.isCacheable(copyService) && this.copy.isCacheable(copyService);
@@ -53,11 +62,11 @@ class Formatting extends SyntaxNode {
    *
    * @returns {string}
    */
-  toSyntax() {
+  override toSyntax(): string {
     return (
       `<${this.tag}>${this.safeToSyntax(this.copy)}</${this.tag}>${this.safeToSyntax(this.sibling)}`
     );
   }
 }
 
-module.exports = Formatting;
+export default Formatting;

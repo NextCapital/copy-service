@@ -1,6 +1,6 @@
 const _ = require('lodash');
 
-const Formatting = require('../Formatting/Formatting');
+const Formatting = require('../Formatting/Formatting').default;
 const Functional = require('../Functional/Functional').default;
 const Newline = require('../Newline/Newline');
 const Reference = require('../Reference/Reference');

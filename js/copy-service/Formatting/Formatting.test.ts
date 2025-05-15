@@ -1,6 +1,7 @@
-const Formatting = require('./Formatting');
-const Verbatim = require('../Verbatim/Verbatim');
-const CopyService = require('../CopyService');
+import Formatting from './Formatting';
+import Verbatim from '../Verbatim/Verbatim';
+import CopyService from '../CopyService';
+import SyntaxNode from '../SyntaxNode/SyntaxNode';
 
 describe('Formatting', () => {
   describe('constructor', () => {
@@ -23,14 +24,14 @@ describe('Formatting', () => {
       };
 
       const formatting = new Formatting(options);
-      expect(formatting.key).toBeUndefined();
-      expect(formatting.text).toBeUndefined();
-      expect(formatting.arg).toBeUndefined();
+      expect('key' in formatting).toBeFalsy();
+      expect('text' in formatting).toBeFalsy();
+      expect('arg' in formatting).toBeFalsy();
     });
   });
 
   describe('isCacheable', () => {
-    let copyService;
+    let copyService: CopyService;
 
     beforeEach(() => {
       copyService = new CopyService();
@@ -47,9 +48,9 @@ describe('Formatting', () => {
 
           const formatting = new Formatting(options);
 
-          jest.spyOn(formatting.sibling, 'isCacheable').mockReturnValue(false);
+          jest.spyOn(<SyntaxNode>formatting.sibling, 'isCacheable').mockReturnValue(false);
           expect(formatting.isCacheable(copyService)).toBe(false);
-          expect(formatting.sibling.isCacheable).toHaveBeenCalledWith(copyService);
+          expect((<SyntaxNode>formatting.sibling).isCacheable).toHaveBeenCalledWith(copyService);
         });
       });
 
@@ -64,8 +65,9 @@ describe('Formatting', () => {
               };
 
               const formatting = new Formatting(options);
-              jest.spyOn(formatting.copy, 'isCacheable').mockReturnValue(true);
-              jest.spyOn(formatting.sibling, 'isCacheable').mockReturnValue(true);
+
+              jest.spyOn(<SyntaxNode>formatting.copy, 'isCacheable').mockReturnValue(true);
+              jest.spyOn(<SyntaxNode>formatting.sibling, 'isCacheable').mockReturnValue(true);
 
               expect(formatting.isCacheable(copyService)).toBe(true);
             });
@@ -80,8 +82,9 @@ describe('Formatting', () => {
               };
 
               const formatting = new Formatting(options);
-              jest.spyOn(formatting.copy, 'isCacheable').mockReturnValue(true);
-              jest.spyOn(formatting.sibling, 'isCacheable').mockReturnValue(false);
+
+              jest.spyOn(<SyntaxNode>formatting.copy, 'isCacheable').mockReturnValue(true);
+              jest.spyOn(<SyntaxNode>formatting.sibling, 'isCacheable').mockReturnValue(false);
 
               expect(formatting.isCacheable(copyService)).toBe(false);
             });
@@ -97,8 +100,8 @@ describe('Formatting', () => {
             };
 
             const formatting = new Formatting(options);
-            jest.spyOn(formatting.copy, 'isCacheable').mockReturnValue(false);
-            jest.spyOn(formatting.sibling, 'isCacheable').mockReturnValue(true);
+            jest.spyOn(<SyntaxNode>formatting.copy, 'isCacheable').mockReturnValue(false);
+            jest.spyOn(<SyntaxNode>formatting.sibling, 'isCacheable').mockReturnValue(true);
 
             expect(formatting.isCacheable(copyService)).toBe(false);
           });
@@ -116,10 +119,10 @@ describe('Formatting', () => {
           };
 
           const formatting = new Formatting(options);
-          jest.spyOn(formatting.copy, 'isCacheable').mockReturnValue(false);
+          jest.spyOn(<SyntaxNode>formatting.copy, 'isCacheable').mockReturnValue(false);
 
           expect(formatting.isCacheable(copyService)).toBe(false);
-          expect(formatting.copy.isCacheable).toHaveBeenCalledWith(copyService);
+          expect((<SyntaxNode>formatting.copy).isCacheable).toHaveBeenCalledWith(copyService);
         });
       });
 

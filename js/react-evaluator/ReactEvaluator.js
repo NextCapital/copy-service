@@ -2,8 +2,8 @@ const _ = require('lodash');
 const React = require('react');
 
 const Evaluator = require('../copy-service/Evaluator/Evaluator');
-const Formatting = require('../copy-service/Formatting/Formatting');
-const Functional = require('../copy-service/Functional/Functional');
+const Formatting = require('../copy-service/Formatting/Formatting').default;
+const Functional = require('../copy-service/Functional/Functional').default;
 const Newline = require('../copy-service/Newline/Newline');
 const Reference = require('../copy-service/Reference/Reference');
 const RefSubstitute = require('../copy-service/RefSubstitute/RefSubstitute');

@@ -8,7 +8,7 @@ class Functional extends SyntaxNode {
   /**
    * @param  {object} options
    */
-  constructor(options) {
+  constructor(options: any) {
     super(options);
 
     /**
@@ -40,7 +40,7 @@ class Functional extends SyntaxNode {
   /**
    * @returns {boolean} True if this node can be cached after evaluation.
    */
-  isCacheable() {
+  isCacheable(): boolean {
     return false;
   }
 
@@ -49,7 +49,7 @@ class Functional extends SyntaxNode {
    *
    * @returns {string}
    */
-  toSyntax() {
+  toSyntax(): string {
     const args = _.isEmpty(this.args) ?
       '' :
       `[${this.args.join(',')}]`;
@@ -60,4 +60,4 @@ class Functional extends SyntaxNode {
   }
 }
 
-module.exports = Functional;
+export default Functional;

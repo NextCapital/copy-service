@@ -30,9 +30,9 @@ describe('Functional', () => {
       };
 
       const functional = new Functional(options);
-      expect(functional.ast).toBeUndefined();
-      expect(functional.text).toBeUndefined();
-      expect(functional.arg).toBeUndefined();
+      expect('ast' in functional).toBeFalsy();
+      expect('test' in functional).toBeFalsy();
+      expect('arg' in functional).toBeFalsy();
     });
   });
 

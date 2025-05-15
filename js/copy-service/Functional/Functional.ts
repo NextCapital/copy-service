@@ -1,40 +1,47 @@
 import _ from 'lodash';
-
-const SyntaxNode = require('../SyntaxNode/SyntaxNode').default; // eslint-disable-line @typescript-eslint/no-require-imports
+import SyntaxNode from '../SyntaxNode/SyntaxNode';
 
 /**
  * Represents a function in an AST that can be evaluated with copy and arguments from substitutions.
  */
 class Functional extends SyntaxNode {
   /**
+   * The key locating the function substitution, with leading and trailing whitespace trimmed.
+   *
+   * @type {string}
+   */
+  key: string;
+
+  /**
+   * The neighboring AST.
+   *
+   * @type {SyntaxNode|null}
+   */
+  sibling: SyntaxNode | null;
+
+  /**
+   * An AST representing the string that is passed into the function.
+   *
+   * @type {SyntaxNode|null}
+   */
+  copy: SyntaxNode | null;
+
+  /**
+   * The string keys corresponding to argument substitutions.
+   *
+   * @type {Array<string>}
+   */
+  args: Array<string>;
+
+  /**
    * @param  {object} options
    */
   constructor(options: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
-    super(options);
+    super();
 
-    /**
-     * The key locating the function substitution, with leading and trailing whitespace trimmed.
-     *
-     * @type {string}
-     */
     this.key = options.key.trim();
-    /**
-     * The neighboring AST.
-     *
-     * @type {SyntaxNode|null}
-     */
     this.sibling = options.sibling || null;
-    /**
-     * An AST representing the string that is passed into the function.
-     *
-     * @type {SyntaxNode|null}
-     */
     this.copy = options.copy || null;
-    /**
-     * The string keys corresponding to argument substitutions.
-     *
-     * @type {Array<string>}
-     */
     this.args = options.args || [];
   }
 

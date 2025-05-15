@@ -1,5 +1,5 @@
-import Functional from "./Functional";
-import Verbatim from "../Verbatim/Verbatim";
+import Functional from './Functional';
+import Verbatim from '../Verbatim/Verbatim';
 
 describe('Functional', () => {
   describe('constructor', () => {

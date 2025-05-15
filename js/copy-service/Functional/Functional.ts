@@ -1,5 +1,6 @@
 import _ from 'lodash';
-const SyntaxNode = require('../SyntaxNode/SyntaxNode').default;
+
+const SyntaxNode = require('../SyntaxNode/SyntaxNode').default; // eslint-disable-line @typescript-eslint/no-require-imports
 
 /**
  * Represents a function in an AST that can be evaluated with copy and arguments from substitutions.
@@ -8,7 +9,7 @@ class Functional extends SyntaxNode {
   /**
    * @param  {object} options
    */
-  constructor(options: any) {
+  constructor(options: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
     super(options);
 
     /**

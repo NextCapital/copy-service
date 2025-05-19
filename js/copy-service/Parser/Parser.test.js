@@ -5,7 +5,7 @@ const Functional = require('../Functional/Functional').default;
 const Newline = require('../Newline/Newline');
 const Reference = require('../Reference/Reference');
 const RefSubstitute = require('../RefSubstitute/RefSubstitute').default;
-const Substitute = require('../Substitute/Substitute');
+const Substitute = require('../Substitute/Substitute').default;
 const Switch = require('../Switch/Switch');
 const Verbatim = require('../Verbatim/Verbatim').default;
 

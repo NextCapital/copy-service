@@ -24,7 +24,7 @@ class WordBreak extends SyntaxNode {
   /**
    * True if this node can be cached after evaluation.
    */
-  isCacheable(copyService: CopyService | IntlCopyService ) : boolean {
+  isCacheable(copyService: CopyService | IntlCopyService): boolean {
     if (this.sibling) {
       return this.sibling.isCacheable(copyService);
     }

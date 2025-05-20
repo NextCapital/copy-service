@@ -6,7 +6,7 @@ const RefSubstitute = require('./copy-service/RefSubstitute/RefSubstitute').defa
 const Substitute = require('./copy-service/Substitute/Substitute');
 const Switch = require('./copy-service/Switch/Switch');
 const Verbatim = require('./copy-service/Verbatim/Verbatim');
-const WordBreak = require('./copy-service/WordBreak/WordBreak');
+const WordBreak = require('./copy-service/WordBreak/WordBreak').default;
 
 const Evaluator = require('./copy-service/Evaluator/Evaluator');
 const Substitutions = require('./copy-service/Substitutions/Substitutions');

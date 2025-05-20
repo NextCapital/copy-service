@@ -9,7 +9,7 @@ const RefSubstitute = require('../copy-service/RefSubstitute/RefSubstitute').def
 const Substitute = require('../copy-service/Substitute/Substitute');
 const Switch = require('../copy-service/Switch/Switch');
 const Verbatim = require('../copy-service/Verbatim/Verbatim');
-const WordBreak = require('../copy-service/WordBreak/WordBreak');
+const WordBreak = require('../copy-service/WordBreak/WordBreak').default;
 
 /**
  * Provides an interface that can register copy, determine the existence of copy, and generate copy

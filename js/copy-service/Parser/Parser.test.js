@@ -10,7 +10,7 @@ const Switch = require('../Switch/Switch');
 const Verbatim = require('../Verbatim/Verbatim');
 
 const Parser = require('./Parser');
-const WordBreak = require('../WordBreak/WordBreak');
+const WordBreak = require('../WordBreak/WordBreak').default;
 
 describe('Parser', () => {
   afterEach(() => {

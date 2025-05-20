@@ -139,7 +139,10 @@ describe('Reference', () => {
     test('converts back to a copy string', () => {
       const reference = new Reference({
         key: 'some.copy.key',
-        sibling: new Verbatim({ text: '.' })
+        sibling: new Verbatim({
+          sibling: null,
+          text: '.'
+        })
       });
 
       expect(reference.toSyntax()).toBe('${some.copy.key}.');

@@ -56,8 +56,14 @@ describe('Functional', () => {
     describe('when there are args', () => {
       test('converts back to a copy string', () => {
         const functional = new Functional({
-          sibling: new Verbatim({ text: '.' }),
-          copy: new Verbatim({ text: 'some copy' }),
+          sibling: new Verbatim({
+            sibling: null,
+            text: '.'
+          }),
+          copy: new Verbatim({
+            sibling: null,
+            text: 'some copy'
+          }),
           key: 'some.key',
           args: ['one', 'two']
         });
@@ -71,8 +77,14 @@ describe('Functional', () => {
     describe('when there are not args', () => {
       test('converts back to a copy string', () => {
         const functional = new Functional({
-          sibling: new Verbatim({ text: '.' }),
-          copy: new Verbatim({ text: 'some copy' }),
+          sibling: new Verbatim({
+            sibling: null,
+            text: '.'
+          }),
+          copy: new Verbatim({
+            sibling: null,
+            text: 'some copy'
+          }),
           key: 'some.key',
           args: []
         });

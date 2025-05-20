@@ -9,7 +9,10 @@ describe('Formatting', () => {
     test('sets valid options to the instance', () => {
       const options = {
         sibling: new Formatting({}),
-        copy: new Verbatim({ text: 'some copy' }),
+        copy: new Verbatim({
+          sibling: null,
+          text: 'some copy'
+        }),
         tag: 'some tag'
       };
 
@@ -60,8 +63,14 @@ describe('Formatting', () => {
           describe('when the sibling is cacheable', () => {
             test('returns true', () => {
               const options = {
-                sibling: new Verbatim({ text: 'some copy' }),
-                copy: new Verbatim({ text: 'some copy' }),
+                sibling: new Verbatim({
+                  sibling: null,
+                  text: 'some copy'
+                }),
+                copy: new Verbatim({
+                  sibling: null,
+                  text: 'some copy'
+                }),
                 tag: 'some tag'
               };
 
@@ -77,8 +86,14 @@ describe('Formatting', () => {
           describe('when the sibling is not cacheable', () => {
             test('returns false', () => {
               const options = {
-                sibling: new Verbatim({ text: 'some copy' }),
-                copy: new Verbatim({ text: 'some copy' }),
+                sibling: new Verbatim({
+                  sibling: null,
+                  text: 'some copy'
+                }),
+                copy: new Verbatim({
+                  sibling: null,
+                  text: 'some copy'
+                }),
                 tag: 'some tag'
               };
 
@@ -95,8 +110,14 @@ describe('Formatting', () => {
         describe('when the copy is not cacheable', () => {
           test('returns false', () => {
             const options = {
-              sibling: new Verbatim({ text: 'some copy' }),
-              copy: new Verbatim({ text: 'some copy' }),
+              sibling: new Verbatim({
+                sibling: null,
+                text: 'some copy'
+              }),
+              copy: new Verbatim({
+                sibling: null,
+                text: 'some copy'
+              }),
               tag: 'some tag'
             };
 
@@ -115,7 +136,10 @@ describe('Formatting', () => {
         test('defers to isCacheable on the copy', () => {
           const options = {
             sibling: null,
-            copy: new Verbatim({ text: 'some copy' }),
+            copy: new Verbatim({
+              sibling: null,
+              text: 'some copy'
+            }),
             tag: 'some tag'
           };
 
@@ -147,8 +171,14 @@ describe('Formatting', () => {
     test('converts copy back to a string', () => {
       const formatting = new Formatting({
         tag: 'strong',
-        copy: new Verbatim({ text: 'some text' }),
-        sibling: new Verbatim({ text: '.' })
+        copy: new Verbatim({
+          sibling: null,
+          text: 'some text'
+        }),
+        sibling: new Verbatim({
+          sibling: null,
+          text: '.'
+        })
       });
 
       expect(formatting.toSyntax()).toBe(

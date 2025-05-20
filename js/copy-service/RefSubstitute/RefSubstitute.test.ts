@@ -38,7 +38,10 @@ describe('RefSubstitute', () => {
     test('converts back to a copy string', () => {
       const reference = new RefSubstitute({
         key: 'some.copy.key',
-        sibling: new Verbatim({ text: '.' })
+        sibling: new Verbatim({
+          sibling: null,
+          text: '.'
+        })
       });
 
       expect(reference.toSyntax()).toBe('%{some.copy.key}.');

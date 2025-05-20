@@ -6,7 +6,8 @@ describe('Verbatim', () => {
     test('sets valid options to the instance', () => {
       const options = {
         sibling: new Verbatim({
-          sibling: null, text: 'child'
+          sibling: null,
+          text: 'child'
         }),
         text: 'some text'
       };
@@ -49,6 +50,7 @@ describe('Verbatim', () => {
         };
 
         const verbatim = new Verbatim(options);
+
         expect(verbatim.isCacheable(copyService)).toBe(true);
       });
     });

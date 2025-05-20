@@ -1,33 +1,37 @@
-const SyntaxNode = require('../SyntaxNode/SyntaxNode').default;
+import SyntaxNode from '../SyntaxNode/SyntaxNode';
 
 /**
  * Represents a substitution of a copy key reference in an AST.
  */
 class RefSubstitute extends SyntaxNode {
   /**
-   * @param  {object} options
+   * The copy key being referenced, with leading and trailing whitespace trimmed.
+   *
+   * @type {string}
    */
-  constructor(options) {
-    super(options);
+  key: string;
 
-    /**
-     * The copy key being referenced, with leading and trailing whitespace trimmed.
-     *
-     * @type {string}
-     */
+  /**
+   * The neighboring AST.
+   *
+   * @type {SyntaxNode|null}
+   */
+  sibling: SyntaxNode | null;
+
+  constructor(options: {
+    key: string;
+    sibling: SyntaxNode | null;
+  }) {
+    super();
+
     this.key = options.key.trim();
-    /**
-     * The neighboring AST.
-     *
-     * @type {SyntaxNode|null}
-     */
     this.sibling = options.sibling || null;
   }
 
   /**
    * @returns {boolean} True if this node can be cached after evaluation.
    */
-  isCacheable() {
+  override isCacheable(): boolean {
     return false;
   }
 
@@ -36,11 +40,11 @@ class RefSubstitute extends SyntaxNode {
    *
    * @returns {string}
    */
-  toSyntax() {
+  override toSyntax(): string {
     return (
       `%{${this.key}}${this.safeToSyntax(this.sibling)}`
     );
   }
 }
 
-module.exports = RefSubstitute;
+export default RefSubstitute;

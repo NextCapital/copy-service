@@ -1,49 +1,44 @@
-const SyntaxNode = require('../SyntaxNode/SyntaxNode').default;
+import CopyService from '../CopyService';
+import IntlCopyService from '../IntlCopyService';
+import SyntaxNode from '../SyntaxNode/SyntaxNode';
 
 /**
  * Represents text in an AST.
  */
 class Verbatim extends SyntaxNode {
   /**
-   * @param  {object} options
+   * The string.
    */
-  constructor(options) {
-    super(options);
+  text: string;
 
-    /**
-     * @type {string}
-     */
+  /**
+   * The neighboring AST.
+   */
+  sibling: SyntaxNode | null;
+
+  constructor(options: {
+    text: string;
+    sibling: SyntaxNode | null;
+  }) {
+    super();
+
     this.text = options.text;
-    /**
-     * The neighboring AST.
-     *
-     * @type {SyntaxNode|null}
-     */
     this.sibling = options.sibling || null;
   }
 
   /**
-   * @param copyService
-   * @returns {boolean} True if this node can be cached after evaluation.
+   * True if this node can be cached after evaluation.
    */
-  isCacheable(copyService) {
-    if (this.sibling) {
-      return this.sibling.isCacheable(copyService);
-    }
-
-    return true;
+  isCacheable(copyService: CopyService | IntlCopyService): boolean {
+    return this.sibling ? this.sibling.isCacheable(copyService) : true;
   }
 
   /**
    * Converts the AST node to the syntax that made it.
-   *
-   * @returns {string}
    */
-  toSyntax() {
-    return (
-      `${this.text}${this.safeToSyntax(this.sibling)}`
-    );
+  toSyntax(): string {
+    return `${this.text}${this.safeToSyntax(this.sibling)}`;
   }
 }
 
-module.exports = Verbatim;
+export default Verbatim;

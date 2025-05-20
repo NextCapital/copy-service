@@ -1,5 +1,5 @@
 const Reference = require('./Reference');
-const Verbatim = require('../Verbatim/Verbatim');
+const Verbatim = require('../Verbatim/Verbatim').default;
 const CopyService = require('../CopyService');
 
 describe('Reference', () => {

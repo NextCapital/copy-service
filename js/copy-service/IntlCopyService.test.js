@@ -4,7 +4,7 @@ const CopyService = require('./CopyService');
 
 const ErrorHandler = require('./ErrorHandler/ErrorHandler').default;
 const IntlCopyService = require('./IntlCopyService');
-const Verbatim = require('./Verbatim/Verbatim');
+const Verbatim = require('./Verbatim/Verbatim').default;
 
 /**
  * NOTE: Private methods are implicitly tested through other methods.

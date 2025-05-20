@@ -1,5 +1,5 @@
 const Newline = require('./Newline');
-const Verbatim = require('../Verbatim/Verbatim');
+const Verbatim = require('../Verbatim/Verbatim').default;
 const CopyService = require('../CopyService');
 
 describe('Newline', () => {

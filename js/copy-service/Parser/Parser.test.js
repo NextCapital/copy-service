@@ -7,7 +7,7 @@ const Reference = require('../Reference/Reference');
 const RefSubstitute = require('../RefSubstitute/RefSubstitute').default;
 const Substitute = require('../Substitute/Substitute');
 const Switch = require('../Switch/Switch');
-const Verbatim = require('../Verbatim/Verbatim');
+const Verbatim = require('../Verbatim/Verbatim').default;
 
 const Parser = require('./Parser');
 const WordBreak = require('../WordBreak/WordBreak').default;

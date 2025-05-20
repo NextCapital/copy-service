@@ -1,5 +1,5 @@
 const Substitute = require('./Substitute');
-const Verbatim = require('../Verbatim/Verbatim');
+const Verbatim = require('../Verbatim/Verbatim').default;
 
 describe('Substitute', () => {
   describe('constructor', () => {

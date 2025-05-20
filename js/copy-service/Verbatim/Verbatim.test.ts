@@ -1,36 +1,24 @@
-const Verbatim = require('./Verbatim');
-const CopyService = require('../CopyService');
+import CopyService from '../CopyService';
+import Verbatim from './Verbatim';
 
 describe('Verbatim', () => {
   describe('constructor', () => {
     test('sets valid options to the instance', () => {
       const options = {
-        sibling: new Verbatim({ key: 'some key' }),
+        sibling: new Verbatim({
+          sibling: null,
+          text: 'child'
+        }),
         text: 'some text'
       };
 
       const verbatim = new Verbatim(options);
       expect(verbatim).toEqual(expect.objectContaining(options));
     });
-
-    test('does not set invalid options to the instance', () => {
-      const options = {
-        ast: 'some ast',
-        arg: 'some arg',
-        copy: 'some copy',
-        key: 'some key'
-      };
-
-      const verbatim = new Verbatim(options);
-      expect(verbatim.ast).toBeUndefined();
-      expect(verbatim.arg).toBeUndefined();
-      expect(verbatim.copy).toBeUndefined();
-      expect(verbatim.key).toBeUndefined();
-    });
   });
 
   describe('isCacheable', () => {
-    let copyService;
+    let copyService: CopyService;
 
     beforeEach(() => {
       copyService = new CopyService();
@@ -39,15 +27,18 @@ describe('Verbatim', () => {
     describe('when there is a sibling', () => {
       test('defers to the sibling', () => {
         const options = {
-          sibling: new Verbatim({ key: 'some key' }),
+          sibling: new Verbatim({
+            sibling: null,
+            text: 'child'
+          }),
           text: 'some text'
         };
 
         const verbatim = new Verbatim(options);
 
-        jest.spyOn(verbatim.sibling, 'isCacheable').mockReturnValue(false);
+        const isCacheableSpy = jest.spyOn(verbatim.sibling!, 'isCacheable').mockReturnValue(false);
         expect(verbatim.isCacheable(copyService)).toBe(false);
-        expect(verbatim.sibling.isCacheable).toHaveBeenCalledWith(copyService);
+        expect(isCacheableSpy).toHaveBeenCalledWith(copyService);
       });
     });
 
@@ -69,7 +60,10 @@ describe('Verbatim', () => {
     test('converts back to a copy string', () => {
       const verbatim = new Verbatim({
         text: 'some text',
-        sibling: new Verbatim({ text: '.' })
+        sibling: new Verbatim({
+          sibling: null,
+          text: '.'
+        })
       });
 
       expect(verbatim.toSyntax()).toBe('some text.');

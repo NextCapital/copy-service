@@ -1,5 +1,5 @@
 const Switch = require('./Switch');
-const Verbatim = require('../Verbatim/Verbatim');
+const Verbatim = require('../Verbatim/Verbatim').default;
 
 describe('Switch', () => {
   describe('constructor', () => {

@@ -47,7 +47,13 @@ describe('WordBreak', () => {
 
   describe('toSyntax', () => {
     test('converts back to a copy string', () => {
-      const wordbreak = new WordBreak({ sibling: new Verbatim({ text: 'some text' }) });
+      const wordbreak = new WordBreak({
+        sibling: new Verbatim({
+          sibling: null,
+          text: 'some text'
+        })
+      });
+
       expect(wordbreak.toSyntax()).toBe('\bsome text');
     });
   });

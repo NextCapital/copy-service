@@ -8,7 +8,7 @@ const Reference = require('../copy-service/Reference/Reference');
 const RefSubstitute = require('../copy-service/RefSubstitute/RefSubstitute').default;
 const Substitute = require('../copy-service/Substitute/Substitute');
 const Switch = require('../copy-service/Switch/Switch');
-const Verbatim = require('../copy-service/Verbatim/Verbatim');
+const Verbatim = require('../copy-service/Verbatim/Verbatim').default;
 const WordBreak = require('../copy-service/WordBreak/WordBreak').default;
 
 /**

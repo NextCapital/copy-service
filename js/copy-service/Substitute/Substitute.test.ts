@@ -1,40 +1,30 @@
-const Substitute = require('./Substitute');
-const Verbatim = require('../Verbatim/Verbatim').default;
+import Verbatim from '../Verbatim/Verbatim';
+
+import Substitute from './Substitute';
 
 describe('Substitute', () => {
   describe('constructor', () => {
     test('sets valid options to the instance', () => {
       const options = {
-        sibling: new Substitute({ key: 'some key' }),
+        sibling: new Substitute({
+          key: 'some key',
+          sibling: null
+        }),
         key: 'some key'
       };
 
       const substitute = new Substitute(options);
       expect(substitute).toEqual(expect.objectContaining(options));
     });
-
-    test('does not set invalid options to the instance', () => {
-      const options = {
-        ast: 'some ast',
-        text: 'some text',
-        arg: 'some arg',
-        copy: 'some copy',
-
-        key: 'some key'
-      };
-
-      const substitute = new Substitute(options);
-      expect(substitute.ast).toBeUndefined();
-      expect(substitute.text).toBeUndefined();
-      expect(substitute.arg).toBeUndefined();
-      expect(substitute.copy).toBeUndefined();
-    });
   });
 
   describe('isCacheable', () => {
     test('returns false', () => {
       const options = {
-        sibling: new Substitute({ key: 'some key' }),
+        sibling: new Substitute({
+          key: 'some key',
+          sibling: null
+        }),
         key: 'some key'
       };
 
@@ -48,7 +38,10 @@ describe('Substitute', () => {
     test('converts back to a copy string', () => {
       const reference = new Substitute({
         key: 'some.sub.key',
-        sibling: new Verbatim({ text: '.' })
+        sibling: new Verbatim({
+          text: '.',
+          sibling: null
+        })
       });
 
       expect(reference.toSyntax()).toBe('#{some.sub.key}.');

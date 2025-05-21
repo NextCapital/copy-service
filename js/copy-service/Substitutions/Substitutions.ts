@@ -1,16 +1,18 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
-const ErrorHandler = require('../ErrorHandler/ErrorHandler').default;
+import ErrorHandler from '../ErrorHandler/ErrorHandler';
 
 /**
  * Class for handling the substitution object/function passed into `getCopy`.
  */
 class Substitutions {
+  _substitutions: object | (() => object);
+
   /**
    * @param {object | Function} substitutions The substitutions. If a function, it should return an
    * object.
    */
-  constructor(substitutions) {
+  constructor(substitutions: object | (() => object)) {
     this._substitutions = substitutions;
   }
 
@@ -21,7 +23,7 @@ class Substitutions {
    *
    * @type {object}
    */
-  get substitutions() {
+  get substitutions(): object {
     if (_.isFunction(this._substitutions)) {
       this._substitutions = this._substitutions();
     }
@@ -38,7 +40,7 @@ class Substitutions {
    * @param {string} key Path to substitution on the substitutions object.
    * @returns {*} The value from the substitutions.
    */
-  get(key) {
+  get(key: string): any { // eslint-disable-line @typescript-eslint/no-explicit-any
     const value = _.result(this.substitutions, key);
 
     if (_.isUndefined(value)) {
@@ -55,11 +57,14 @@ class Substitutions {
    * @param {string} key Path to substitution on the substitutions object.
    * @returns {*} The function from the substitutions.
    */
-  getFunction(key) {
+  getFunction(
+    key: string
+  ): (() => any) | undefined { // eslint-disable-line @typescript-eslint/no-explicit-any
     const value = _.get(this.substitutions, key);
 
     if (_.isUndefined(value)) {
-      return this._handleMissing(key);
+      this._handleMissing(key);
+      return;
     }
 
     if (!_.isFunction(value)) {
@@ -79,7 +84,7 @@ class Substitutions {
    * @returns {string} An empty string.
    * @private
    */
-  _handleMissing(key) {
+  private _handleMissing(key: string): string {
     ErrorHandler.handleError(
       'Substitutions',
       `No value for substitution at key '${key}' provided`
@@ -95,7 +100,7 @@ class Substitutions {
    * @param {string} key Path to substitution on the substitutions object.
    * @returns {boolean} The evaluated boolean value of the substitution.
    */
-  getBoolean(key) {
+  getBoolean(key: string): boolean {
     const value = this.get(key);
 
     if (_.isNumber(value)) {
@@ -106,4 +111,4 @@ class Substitutions {
   }
 }
 
-module.exports = Substitutions;
+export default Substitutions;

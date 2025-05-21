@@ -1,4 +1,4 @@
-const Substitutions = require('../Substitutions/Substitutions');
+const Substitutions = require('../Substitutions/Substitutions').default;
 const ErrorHandler = require('../ErrorHandler/ErrorHandler').default;
 
 /**

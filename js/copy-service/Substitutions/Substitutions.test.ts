@@ -1,8 +1,16 @@
-const ErrorHandler = require('../ErrorHandler/ErrorHandler').default;
-const Substitutions = require('./Substitutions');
+import ErrorHandler from '../ErrorHandler/ErrorHandler';
+
+import Substitutions from './Substitutions';
 
 describe('Substitutions', () => {
-  let substitutions, input;
+  let substitutions: Substitutions;
+  let input: {
+    some: string;
+    to: string;
+    deep: {
+      test: string;
+    };
+  };
 
   beforeEach(() => {
     input = {
@@ -24,7 +32,10 @@ describe('Substitutions', () => {
 
   describe('get substitutions', () => {
     describe('when _substitutions is a function', () => {
-      let func, result;
+      let func: () => object;
+      let result: {
+        some: string;
+      };
 
       beforeEach(() => {
         result = { some: 'result' };
@@ -80,7 +91,11 @@ describe('Substitutions', () => {
       expect(substitutions.get).toHaveBeenCalledWith(key);
     });
 
-    const testValue = (testMessage, value, expectedResult) => {
+    const testValue = (
+      testMessage: string,
+      value: any, // eslint-disable-line @typescript-eslint/no-explicit-any
+      expectedResult: boolean
+    ) => {
       test(testMessage, () => { // eslint-disable-line jest/valid-title
         jest.spyOn(substitutions, 'get').mockReturnValue(value);
         expect(substitutions.getBoolean('some.key')).toBe(expectedResult);

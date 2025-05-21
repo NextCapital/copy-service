@@ -1,5 +1,5 @@
 const Evaluator = require('./Evaluator');
-const Substitutions = require('../Substitutions/Substitutions');
+const Substitutions = require('../Substitutions/Substitutions').default;
 const CopyService = require('../CopyService');
 const ErrorHandler = require('../ErrorHandler/ErrorHandler').default;
 

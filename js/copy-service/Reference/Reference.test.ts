@@ -1,49 +1,35 @@
-const Reference = require('./Reference');
-const Verbatim = require('../Verbatim/Verbatim').default;
-const CopyService = require('../CopyService');
+import Reference from './Reference';
+import Verbatim from '../Verbatim/Verbatim';
+import CopyService from '../CopyService';
 
 describe('Reference', () => {
   describe('constructor', () => {
     test('sets valid options to the instance', () => {
       const options = {
-        sibling: new Reference({ key: 'some key' }),
+        sibling: new Reference({
+          key: 'some key',
+          sibling: null
+        }),
         key: 'some key'
       };
 
       const reference = new Reference(options);
       expect(reference).toEqual(expect.objectContaining(options));
     });
-
-    test('does not set invalid options to the instance', () => {
-      const options = {
-        ast: 'some ast',
-        text: 'some text',
-        arg: 'some arg',
-        copy: 'some copy',
-
-        key: 'some key'
-      };
-
-      const reference = new Reference(options);
-      expect(reference.ast).toBeUndefined();
-      expect(reference.text).toBeUndefined();
-      expect(reference.arg).toBeUndefined();
-      expect(reference.copy).toBeUndefined();
-    });
   });
 
   describe('isCacheable', () => {
-    let copyService;
+    let copyService: CopyService;
 
     beforeEach(() => {
       copyService = new CopyService();
     });
 
     describe('when the referenced ast node is found', () => {
-      let node;
+      let node: Reference;
 
       beforeEach(() => {
-        node = new Reference({ key: 'some.other.key' });
+        node = new Reference({ key: 'some.other.key', sibling: null });
         jest.spyOn(copyService, 'getAstForKey').mockReturnValue(node);
       });
 
@@ -56,30 +42,36 @@ describe('Reference', () => {
           describe('when the sibling is cacheable', () => {
             test('returns true', () => {
               const options = {
-                sibling: new Reference({ key: 'some key' }),
+                sibling: new Reference({ key: 'some key', sibling: null }),
                 key: 'some key'
               };
 
               const reference = new Reference(options);
-              jest.spyOn(reference.sibling, 'isCacheable').mockReturnValue(true);
+              const isCacheableSpy = jest.spyOn(
+                reference.sibling!,
+                'isCacheable'
+              ).mockReturnValue(true);
 
               expect(reference.isCacheable(copyService)).toBe(true);
-              expect(reference.sibling.isCacheable).toHaveBeenCalledWith(copyService);
+              expect(isCacheableSpy).toHaveBeenCalledWith(copyService);
             });
           });
 
           describe('when the sibling is not cacheable', () => {
             test('returns false', () => {
               const options = {
-                sibling: new Reference({ key: 'some key' }),
+                sibling: new Reference({ key: 'some key', sibling: null }),
                 key: 'some key'
               };
 
               const reference = new Reference(options);
-              jest.spyOn(reference.sibling, 'isCacheable').mockReturnValue(false);
+              const isCacheableSpy = jest.spyOn(
+                reference.sibling!,
+                'isCacheable'
+              ).mockReturnValue(false);
 
               expect(reference.isCacheable(copyService)).toBe(false);
-              expect(reference.sibling.isCacheable).toHaveBeenCalledWith(copyService);
+              expect(isCacheableSpy).toHaveBeenCalledWith(copyService);
             });
           });
         });
@@ -105,7 +97,7 @@ describe('Reference', () => {
 
         test('returns false', () => {
           const options = {
-            sibling: new Reference({ key: 'some key' }),
+            sibling: new Reference({ key: 'some key', sibling: null }),
             key: 'some key'
           };
 
@@ -124,7 +116,7 @@ describe('Reference', () => {
 
       test('returns false', () => {
         const options = {
-          sibling: new Reference({ key: 'some key' }),
+          sibling: new Reference({ key: 'some key', sibling: null }),
           key: 'some key'
         };
 

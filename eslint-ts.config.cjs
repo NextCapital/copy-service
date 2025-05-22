@@ -39,7 +39,9 @@ module.exports = [
 
       'jsdoc/require-param-description': 'off',
       'jsdoc/require-returns-description': 'off',
-      'jsdoc/valid-types': 'off'
+      'jsdoc/valid-types': 'off',
+
+      'no-template-curly-in-string': 'off'
     }
   },
   {

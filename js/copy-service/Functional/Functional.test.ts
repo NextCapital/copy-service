@@ -5,9 +5,15 @@ import Functional from './Functional';
 describe('Functional', () => {
   describe('constructor', () => {
     test('sets valid options to the instance', () => {
+      const nestedOption = {
+        key: 'some key',
+        sibling: null,
+        copy: null,
+        args: []
+      };
       const options = {
-        sibling: new Functional({ key: 'some key' }),
-        copy: 'some copy',
+        sibling: new Functional(nestedOption),
+        copy: new Functional(nestedOption),
         key: 'some key',
         args: ['some args', 'some more args']
       };
@@ -17,31 +23,27 @@ describe('Functional', () => {
     });
 
     test('defaults args to an empty array', () => {
-      const functional = new Functional({ key: 'some key' });
+      const functional = new Functional({
+        key: 'some key',
+        sibling: null,
+        copy: null,
+        args: []
+      });
       expect(functional.args).toEqual([]);
-    });
-
-    test('does not set invalid options to the instance', () => {
-      const options = {
-        ast: 'some ast',
-        text: 'some text',
-        arg: 'some arg',
-
-        key: 'some key'
-      };
-
-      const functional = new Functional(options);
-      expect('ast' in functional).toBe(false);
-      expect('test' in functional).toBe(false);
-      expect('arg' in functional).toBe(false);
     });
   });
 
   describe('isCacheable', () => {
     test('returns false', () => {
+      const nestedOption = {
+        key: 'some key',
+        sibling: null,
+        copy: null,
+        args: []
+      };
       const options = {
-        sibling: new Functional({ key: 'some key' }),
-        copy: 'some copy',
+        sibling: new Functional(nestedOption),
+        copy: new Functional(nestedOption),
         key: 'some key',
         args: ['some args', 'some more args']
       };

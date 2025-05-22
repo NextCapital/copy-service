@@ -28,10 +28,11 @@ class Formatting extends SyntaxNode {
    */
   tag: string;
 
-  /**
-   * @param  {object} options
-   */
-  constructor(options: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
+  constructor(options: {
+    sibling: SyntaxNode | null;
+    copy: SyntaxNode | null;
+    tag: string;
+  }) {
     super();
 
     this.sibling = options.sibling || null;

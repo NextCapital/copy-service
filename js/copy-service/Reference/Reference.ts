@@ -1,34 +1,39 @@
-const SyntaxNode = require('../SyntaxNode/SyntaxNode').default;
+import CopyService from '../CopyService';
+import IntlCopyService from '../IntlCopyService';
+import SyntaxNode from '../SyntaxNode/SyntaxNode';
 
 /**
  * Represents a reference to another copy key in an AST.
  */
 class Reference extends SyntaxNode {
   /**
-   * @param  {object} options
+   * The copy key being referenced, with leading and trailing whitespace trimmed.
+   *
+   * @type {string}
    */
-  constructor(options) {
-    super(options);
+  key: string;
 
-    /**
-     * The copy key being referenced, with leading and trailing whitespace trimmed.
-     *
-     * @type {string}
-     */
+  /**
+   * The neighboring AST.
+   *
+   * @type {SyntaxNode|null}
+   */
+  sibling: SyntaxNode | null;
+
+  constructor(options: {
+    key: string;
+    sibling: SyntaxNode | null;
+  }) {
+    super();
+
     this.key = options.key.trim();
-    /**
-     * The neighboring AST.
-     *
-     * @type {SyntaxNode|null}
-     */
     this.sibling = options.sibling || null;
   }
 
   /**
-   * @param copyService
-   * @returns {boolean} True if this node can be cached after evaluation.
+   * True if this node can be cached after evaluation.
    */
-  isCacheable(copyService) {
+  override isCacheable(copyService: CopyService | IntlCopyService): boolean {
     const ast = copyService.getAstForKey(this.key);
 
     if (ast) {
@@ -46,14 +51,12 @@ class Reference extends SyntaxNode {
 
   /**
    * Converts the AST node to the syntax that made it.
-   *
-   * @returns {string}
    */
-  toSyntax() {
+  toSyntax(): string {
     return (
       `\${${this.key}}${this.safeToSyntax(this.sibling)}`
     );
   }
 }
 
-module.exports = Reference;
+export default Reference;

@@ -8,7 +8,11 @@ describe('Formatting', () => {
   describe('constructor', () => {
     test('sets valid options to the instance', () => {
       const options = {
-        sibling: new Formatting({}),
+        sibling: new Formatting({
+          tag: 'some tag',
+          copy: null,
+          sibling: null
+        }),
         copy: new Verbatim({
           sibling: null,
           text: 'some copy'
@@ -18,19 +22,6 @@ describe('Formatting', () => {
 
       const formatting = new Formatting(options);
       expect(formatting).toEqual(expect.objectContaining(options));
-    });
-
-    test('does not set invalid options to the instance', () => {
-      const options = {
-        key: 'some key',
-        text: 'some text',
-        arg: 'some arg'
-      };
-
-      const formatting = new Formatting(options);
-      expect('key' in formatting).toBe(false);
-      expect('text' in formatting).toBe(false);
-      expect('arg' in formatting).toBe(false);
     });
   });
 
@@ -45,7 +36,11 @@ describe('Formatting', () => {
       describe('when there is no copy', () => {
         test('defers to the sibling', () => {
           const options = {
-            sibling: new Formatting({}),
+            sibling: new Formatting({
+              tag: 'some tag',
+              copy: null,
+              sibling: null
+            }),
             copy: null,
             tag: 'some tag'
           };

@@ -32,7 +32,12 @@ class Functional extends SyntaxNode {
    */
   args: string[];
 
-  constructor(options: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
+  constructor(options: {
+    key: string;
+    sibling: SyntaxNode | null;
+    copy: SyntaxNode | null;
+    args: string[];
+  }) {
     super();
 
     this.key = options.key.trim();

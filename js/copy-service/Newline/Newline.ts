@@ -1,28 +1,30 @@
-const SyntaxNode = require('../SyntaxNode/SyntaxNode').default;
+import CopyService from '../CopyService';
+import IntlCopyService from '../IntlCopyService';
+import SyntaxNode from '../SyntaxNode/SyntaxNode';
 
 /**
  * Represents a newline in an AST.
  */
 class Newline extends SyntaxNode {
   /**
-   * @param  {object} options
+   * The neighboring AST.
+   *
+   * @type {SyntaxNode|null}
    */
-  constructor(options) {
-    super(options);
+  sibling: SyntaxNode | null;
 
-    /**
-     * The neighboring AST.
-     *
-     * @type {SyntaxNode|null}
-     */
+  constructor(options: {
+    sibling: SyntaxNode | null;
+  }) {
+    super();
+
     this.sibling = options.sibling || null;
   }
 
   /**
-   * @param copyService
-   * @returns {boolean} True if this node can be cached after evaluation.
+   * True if this node can be cached after evaluation.
    */
-  isCacheable(copyService) {
+  override isCacheable(copyService: CopyService | IntlCopyService): boolean {
     if (this.sibling) {
       return this.sibling.isCacheable(copyService);
     }
@@ -32,12 +34,10 @@ class Newline extends SyntaxNode {
 
   /**
    * Converts the AST node to the syntax that made it.
-   *
-   * @returns {string}
    */
-  toSyntax() {
+  toSyntax(): string {
     return `\n${this.safeToSyntax(this.sibling)}`;
   }
 }
 
-module.exports = Newline;
+export default Newline;

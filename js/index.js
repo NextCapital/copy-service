@@ -1,6 +1,6 @@
 const Formatting = require('./copy-service/Formatting/Formatting').default;
 const Functional = require('./copy-service/Functional/Functional').default;
-const Newline = require('./copy-service/Newline/Newline');
+const Newline = require('./copy-service/Newline/Newline').default;
 const Reference = require('./copy-service/Reference/Reference').default;
 const RefSubstitute = require('./copy-service/RefSubstitute/RefSubstitute').default;
 const Substitute = require('./copy-service/Substitute/Substitute').default;

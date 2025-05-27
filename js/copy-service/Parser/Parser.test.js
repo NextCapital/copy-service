@@ -2,7 +2,7 @@ const _ = require('lodash');
 
 const Formatting = require('../Formatting/Formatting').default;
 const Functional = require('../Functional/Functional').default;
-const Newline = require('../Newline/Newline');
+const Newline = require('../Newline/Newline').default;
 const Reference = require('../Reference/Reference').default;
 const RefSubstitute = require('../RefSubstitute/RefSubstitute').default;
 const Substitute = require('../Substitute/Substitute').default;

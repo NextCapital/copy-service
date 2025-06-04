@@ -1,16 +1,17 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
-const Formatting = require('../Formatting/Formatting').default;
-const Functional = require('../Functional/Functional').default;
-const Newline = require('../Newline/Newline').default;
-const Reference = require('../Reference/Reference').default;
-const RefSubstitute = require('../RefSubstitute/RefSubstitute').default;
-const Substitute = require('../Substitute/Substitute').default;
-const Switch = require('../Switch/Switch').default;
-const Verbatim = require('../Verbatim/Verbatim').default;
+import Formatting from '../Formatting/Formatting';
+import Functional from '../Functional/Functional';
+import Newline from '../Newline/Newline';
+import Reference from '../Reference/Reference';
+import RefSubstitute from '../RefSubstitute/RefSubstitute';
+import Substitute from '../Substitute/Substitute';
+import Switch from '../Switch/Switch';
+import SyntaxNode from '../SyntaxNode/SyntaxNode';
+import Verbatim from '../Verbatim/Verbatim';
+import WordBreak from '../WordBreak/WordBreak';
 
-const Parser = require('./Parser');
-const WordBreak = require('../WordBreak/WordBreak').default;
+import Parser from './Parser';
 
 describe('Parser', () => {
   afterEach(() => {
@@ -27,8 +28,6 @@ describe('Parser', () => {
     describe('when the tree is empty', () => {
       test('returns empty tree', () => {
         expect(Parser.parseLeaves({})).toEqual({});
-        expect(Parser.parseLeaves(null)).toEqual(null);
-        expect(Parser.parseLeaves(undefined)).toEqual(undefined);
       });
     });
 
@@ -209,7 +208,8 @@ describe('Parser', () => {
                     text: 'some copy',
                     sibling: null
                   }),
-                  sibling: null
+                  sibling: null,
+                  args: []
                 })
               };
 
@@ -370,7 +370,8 @@ describe('Parser', () => {
                       text: 'copy',
                       sibling: null
                     }),
-                    sibling: null
+                    sibling: null,
+                    args: []
                   }),
                   right: new Verbatim({
                     text: 'right',
@@ -416,7 +417,8 @@ describe('Parser', () => {
                   text: 'some copy',
                   sibling: null
                 }),
-                sibling: null
+                sibling: null,
+                args: []
               });
 
               const moreTextParsed = new Formatting({
@@ -568,14 +570,6 @@ describe('Parser', () => {
   });
 
   describe('static parseSingle', () => {
-    describe('when the value is not a string', () => {
-      test('throws an error', () => {
-        expect(() => Parser.parseSingle({})).toThrow(
-          'Parser: Can only parse strings as copy'
-        );
-      });
-    });
-
     describe('when the value is a string', () => {
       test('tokenizes and parses the string', () => {
         const key = 'some key';

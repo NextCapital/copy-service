@@ -116,15 +116,7 @@ class Parser {
   /**
    * Parses a single string of copy into an AST.
    */
-  static parseSingle(key: string, copy: string): SyntaxNode | null | never {
-    if (!_.isString(copy)) {
-      ErrorHandler.handleError(
-        'Parser',
-        'Can only parse strings as copy',
-        { halt: true }
-      );
-    }
-
+  static parseSingle(key: string, copy: string): SyntaxNode | null {
     const tokens = this._tokenize(copy);
     return this._parse(tokens, key, copy);
   }

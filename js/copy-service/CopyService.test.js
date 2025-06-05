@@ -1,6 +1,6 @@
 const _ = require('lodash');
 
-const Parser = require('./Parser/Parser');
+const Parser = require('./Parser/Parser').default;
 const SyntaxNode = require('./SyntaxNode/SyntaxNode').default;
 
 const ErrorHandler = require('./ErrorHandler/ErrorHandler').default;

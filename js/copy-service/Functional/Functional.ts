@@ -59,7 +59,7 @@ class Functional extends SyntaxNode {
    * @returns {string}
    */
   override toSyntax(): string {
-    const args = !this.args ? '' : `[${this.args.join(',')}]`;
+    const args = !this.args?.length ? '' : `[${this.args.join(',')}]`;
 
     return (
       `^{${this.safeToSyntax(this.copy)}}{${this.key}}${args}${this.safeToSyntax(this.sibling)}`

@@ -103,12 +103,6 @@ class Parser {
         const tokens = this._tokenize(node);
         // eslint-disable-next-line no-param-reassign
         tree[key] = this._parse(tokens, key, node);
-      } else {
-        ErrorHandler.handleError(
-          'Parser',
-          'Values can only be other objects or strings',
-          { halt: true }
-        );
       }
     });
 

@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import Formatting from '../Formatting/Formatting';
 import Functional from '../Functional/Functional';
 import Newline from '../Newline/Newline';
@@ -463,38 +461,6 @@ describe('Parser', () => {
       });
 
       describe('when the tree contains invalid copy', () => {
-        describe('when the tree contains a boolean', () => {
-          test('throws error', () => {
-            expect(() => Parser.parseLeaves({ bool: true })).toThrow(
-              'Parser: Values can only be other objects or strings'
-            );
-          });
-        });
-
-        describe('when the tree contains a number', () => {
-          test('throws error', () => {
-            expect(() => Parser.parseLeaves({ num: 42 })).toThrow(
-              'Parser: Values can only be other objects or strings'
-            );
-          });
-        });
-
-        describe('when the tree contains an array', () => {
-          test('throws error', () => {
-            expect(() => Parser.parseLeaves({ arr: [] })).toThrow(
-              'Parser: Values can only be other objects or strings'
-            );
-          });
-        });
-
-        describe('when the tree contains a function', () => {
-          test('throws error', () => {
-            expect(() => Parser.parseLeaves({ func: _.identity })).toThrow(
-              'Parser: Values can only be other objects or strings'
-            );
-          });
-        });
-
         describe('when the tree contains copy with an invalid HTML tag', () => {
           test('throws error', () => {
             const tree = { tag: '<invalid></invalid>' };

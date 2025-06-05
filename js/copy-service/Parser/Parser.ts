@@ -13,6 +13,8 @@ import WordBreak from '../WordBreak/WordBreak';
 
 import ErrorHandler from '../ErrorHandler/ErrorHandler';
 
+type leafParam = SyntaxNode | string | null | { [key: string]: leafParam; };
+
 /**
  * Parses raw json copy into ASTs.
  */
@@ -90,13 +92,13 @@ class Parser {
   /**
    * Transforms raw copy into ASTs. Will mutate the `tree` argument.
    */
-  static parseLeaves(tree: { [key: string]: any; }): { [key: string]: SyntaxNode; } | never {
-    _.forEach(tree, (node: any, key: string) => {
+  static parseLeaves(tree: { [key: string]: leafParam; }): { [key: string]: leafParam; } {
+    _.forEach(tree, (node: leafParam, key: string) => {
       if (SyntaxNode.isAST(node)) {
         // already parsed
       } else if (_.isPlainObject(node)) {
         // eslint-disable-next-line no-param-reassign
-        tree[key] = this.parseLeaves(node);
+        tree[key] = this.parseLeaves(node as { [key: string]: leafParam; });
       } else if (_.isString(node)) {
         const tokens = this._tokenize(node);
         // eslint-disable-next-line no-param-reassign
@@ -406,7 +408,7 @@ class Parser {
       }
     }
 
-    const token = _.first(tokens)!;
+    const token = tokens[0];
     const tokensToParse = tokens.slice(1);
 
     if (isRestricted && token.type === expectedEndingToken) {
@@ -516,7 +518,7 @@ class Parser {
         ast: new Functional({
           copy: firstParsed.ast,
           key: textParsed.text,
-          args: _.get(argumentsParsed, 'args')!,
+          args: _.get(argumentsParsed, 'args'),
           sibling: parsed.ast
         }),
         tokens: parsed.tokens

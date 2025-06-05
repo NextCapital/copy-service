@@ -8,7 +8,8 @@ class ErrorHandler {
    * @param {boolean} [options.halt]  Whether or not to throw a halting error.
    * @private
    */
-  static handleError(name: string, error: string, options: { halt: true; }): never;
+  static handleError(name: string, error: string, options?: { halt: false; } | object): void;
+  static handleError(name: string, error: string, options?: { halt: true; }): never;
   static handleError(name: string, error: string, options: { halt?: boolean; } = {}): void | never {
     const message = `${name}: ${error}`;
     if (options.halt) {

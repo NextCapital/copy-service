@@ -7,7 +7,6 @@ import Reference from '../Reference/Reference';
 import RefSubstitute from '../RefSubstitute/RefSubstitute';
 import Substitute from '../Substitute/Substitute';
 import Switch from '../Switch/Switch';
-import SyntaxNode from '../SyntaxNode/SyntaxNode';
 import Verbatim from '../Verbatim/Verbatim';
 import WordBreak from '../WordBreak/WordBreak';
 
@@ -572,16 +571,23 @@ describe('Parser', () => {
   describe('static parseSingle', () => {
     describe('when the value is a string', () => {
       test('tokenizes and parses the string', () => {
-        const key = 'some key';
-        const result = { some: 'ast' };
-        jest.spyOn(Parser, '_parse').mockReturnValue(result);
+        const key = 'key';
+        const copy = '<b>hello</b>';
+        const tokens = [{ tag: 'b', type: '<' }, { text: 'hello', type: 'text' }, { tag: 'b', type: '>' }];
+        const result = new Formatting({
+          copy: new Verbatim({
+            sibling: null,
+            text: 'hello'
+          }),
+          sibling: null,
+          tag: 'b'
+        });
 
-        const tokens = ['some', 'tokens'];
-        jest.spyOn(Parser, '_tokenize').mockReturnValue(tokens);
+        jest.spyOn(Parser, '_tokenize');
+        expect(Parser._tokenize(copy)).toEqual(tokens);
 
-        const copy = 'some copy';
-        expect(Parser.parseSingle(key, copy)).toBe(result);
-
+        jest.spyOn(Parser, '_parse');
+        expect(Parser.parseSingle(key, copy)).toEqual(result);
         expect(Parser._tokenize).toHaveBeenCalledWith(copy);
         expect(Parser._parse).toHaveBeenCalledWith(tokens, key, copy);
       });

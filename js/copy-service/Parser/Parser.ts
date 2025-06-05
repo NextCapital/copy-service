@@ -139,7 +139,7 @@ class Parser {
   /**
    * Turns a string into an array of tokens to be parsed.
    */
-  static _tokenize(string: string): Array<{ [key: string]: string; }> {
+  static _tokenize(string: string): Array<{ [key: string]: string | undefined; }> {
     const tokens: Array<{ [key: string]: string; }> = [];
     let remainder = string;
     let withinArgs = false;
@@ -227,7 +227,7 @@ class Parser {
    * Parses an array of tokens into an AST.
    */
   static _parse(
-    tokens: Array<{ [key: string]: string; }>,
+    tokens: Array<{ [key: string]: string | undefined; }>,
     key: string,
     string: string
   ): SyntaxNode | null | never {
@@ -259,10 +259,10 @@ class Parser {
    * Returns a parsed text token.
    */
   static _getTextToken(
-    tokens: Array<{ [key: string]: string; }>
+    tokens: Array<{ [key: string]: string | undefined; }>
   ): {
     text: string;
-    tokens: Array<{ [key: string]: string; }>;
+    tokens: Array<{ [key: string]: string | undefined; }>;
   } | never {
     const token = _.first(tokens);
 
@@ -284,8 +284,8 @@ class Parser {
    * Removes a close token from the passed tokens. Errors.
    */
   static _processCloseToken(
-    tokens: Array<{ [key: string]: string; }>
-  ): Array<{ [key: string]: string; }> | never {
+    tokens: Array<{ [key: string]: string | undefined; }>
+  ): Array<{ [key: string]: string | undefined; }> | never {
     const token = _.first(tokens);
     if (token && token.type === this.TOKENS.CLOSE) {
       return tokens.slice(1);
@@ -302,13 +302,13 @@ class Parser {
    * Recursively parses arguments from a Functional token.
    */
   static _parseArguments(
-    tokens: Array<{ [key: string]: string; }>
+    tokens: Array<{ [key: string]: string | undefined; }>
   ): {
     args: string[];
-    tokens: Array<{ [key: string]: string; }>;
+    tokens: Array<{ [key: string]: string | undefined; }>;
   } | never {
     let args: string[];
-    let tokensToReturn: Array<{ [key: string]: string; }>;
+    let tokensToReturn: Array<{ [key: string]: string | undefined; }>;
 
     const textParsed = this._getTextToken(tokens);
     args = [textParsed.text.trim()];
@@ -368,10 +368,10 @@ class Parser {
    */
   static _getReferenceKeyToken(
     key: string,
-    tokens: Array<{ [key: string]: string; }>
+    tokens: Array<{ [key: string]: string | undefined; }>
   ): {
       text: string;
-      tokens: Array<{ [key: string]: string; }>;
+      tokens: Array<{ [key: string]: string | undefined; }>;
     } {
     const textParsed = this._getTextToken(tokens);
     textParsed.text = this._getRelativeKey(key, textParsed.text);
@@ -383,13 +383,13 @@ class Parser {
    * Recursively processes an array of tokens to build an AST optionally expecting an ending token.
    */
   static _parseTokens(
-    tokens: Array<{ [key: string]: string; }>,
+    tokens: Array<{ [key: string]: string | undefined; }>,
     key: string,
     isRestricted: boolean = false,
     expectedEndingToken: string = this.TOKENS.SWITCH_DELIM
   ): {
     ast: SyntaxNode | null;
-    tokens: Array<{ [key: string]: string; }>;
+    tokens: Array<{ [key: string]: string | undefined; }>;
   } | never {
     if (_.isEmpty(tokens)) {
       if (isRestricted) {
@@ -497,9 +497,9 @@ class Parser {
 
       let argumentsParsed: {
         args: string[];
-        tokens: Array<{ [key: string]: string; }>;
+        tokens: Array<{ [key: string]: string | undefined; }>;
       } | undefined;
-      let parsedOptionalArgumentsTokens: Array<{ [key: string]: string; }>;
+      let parsedOptionalArgumentsTokens: Array<{ [key: string]: string | undefined; }>;
 
       if (textParsed.tokens[0].type === this.TOKENS.CLOSE) {
         parsedOptionalArgumentsTokens = this._processCloseToken(textParsed.tokens);
@@ -522,7 +522,7 @@ class Parser {
         tokens: parsed.tokens
       };
     } else if (token.type === this.TOKENS.HTML_TAG_START) {
-      const tag = token.tag;
+      const tag = token.tag!;
       const tagParsed = this._parseTokens(tokensToParse, key, true, this.TOKENS.HTML_TAG_END);
       const parsed = isRestricted ?
         this._parseTokens(tagParsed.tokens, key, true, expectedEndingToken) :

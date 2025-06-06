@@ -1,10 +1,11 @@
-const Evaluator = require('./Evaluator');
-const Substitutions = require('../Substitutions/Substitutions').default;
-const CopyService = require('../CopyService');
-const ErrorHandler = require('../ErrorHandler/ErrorHandler').default;
+import Evaluator from './Evaluator';
+import Substitutions from '../Substitutions/Substitutions';
+import CopyService from '../CopyService';
+import ErrorHandler from '../ErrorHandler/ErrorHandler';
+import SyntaxNode from '../SyntaxNode/SyntaxNode';
 
 describe('Evaluator', () => {
-  let evaluator, copyService;
+  let evaluator: Evaluator, copyService: CopyService;
 
   beforeEach(() => {
     copyService = new CopyService();
@@ -35,7 +36,7 @@ describe('Evaluator', () => {
   describe('getCached', () => {
     test('gets the result from the evaluation cache', () => {
       const result = { some: 'result' };
-      const ast = { an: 'ast' };
+      const ast = new SyntaxNode();
 
       evaluator.evaluationCache.set(ast, result);
       expect(evaluator.getCached(ast)).toBe(result);
@@ -43,7 +44,7 @@ describe('Evaluator', () => {
   });
 
   describe('setCacheIfCacheable', () => {
-    let result;
+    let result: object;
 
     beforeEach(() => {
       result = { some: 'result' };
@@ -51,7 +52,8 @@ describe('Evaluator', () => {
 
     describe('when the ast is cacheable', () => {
       test('sets the result in the cache', () => {
-        const ast = { an: 'ast', isCacheable: jest.fn().mockReturnValue(true) };
+        const ast = new SyntaxNode();
+        jest.spyOn(ast, 'isCacheable').mockReturnValue(true);
 
         evaluator.setCacheIfCacheable(ast, result);
         expect(evaluator.getCached(ast)).toBe(result);
@@ -61,7 +63,8 @@ describe('Evaluator', () => {
 
     describe('when the ast is not cacheable', () => {
       test('does not set the result in the cache', () => {
-        const ast = { an: 'ast', isCacheable: jest.fn().mockReturnValue(false) };
+        const ast = new SyntaxNode();
+        jest.spyOn(ast, 'isCacheable').mockReturnValue(false);
 
         evaluator.setCacheIfCacheable(ast, result);
         expect(evaluator.getCached(ast)).toBeUndefined();
@@ -76,19 +79,18 @@ describe('Evaluator', () => {
       const rawSubstitutions = { some: 'raw', substitutions: 'yo' };
 
       const initialCopy = 'initialCopy';
-      const ast = { some: 'ast' };
+      const ast = new SyntaxNode();
 
       jest.spyOn(copyService, 'getAstForKey').mockReturnValue(ast);
       jest.spyOn(evaluator, 'getInitialResult').mockReturnValue(initialCopy);
 
       const copy = 'result copy';
-      jest.spyOn(evaluator, 'evalAST').mockImplementation((init, a, subs) => {
-        expect(subs.substitutions).toEqual(rawSubstitutions);
-        return copy;
-      });
+      jest.spyOn(evaluator, 'evalAST').mockImplementation(() => copy);
 
       expect(evaluator.getCopy(key, rawSubstitutions)).toBe(copy);
-      expect(evaluator.evalAST).toHaveBeenCalledWith(initialCopy, ast, expect.any(Substitutions));
+      expect(
+        evaluator.evalAST
+      ).toHaveBeenCalledWith(initialCopy, ast, new Substitutions(rawSubstitutions));
       expect(copyService.getAstForKey).toHaveBeenCalledWith(key);
       expect(evaluator.getInitialResult).toHaveBeenCalled();
     });
@@ -96,7 +98,9 @@ describe('Evaluator', () => {
 
   describe('evalAST', () => {
     test('throws error', () => {
-      expect(() => evaluator.evalAST()).toThrow(
+      expect(
+        () => evaluator.evalAST('prefix', new SyntaxNode(), new Substitutions({}))
+      ).toThrow(
         'evalAST is abstract and must be implemented by the extending class'
       );
     });
@@ -112,10 +116,11 @@ describe('Evaluator', () => {
 
   describe('_handleError', () => {
     test('defers to ErrorHandler.handleError', () => {
-      const args = ['some error message', { halt: true }];
+      const message = 'some error message';
+      const options = { halt: true };
       jest.spyOn(ErrorHandler, 'handleError').mockImplementation();
-      evaluator._handleError(...args);
-      expect(ErrorHandler.handleError).toHaveBeenCalledWith(Evaluator.name, ...args);
+      evaluator._handleError(message, options);
+      expect(ErrorHandler.handleError).toHaveBeenCalledWith(Evaluator.name, message, options);
     });
   });
 });

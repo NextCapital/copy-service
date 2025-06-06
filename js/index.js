@@ -8,7 +8,7 @@ const Switch = require('./copy-service/Switch/Switch').default;
 const Verbatim = require('./copy-service/Verbatim/Verbatim').default;
 const WordBreak = require('./copy-service/WordBreak/WordBreak').default;
 
-const Evaluator = require('./copy-service/Evaluator/Evaluator');
+const Evaluator = require('./copy-service/Evaluator/Evaluator').default;
 const Substitutions = require('./copy-service/Substitutions/Substitutions').default;
 
 const ErrorHandler = require('./copy-service/ErrorHandler/ErrorHandler').default;

@@ -1,5 +1,12 @@
-const Substitutions = require('../Substitutions/Substitutions').default;
-const ErrorHandler = require('../ErrorHandler/ErrorHandler').default;
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import _ from 'lodash';
+
+import CopyService from '../CopyService';
+import ErrorHandler from '../ErrorHandler/ErrorHandler';
+import IntlCopyService from '../IntlCopyService';
+import Substitutions from '../Substitutions/Substitutions';
+import SyntaxNode from '../SyntaxNode/SyntaxNode';
 
 /**
  * Provides an interface to recursively generate copy evaluated with substitutions.
@@ -8,78 +15,73 @@ const ErrorHandler = require('../ErrorHandler/ErrorHandler').default;
  */
 class Evaluator {
   /**
-   * Takes in a copy service and provide methods for evaluating its ASTs.
-   *
-   * @param {CopyService|IntlCopyService} copyService
-   * @param root0
-   * @param root0.allowFunctional
+   * The copy service used for evaluation.
    */
-  constructor(copyService, {
-    allowFunctional = true
-  } = {}) {
+  copyService: CopyService | IntlCopyService;
+
+  /**
+   * A cache for previously evaluated copy.
+   */
+  evaluationCache: WeakMap<SyntaxNode, any>;
+
+  /**
+   * When `true`, the functional ^{}{} syntax will run the configured method when evaluating.
+   * When `false`, the copy will be returned without passing it through the function.
+   */
+  allowFunctional: boolean;
+
+  constructor(
+    copyService: CopyService | IntlCopyService,
+    {
+      allowFunctional = true
+    }: {
+      allowFunctional?: boolean;
+    } = {}
+  ) {
     this.copyService = copyService;
+
     this.evaluationCache = new WeakMap();
 
-    /**
-     * When `true`, the functional ^{}{} syntax will run the configured method when evaluating.
-     * When `false`, the copy will be returned without passing it through the function.
-     *
-     * @type {boolean}
-     */
     this.allowFunctional = allowFunctional;
   }
 
   /**
    * Gets the cached evaluation result for the given ast, if it exists.
-   *
-   * @param {AST} ast
-   * @returns {*} The evaluated copy.
    */
-  getCached(ast) {
-    return this.evaluationCache.get(ast);
+  getCached(ast: SyntaxNode | null): any {
+    return _.isNil(ast) ? null : this.evaluationCache.get(ast);
   }
 
   /**
-   * Sets the evaluated result for the AST in the cache, if the ast node is cacheable.
+   * Sets the evaluated result for the ast in the cache, if the ast node is cacheable.
    *
    * NOTE: The evaluated result should be the result of fully evaluating the ast with no prefix.
-   *
-   * @param {AST} ast Node being cached.
-   * @param {*} evaluated Fully-evaluated result for the node.
    */
-  setCacheIfCacheable(ast, evaluated) {
-    if (ast.isCacheable(this.copyService)) {
+  setCacheIfCacheable(ast: SyntaxNode | null, evaluated: any): void {
+    if (!_.isNil(ast) && ast.isCacheable(this.copyService)) {
       this.evaluationCache.set(ast, evaluated);
     }
   }
 
   /**
-   * Returns evaluated copy got the given copy key and substitutions.
-   *
-   * @param  {string} key
-   * @param  {object | Function} [rawSubstitutions] Substitutions to be used by the evaluator when
-   * evaluating the AST. Must either be an object or a function returning the object.
-   * @returns {*} The evaluated copy.
+   * Returns evaluated copy for the given copy key and substitutions. Substitutions provided must
+   * either be an object or a function returning an object to be used by the evaluator.
    */
-  getCopy(key, rawSubstitutions) {
+  getCopy(key: string, rawSubstitutions: object | (() => any)): any {
     const substitutions = new Substitutions(rawSubstitutions);
     const ast = this.copyService.getAstForKey(key);
 
     return this.evalAST(this.getInitialResult(), ast, substitutions);
   }
 
-  /* eslint-disable jsdoc/check-param-names */
+  /* eslint-disable @typescript-eslint/no-unused-vars */
   /**
-   * Evaluates the AST with given substitutions.
+   * Evaluates the AST with the given substitutions and returns the evaluated copy prefixed with the
+   * given evaluated copy in the process of being recursively built.
    *
-   * @abstract
-   * @param  {*} copyPrefix The evaluated copy in process of being recursively built.
-   * @param  {AST} ast The AST to be evaluated. This AST must be constructed by Parser.
-   * @param  {Substitutions} substitutions An object containing substitutions for keys specified in
-   * the AST.
-   * @returns {*} The evaluated copy.
+   * Note: the AST provided must be constructed by Parser.
    */
-  evalAST() {
+  evalAST(copyPrefix: string, ast: SyntaxNode | null, substitutions: Substitutions) {
     this._handleError(
       'evalAST is abstract and must be implemented by the extending class',
       { halt: true }
@@ -88,26 +90,21 @@ class Evaluator {
 
   /**
    * Returns the default copy (usually an empty string).
-   *
-   * @abstract
-   * @returns {*}
    */
-  getInitialResult() {
+  getInitialResult(): any {
     this._handleError(
       'getInitialResult is abstract and must be implemented by the extending class',
       { halt: true }
     );
   }
-  /* eslint-enable jsdoc/check-param-names */
 
   /**
-   * Defers to ErrorHandler.handleError with the constructor name and any args.
-   *
-   * @param {...any} args
+   * Defers to ErrorHandler.handleError with the constructor name, error message adn
+   * halt options.
    */
-  _handleError(...args) {
-    ErrorHandler.handleError(this.constructor.name, ...args);
+  _handleError(error: string, options: { halt: boolean; }): void | never {
+    ErrorHandler.handleError(this.constructor.name, error, options);
   }
 }
 
-module.exports = Evaluator;
+export default Evaluator;

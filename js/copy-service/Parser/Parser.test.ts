@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import Formatting from '../Formatting/Formatting';
 import Functional from '../Functional/Functional';
 import Newline from '../Newline/Newline';
@@ -205,8 +207,7 @@ describe('Parser', () => {
                     text: 'some copy',
                     sibling: null
                   }),
-                  sibling: null,
-                  args: []
+                  sibling: null
                 })
               };
 
@@ -367,8 +368,7 @@ describe('Parser', () => {
                       text: 'copy',
                       sibling: null
                     }),
-                    sibling: null,
-                    args: []
+                    sibling: null
                   }),
                   right: new Verbatim({
                     text: 'right',
@@ -414,8 +414,7 @@ describe('Parser', () => {
                   text: 'some copy',
                   sibling: null
                 }),
-                sibling: null,
-                args: []
+                sibling: null
               });
 
               const moreTextParsed = new Formatting({
@@ -461,6 +460,42 @@ describe('Parser', () => {
       });
 
       describe('when the tree contains invalid copy', () => {
+        describe('when the tree contains a boolean', () => {
+          test('throws error', () => {
+            // @ts-expect-error to test runtime error handling
+            expect(() => Parser.parseLeaves({ bool: true })).toThrow(
+              'Parser: Values can only be other objects or strings'
+            );
+          });
+        });
+
+        describe('when the tree contains a number', () => {
+          test('throws error', () => {
+            // @ts-expect-error to test runtime error handling
+            expect(() => Parser.parseLeaves({ num: 42 })).toThrow(
+              'Parser: Values can only be other objects or strings'
+            );
+          });
+        });
+
+        describe('when the tree contains an array', () => {
+          test('throws error', () => {
+            // @ts-expect-error to test runtime error handling
+            expect(() => Parser.parseLeaves({ arr: [] })).toThrow(
+              'Parser: Values can only be other objects or strings'
+            );
+          });
+        });
+
+        describe('when the tree contains a function', () => {
+          test('throws error', () => {
+            // @ts-expect-error to test runtime error handling
+            expect(() => Parser.parseLeaves({ func: _.identity })).toThrow(
+              'Parser: Values can only be other objects or strings'
+            );
+          });
+        });
+
         describe('when the tree contains copy with an invalid HTML tag', () => {
           test('throws error', () => {
             const tree = { tag: '<invalid></invalid>' };

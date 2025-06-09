@@ -103,6 +103,12 @@ class Parser {
         const tokens = this._tokenize(node);
         // eslint-disable-next-line no-param-reassign
         tree[key] = this._parse(tokens, key, node);
+      } else {
+        ErrorHandler.handleError(
+          'Parser',
+          'Values can only be other objects or strings',
+          { halt: true }
+        );
       }
     });
 
@@ -122,7 +128,7 @@ class Parser {
    *
    * @private
    */
-  static _validateTag(tag: string): void {
+  static _validateTag(tag: string): never | void {
     if (!_.includes(this.ALLOWED_HTML_TAGS, tag)) {
       ErrorHandler.handleError(
         'Parser',
@@ -368,7 +374,7 @@ class Parser {
   ): {
       text: string;
       tokens: Array<{ [key: string]: string | undefined; }>;
-    } {
+  } { // eslint-disable-line @stylistic/indent
     const textParsed = this._getTextToken(tokens);
     textParsed.text = this._getRelativeKey(key, textParsed.text);
 
@@ -381,8 +387,9 @@ class Parser {
   static _parseTokens(
     tokens: Array<{ [key: string]: string | undefined; }>,
     key: string,
-    isRestricted: boolean = false,
-    expectedEndingToken: string = this.TOKENS.SWITCH_DELIM
+    isRestricted = false,
+    expectedEndingToken:
+      typeof this.TOKENS.SWITCH_DELIM | typeof this.TOKENS.HTML_TAG_END = this.TOKENS.SWITCH_DELIM
   ): {
     ast: SyntaxNode | null;
     tokens: Array<{ [key: string]: string | undefined; }>;

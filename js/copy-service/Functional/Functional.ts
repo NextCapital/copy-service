@@ -28,15 +28,15 @@ class Functional extends SyntaxNode {
   /**
    * The string keys corresponding to argument substitutions.
    *
-   * @type {string[]|undefined}
+   * @type {string[]}
    */
-  args: string[] | undefined;
+  args: string[];
 
   constructor(options: {
     key: string;
     sibling: SyntaxNode | null;
     copy: SyntaxNode | null;
-    args: string[] | undefined;
+    args?: string[];
   }) {
     super();
 
@@ -59,7 +59,7 @@ class Functional extends SyntaxNode {
    * @returns {string}
    */
   override toSyntax(): string {
-    const args = !this.args?.length ? '' : `[${this.args.join(',')}]`;
+    const args = this.args && this.args.length ? `[${this.args.join(',')}]` : '';
 
     return (
       `^{${this.safeToSyntax(this.copy)}}{${this.key}}${args}${this.safeToSyntax(this.sibling)}`

@@ -1,105 +1,104 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
-const SyntaxNode = require('../SyntaxNode/SyntaxNode').default;
-const Formatting = require('../Formatting/Formatting').default;
-const Functional = require('../Functional/Functional').default;
-const Newline = require('../Newline/Newline').default;
-const Reference = require('../Reference/Reference').default;
-const RefSubstitute = require('../RefSubstitute/RefSubstitute').default;
-const Substitute = require('../Substitute/Substitute').default;
-const Switch = require('../Switch/Switch').default;
-const Verbatim = require('../Verbatim/Verbatim').default;
-const WordBreak = require('../WordBreak/WordBreak').default;
+import SyntaxNode from '../SyntaxNode/SyntaxNode';
+import Formatting from '../Formatting/Formatting';
+import Functional from '../Functional/Functional';
+import Newline from '../Newline/Newline';
+import Reference from '../Reference/Reference';
+import RefSubstitute from '../RefSubstitute/RefSubstitute';
+import Substitute from '../Substitute/Substitute';
+import Switch from '../Switch/Switch';
+import Verbatim from '../Verbatim/Verbatim';
+import WordBreak from '../WordBreak/WordBreak';
 
-const ErrorHandler = require('../ErrorHandler/ErrorHandler').default;
+import ErrorHandler from '../ErrorHandler/ErrorHandler';
 
-/**
- * The supported tokens in copy.
- *
- * @type {object}
- */
-const TOKENS = {
-  TEXT: 'text',
-  SWITCH_DELIM: '}{',
-  CLOSE: '}',
-  REF_START: '${',
-  SUB_START: '\#{', // eslint-disable-line no-useless-escape
-  REF_SUB_START: '%{',
-  SWITCH_START: '*{',
-  FUNC_START: '^{',
-  HTML_TAG_START: '<',
-  HTML_TAG_END: '>',
-  ARGS_START: '}[',
-  ARGS_COMMA: ',',
-  ARGS_END: ']',
-  NEWLINE: '\n',
-  WORD_BREAK: '\b'
-};
-
-/**
- * All TOKENS that are not TEXT, TAG, or ARGS tokens.
- *
- * @type {Array}
- */
-const NON_TEXT_TOKENS = _.filter(_.values(TOKENS), (token) => (
-  !_.includes([
-    TOKENS.TEXT,
-    TOKENS.HTML_TAG_START,
-    TOKENS.HTML_TAG_END,
-    TOKENS.ARGS_START,
-    TOKENS.ARGS_COMMA,
-    TOKENS.ARGS_END
-  ], token)
-));
-
-/**
- * RegExp for the starting tag of allowed HTML tags.
- *
- * @type {RegExp}
- */
-const HTML_START_TAG_REGEX = /^<(\w+)>/;
-
-/**
- * RegExp for the ending tag of allowed HTML tags.
- *
- * @type {RegExp}
- */
-const HTML_END_TAG_REGEX = /^<\/(\w+)>/;
-
-/**
- * The supported HTML tags in copy.
- *
- * @type {Array}
- */
-const ALLOWED_HTML_TAGS = [
-  // cspell:disable-next-line
-  'u', 'sup', 'sub', 's', 'em', 'strong', 'p', 'span', 'div', 'ol', 'ul', 'li', 'b', 'i', 'u'
-];
-
-/**
- * The supported delimiter for subkeys.
- *
- * @type {string}
- */
-const KEY_DELIMITER = '.';
+type leafParam = SyntaxNode | string | null | { [key: string]: leafParam; };
 
 /**
  * Parses raw json copy into ASTs.
  */
 class Parser {
   /**
-   * Transforms raw copy into ASTs. Will mutate the `tree` argument.
+   * The supported tokens in copy.
    *
-   * @param  {object} tree
-   * @returns {object} The same object, with leaves parsed to ASTs.
+   * @type {object}
    */
-  static parseLeaves(tree) {
-    _.forEach(tree, (node, key) => {
+  static TOKENS = {
+    TEXT: 'text',
+    SWITCH_DELIM: '}{',
+    CLOSE: '}',
+    REF_START: '${',
+    SUB_START: '\#{', // eslint-disable-line no-useless-escape
+    REF_SUB_START: '%{',
+    SWITCH_START: '*{',
+    FUNC_START: '^{',
+    HTML_TAG_START: '<',
+    HTML_TAG_END: '>',
+    ARGS_START: '}[',
+    ARGS_COMMA: ',',
+    ARGS_END: ']',
+    NEWLINE: '\n',
+    WORD_BREAK: '\b'
+  } as const;
+
+  /**
+   * All TOKENS that are not TEXT, TAG, or ARGS tokens.
+   *
+   * @type {Array}
+   */
+  static NON_TEXT_TOKENS = _.filter(_.values(this.TOKENS), (token) => (
+    !_.includes([
+      this.TOKENS.TEXT,
+      this.TOKENS.HTML_TAG_START,
+      this.TOKENS.HTML_TAG_END,
+      this.TOKENS.ARGS_START,
+      this.TOKENS.ARGS_COMMA,
+      this.TOKENS.ARGS_END
+    ], token)
+  ));
+
+  /**
+   * RegExp for the starting tag of allowed HTML tags.
+   *
+   * @type {RegExp}
+   */
+  static HTML_START_TAG_REGEX = /^<(\w+)>/;
+
+  /**
+   * RegExp for the ending tag of allowed HTML tags.
+   *
+   * @type {RegExp}
+   */
+  static HTML_END_TAG_REGEX = /^<\/(\w+)>/;
+
+  /**
+   * The supported HTML tags in copy.
+   *
+   * @type {Array}
+   */
+  static ALLOWED_HTML_TAGS = [
+    // cspell:disable-next-line
+    'u', 'sup', 'sub', 's', 'em', 'strong', 'p', 'span', 'div', 'ol', 'ul', 'li', 'b', 'i', 'u'
+  ] as const;
+
+  /**
+   * The supported delimiter for subkeys.
+   *
+   * @type {string}
+   */
+  static KEY_DELIMITER = '.';
+
+  /**
+   * Transforms raw copy into ASTs. Will mutate the `tree` argument.
+   */
+  static parseLeaves(tree: { [key: string]: leafParam; }): { [key: string]: leafParam; } {
+    _.forEach(tree, (node: leafParam, key: string) => {
       if (SyntaxNode.isAST(node)) {
         // already parsed
       } else if (_.isPlainObject(node)) {
         // eslint-disable-next-line no-param-reassign
-        tree[key] = this.parseLeaves(node);
+        tree[key] = this.parseLeaves(node as { [key: string]: leafParam; });
       } else if (_.isString(node)) {
         const tokens = this._tokenize(node);
         // eslint-disable-next-line no-param-reassign
@@ -118,20 +117,8 @@ class Parser {
 
   /**
    * Parses a single string of copy into an AST.
-   *
-   * @param {string} key
-   * @param {string} copy
-   * @returns {SyntaxNode|null}
    */
-  static parseSingle(key, copy) {
-    if (!_.isString(copy)) {
-      ErrorHandler.handleError(
-        'Parser',
-        'Can only parse strings as copy',
-        { halt: true }
-      );
-    }
-
+  static parseSingle(key: string, copy: string): SyntaxNode | null {
     const tokens = this._tokenize(copy);
     return this._parse(tokens, key, copy);
   }
@@ -139,10 +126,9 @@ class Parser {
   /**
    * Validates the tag is an allowed HTML tag.
    *
-   * @param tag String.
    * @private
    */
-  static _validateTag(tag) {
+  static _validateTag(tag: string): never | void {
     if (!_.includes(this.ALLOWED_HTML_TAGS, tag)) {
       ErrorHandler.handleError(
         'Parser',
@@ -154,12 +140,9 @@ class Parser {
 
   /**
    * Turns a string into an array of tokens to be parsed.
-   *
-   * @param  {string} string
-   * @returns {Array} The array of tokens.
    */
-  static _tokenize(string) {
-    const tokens = [];
+  static _tokenize(string: string): Array<{ [key: string]: string | undefined; }> {
+    const tokens: Array<{ [key: string]: string; }> = [];
     let remainder = string;
     let withinArgs = false;
 
@@ -242,21 +225,18 @@ class Parser {
     return tokens;
   }
 
-  /* eslint-disable jsdoc/require-returns-check */
-
   /**
    * Parses an array of tokens into an AST.
-   *
-   * @param  {Array} tokens
-   * @param  {string} key The copy key being parsed.
-   * @param  {string} string The raw copy string that was tokenized.
-   * @returns {AST} The constructed AST.
-   * @throws If the string is not fully parsed.
    */
-  static _parse(tokens, key, string) {
+  static _parse(
+    tokens: Array<{ [key: string]: string | undefined; }>,
+    key: string,
+    string: string
+  ): SyntaxNode | null | never {
     try {
       const {
-        ast, remainingTokens
+        ast,
+        tokens: remainingTokens
       } = this._parseTokens(tokens, key);
 
       if (_.isEmpty(remainingTokens)) {
@@ -279,16 +259,18 @@ class Parser {
 
   /**
    * Returns a parsed text token.
-   *
-   * @param  {Array} tokens
-   * @returns {object} A parsed text token.
-   * @throws If a text token is not found.
    */
-  static _getTextToken(tokens) {
+  static _getTextToken(
+    tokens: Array<{ [key: string]: string | undefined; }>
+  ): {
+    text: string;
+    tokens: Array<{ [key: string]: string | undefined; }>;
+  } | never {
     const token = _.first(tokens);
+
     if (token && token.type === this.TOKENS.TEXT) {
       return {
-        text: token.text,
+        text: token.text as string,
         tokens: tokens.slice(1)
       };
     }
@@ -301,13 +283,11 @@ class Parser {
   }
 
   /**
-   * Removes a close token from the passed tokens. Errors .
-   *
-   * @param  {Array} tokens
-   * @returns {Array}
-   * @throws If a close token is not found.
+   * Removes a close token from the passed tokens. Errors.
    */
-  static _processCloseToken(tokens) {
+  static _processCloseToken(
+    tokens: Array<{ [key: string]: string | undefined; }>
+  ): Array<{ [key: string]: string | undefined; }> | never {
     const token = _.first(tokens);
     if (token && token.type === this.TOKENS.CLOSE) {
       return tokens.slice(1);
@@ -322,18 +302,28 @@ class Parser {
 
   /**
    * Recursively parses arguments from a Functional token.
-   *
-   * @param  {Array} tokens
-   * @returns {object} The parsed arguments.
-   * @throws If a token other than ARGS_COMMA or ARGS_END is found.
    */
-  static _parseArguments(tokens) {
-    let args, tokensToReturn;
+  static _parseArguments(
+    tokens: Array<{ [key: string]: string | undefined; }>
+  ): {
+    args: string[];
+    tokens: Array<{ [key: string]: string | undefined; }>;
+  } | never {
+    let args: string[];
+    let tokensToReturn: Array<{ [key: string]: string | undefined; }>;
 
     const textParsed = this._getTextToken(tokens);
     args = [textParsed.text.trim()];
 
     const token = _.first(textParsed.tokens);
+    if (!token) {
+      ErrorHandler.handleError(
+        'Parser',
+        'Unexpected end of tokens while parsing arguments',
+        { halt: true }
+      );
+    }
+
     if (token.type === this.TOKENS.ARGS_COMMA) {
       const argumentsParsed = this._parseArguments(textParsed.tokens.slice(1));
       args = _.concat(args, argumentsParsed.args);
@@ -356,37 +346,35 @@ class Parser {
 
   /**
    * Returns an absolute version of `relativeKey` built on the structure of `key`.
-   *
-   * @param {string} key The original copy key being parsed.
-   * @param {string} relativeKey The key to find relative to `key`.
-   * @returns {string} The absolute version of relativeKey.
    */
-  static _getRelativeKey(key, relativeKey) {
-    if (!_.startsWith(relativeKey, KEY_DELIMITER)) {
+  static _getRelativeKey(key: string, relativeKey: string): string {
+    if (!_.startsWith(relativeKey, this.KEY_DELIMITER)) {
       return relativeKey;
     }
 
-    const prefixRegex = new RegExp(`\\${KEY_DELIMITER}+`);
-    const keys = _.split(key, KEY_DELIMITER);
+    const prefixRegex = new RegExp(`\\${this.KEY_DELIMITER}+`);
+    const keys = _.split(key, this.KEY_DELIMITER);
     const parentSteps = Math.min(
-      relativeKey.match(prefixRegex)[0].length,
+      relativeKey.match(prefixRegex)![0].length,
       keys.length
     );
 
     return keys
       .slice(0, keys.length - parentSteps)
-      .join(KEY_DELIMITER)
+      .join(this.KEY_DELIMITER)
       .concat(relativeKey.substring(parentSteps - 1));
   }
 
   /**
    * Returns a parsed text token. Attempts to resolve relative key references.
-   *
-   * @param {string} key The original copy key being parsed.
-   * @param {Array} tokens
-   * @returns {object} A parsed text token.
    */
-  static _getReferenceKeyToken(key, tokens) {
+  static _getReferenceKeyToken(
+    key: string,
+    tokens: Array<{ [key: string]: string | undefined; }>
+  ): {
+      text: string;
+      tokens: Array<{ [key: string]: string | undefined; }>;
+  } { // eslint-disable-line @stylistic/indent
     const textParsed = this._getTextToken(tokens);
     textParsed.text = this._getRelativeKey(key, textParsed.text);
 
@@ -395,21 +383,17 @@ class Parser {
 
   /**
    * Recursively processes an array of tokens to build an AST optionally expecting an ending token.
-   *
-   * @param {Array} tokens
-   * @param {string} key The copy key being parsed.
-   * @param {boolean} [isRestricted]
-   * @param {TOKENS} [expectedEndingToken]
-   * @returns {object} Contains the AST and any remaining tokens.
-   * @throws If an ending token is expected and not found.
-   * @throws If an unsupported token is found.
    */
   static _parseTokens(
-    tokens,
-    key,
+    tokens: Array<{ [key: string]: string | undefined; }>,
+    key: string,
     isRestricted = false,
-    expectedEndingToken = this.TOKENS.SWITCH_DELIM
-  ) {
+    expectedEndingToken:
+      typeof this.TOKENS.SWITCH_DELIM | typeof this.TOKENS.HTML_TAG_END = this.TOKENS.SWITCH_DELIM
+  ): {
+    ast: SyntaxNode | null;
+    tokens: Array<{ [key: string]: string | undefined; }>;
+  } | never {
     if (_.isEmpty(tokens)) {
       if (isRestricted) {
         ErrorHandler.handleError(
@@ -425,7 +409,7 @@ class Parser {
       }
     }
 
-    const token = _.first(tokens);
+    const token = tokens[0];
     const tokensToParse = tokens.slice(1);
 
     if (isRestricted && token.type === expectedEndingToken) {
@@ -514,7 +498,12 @@ class Parser {
       const firstParsed = this._parseTokens(tokensToParse, key, true);
       const textParsed = this._getTextToken(firstParsed.tokens);
 
-      let argumentsParsed, parsedOptionalArgumentsTokens;
+      let argumentsParsed: {
+        args: string[];
+        tokens: Array<{ [key: string]: string | undefined; }>;
+      } | undefined;
+      let parsedOptionalArgumentsTokens: Array<{ [key: string]: string | undefined; }>;
+
       if (textParsed.tokens[0].type === this.TOKENS.CLOSE) {
         parsedOptionalArgumentsTokens = this._processCloseToken(textParsed.tokens);
       } else if (textParsed.tokens[0].type === this.TOKENS.ARGS_START) {
@@ -523,8 +512,8 @@ class Parser {
       }
 
       const parsed = isRestricted ?
-        this._parseTokens(parsedOptionalArgumentsTokens, key, true, expectedEndingToken) :
-        this._parseTokens(parsedOptionalArgumentsTokens, key);
+        this._parseTokens(parsedOptionalArgumentsTokens!, key, true, expectedEndingToken) :
+        this._parseTokens(parsedOptionalArgumentsTokens!, key);
 
       return {
         ast: new Functional({
@@ -536,7 +525,7 @@ class Parser {
         tokens: parsed.tokens
       };
     } else if (token.type === this.TOKENS.HTML_TAG_START) {
-      const tag = token.tag;
+      const tag = token.tag!;
       const tagParsed = this._parseTokens(tokensToParse, key, true, this.TOKENS.HTML_TAG_END);
       const parsed = isRestricted ?
         this._parseTokens(tagParsed.tokens, key, true, expectedEndingToken) :
@@ -571,23 +560,12 @@ class Parser {
     ErrorHandler.handleError('Parser', errorMessage, { halt: true });
   }
 
-  /* eslint-enable jsdoc/require-returns-check */
-
   /**
    * Parser is a singleton and will error when trying to create an instance.
-   *
-   * @throws {Error}
    */
   constructor() {
     ErrorHandler.handleError('Parser', 'Parser is a singleton', { halt: true });
   }
 }
 
-Parser.TOKENS = TOKENS;
-Parser.NON_TEXT_TOKENS = NON_TEXT_TOKENS;
-Parser.HTML_START_TAG_REGEX = HTML_START_TAG_REGEX;
-Parser.HTML_END_TAG_REGEX = HTML_END_TAG_REGEX;
-Parser.ALLOWED_HTML_TAGS = ALLOWED_HTML_TAGS;
-Parser.KEY_DELIMITER = KEY_DELIMITER;
-
-module.exports = Parser;
+export default Parser;

@@ -1,16 +1,16 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
-const Formatting = require('../Formatting/Formatting').default;
-const Functional = require('../Functional/Functional').default;
-const Newline = require('../Newline/Newline').default;
-const Reference = require('../Reference/Reference').default;
-const RefSubstitute = require('../RefSubstitute/RefSubstitute').default;
-const Substitute = require('../Substitute/Substitute').default;
-const Switch = require('../Switch/Switch').default;
-const Verbatim = require('../Verbatim/Verbatim').default;
+import Formatting from '../Formatting/Formatting';
+import Functional from '../Functional/Functional';
+import Newline from '../Newline/Newline';
+import Reference from '../Reference/Reference';
+import RefSubstitute from '../RefSubstitute/RefSubstitute';
+import Substitute from '../Substitute/Substitute';
+import Switch from '../Switch/Switch';
+import Verbatim from '../Verbatim/Verbatim';
+import WordBreak from '../WordBreak/WordBreak';
 
-const Parser = require('./Parser');
-const WordBreak = require('../WordBreak/WordBreak').default;
+import Parser from './Parser';
 
 describe('Parser', () => {
   afterEach(() => {
@@ -27,8 +27,6 @@ describe('Parser', () => {
     describe('when the tree is empty', () => {
       test('returns empty tree', () => {
         expect(Parser.parseLeaves({})).toEqual({});
-        expect(Parser.parseLeaves(null)).toEqual(null);
-        expect(Parser.parseLeaves(undefined)).toEqual(undefined);
       });
     });
 
@@ -464,6 +462,7 @@ describe('Parser', () => {
       describe('when the tree contains invalid copy', () => {
         describe('when the tree contains a boolean', () => {
           test('throws error', () => {
+            // @ts-expect-error to test runtime error handling
             expect(() => Parser.parseLeaves({ bool: true })).toThrow(
               'Parser: Values can only be other objects or strings'
             );
@@ -472,6 +471,7 @@ describe('Parser', () => {
 
         describe('when the tree contains a number', () => {
           test('throws error', () => {
+            // @ts-expect-error to test runtime error handling
             expect(() => Parser.parseLeaves({ num: 42 })).toThrow(
               'Parser: Values can only be other objects or strings'
             );
@@ -480,6 +480,7 @@ describe('Parser', () => {
 
         describe('when the tree contains an array', () => {
           test('throws error', () => {
+            // @ts-expect-error to test runtime error handling
             expect(() => Parser.parseLeaves({ arr: [] })).toThrow(
               'Parser: Values can only be other objects or strings'
             );
@@ -488,6 +489,7 @@ describe('Parser', () => {
 
         describe('when the tree contains a function', () => {
           test('throws error', () => {
+            // @ts-expect-error to test runtime error handling
             expect(() => Parser.parseLeaves({ func: _.identity })).toThrow(
               'Parser: Values can only be other objects or strings'
             );
@@ -568,26 +570,25 @@ describe('Parser', () => {
   });
 
   describe('static parseSingle', () => {
-    describe('when the value is not a string', () => {
-      test('throws an error', () => {
-        expect(() => Parser.parseSingle({})).toThrow(
-          'Parser: Can only parse strings as copy'
-        );
-      });
-    });
-
     describe('when the value is a string', () => {
       test('tokenizes and parses the string', () => {
-        const key = 'some key';
-        const result = { some: 'ast' };
-        jest.spyOn(Parser, '_parse').mockReturnValue(result);
+        const key = 'key';
+        const copy = '<b>hello</b>';
+        const tokens = [{ tag: 'b', type: '<' }, { text: 'hello', type: 'text' }, { tag: 'b', type: '>' }];
+        const result = new Formatting({
+          copy: new Verbatim({
+            sibling: null,
+            text: 'hello'
+          }),
+          sibling: null,
+          tag: 'b'
+        });
 
-        const tokens = ['some', 'tokens'];
-        jest.spyOn(Parser, '_tokenize').mockReturnValue(tokens);
+        jest.spyOn(Parser, '_tokenize');
+        expect(Parser._tokenize(copy)).toEqual(tokens);
 
-        const copy = 'some copy';
-        expect(Parser.parseSingle(key, copy)).toBe(result);
-
+        jest.spyOn(Parser, '_parse');
+        expect(Parser.parseSingle(key, copy)).toEqual(result);
         expect(Parser._tokenize).toHaveBeenCalledWith(copy);
         expect(Parser._parse).toHaveBeenCalledWith(tokens, key, copy);
       });

@@ -372,8 +372,8 @@ class Parser {
     key: string,
     tokens: Array<{ [key: string]: string | undefined; }>
   ): {
-      text: string;
-      tokens: Array<{ [key: string]: string | undefined; }>;
+    text: string;
+    tokens: Array<{ [key: string]: string | undefined; }>;
   } { // eslint-disable-line @stylistic/indent
     const textParsed = this._getTextToken(tokens);
     textParsed.text = this._getRelativeKey(key, textParsed.text);

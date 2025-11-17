@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "module": "umd",
+    "module": "es6",
+    "moduleResolution": "node",
 
     "allowJs": true,
     "checkJs": false,
@@ -10,11 +11,9 @@
     "declaration": true,
     "outDir": "./ts-output",
 
-    "module": "es6",
-    "moduleResolution": "node",
-
     "strict": true,
     "noImplicitAny": true,
+    "noImplicitOverride": true,
     "useUnknownInCatchVariables": false,
 
     "allowSyntheticDefaultImports": true,

@@ -9,12 +9,12 @@ class Verbatim extends SyntaxNode {
   /**
    * The string.
    */
-  text: string;
+  readonly text: string;
 
   /**
    * The neighboring AST.
    */
-  sibling: SyntaxNode | null;
+  readonly sibling: SyntaxNode | null;
 
   constructor(options: {
     text: string;

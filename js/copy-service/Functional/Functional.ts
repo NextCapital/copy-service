@@ -9,28 +9,28 @@ class Functional extends SyntaxNode {
    *
    * @type {string}
    */
-  key: string;
+  readonly key: string;
 
   /**
    * The neighboring AST.
    *
    * @type {SyntaxNode|null}
    */
-  sibling: SyntaxNode | null;
+  readonly sibling: SyntaxNode | null;
 
   /**
    * An AST representing the string that is passed into the function.
    *
    * @type {SyntaxNode|null}
    */
-  copy: SyntaxNode | null;
+  readonly copy: SyntaxNode | null;
 
   /**
    * The string keys corresponding to argument substitutions.
    *
    * @type {string[]}
    */
-  args: string[];
+  readonly args: string[];
 
   constructor(options: {
     key: string;

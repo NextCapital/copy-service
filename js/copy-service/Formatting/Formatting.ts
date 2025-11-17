@@ -12,21 +12,21 @@ class Formatting extends SyntaxNode {
    *
    * @type {SyntaxNode|null}
    */
-  sibling: SyntaxNode | null;
+  readonly sibling: SyntaxNode | null;
 
   /**
    * An AST representing the string displayed inside the HTML tag.
    *
    * @type {SyntaxNode|null}
    */
-  copy: SyntaxNode | null;
+  readonly copy: SyntaxNode | null;
 
   /**
    * The tag as a string.
    *
    * @type {string}
    */
-  tag: string;
+  readonly tag: string;
 
   constructor(options: {
     sibling: SyntaxNode | null;

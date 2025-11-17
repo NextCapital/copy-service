@@ -11,7 +11,7 @@ class Newline extends SyntaxNode {
    *
    * @type {SyntaxNode|null}
    */
-  sibling: SyntaxNode | null;
+  readonly sibling: SyntaxNode | null;
 
   constructor(options: {
     sibling: SyntaxNode | null;

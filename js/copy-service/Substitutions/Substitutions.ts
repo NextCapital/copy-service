@@ -6,7 +6,7 @@ import ErrorHandler from '../ErrorHandler/ErrorHandler';
  * Class for handling the substitution object/function passed into `getCopy`.
  */
 class Substitutions {
-  _substitutions: object | (() => object);
+  private _substitutions: object | (() => object);
 
   /**
    * @param {object | Function} substitutions The substitutions. If a function, it should return an

@@ -52,7 +52,7 @@ class Reference extends SyntaxNode {
   /**
    * Converts the AST node to the syntax that made it.
    */
-  toSyntax(): string {
+  override toSyntax(): string {
     return (
       `\${${this.key}}${this.safeToSyntax(this.sibling)}`
     );

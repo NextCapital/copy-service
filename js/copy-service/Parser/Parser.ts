@@ -128,7 +128,7 @@ class Parser {
    *
    * @private
    */
-  static _validateTag(tag: string): never | void {
+  private static _validateTag(tag: string): never | void {
     if (!_.includes(this.ALLOWED_HTML_TAGS, tag)) {
       ErrorHandler.handleError(
         'Parser',
@@ -141,7 +141,7 @@ class Parser {
   /**
    * Turns a string into an array of tokens to be parsed.
    */
-  static _tokenize(string: string): Array<{ [key: string]: string | undefined; }> {
+  private static _tokenize(string: string): Array<{ [key: string]: string | undefined; }> {
     const tokens: Array<{ [key: string]: string; }> = [];
     let remainder = string;
     let withinArgs = false;
@@ -228,7 +228,7 @@ class Parser {
   /**
    * Parses an array of tokens into an AST.
    */
-  static _parse(
+  private static _parse(
     tokens: Array<{ [key: string]: string | undefined; }>,
     key: string,
     string: string
@@ -260,7 +260,7 @@ class Parser {
   /**
    * Returns a parsed text token.
    */
-  static _getTextToken(
+  private static _getTextToken(
     tokens: Array<{ [key: string]: string | undefined; }>
   ): {
     text: string;
@@ -285,7 +285,7 @@ class Parser {
   /**
    * Removes a close token from the passed tokens. Errors.
    */
-  static _processCloseToken(
+  private static _processCloseToken(
     tokens: Array<{ [key: string]: string | undefined; }>
   ): Array<{ [key: string]: string | undefined; }> | never {
     const token = _.first(tokens);
@@ -303,7 +303,7 @@ class Parser {
   /**
    * Recursively parses arguments from a Functional token.
    */
-  static _parseArguments(
+  private static _parseArguments(
     tokens: Array<{ [key: string]: string | undefined; }>
   ): {
     args: string[];
@@ -347,7 +347,7 @@ class Parser {
   /**
    * Returns an absolute version of `relativeKey` built on the structure of `key`.
    */
-  static _getRelativeKey(key: string, relativeKey: string): string {
+  private static _getRelativeKey(key: string, relativeKey: string): string {
     if (!_.startsWith(relativeKey, this.KEY_DELIMITER)) {
       return relativeKey;
     }
@@ -368,7 +368,7 @@ class Parser {
   /**
    * Returns a parsed text token. Attempts to resolve relative key references.
    */
-  static _getReferenceKeyToken(
+  private static _getReferenceKeyToken(
     key: string,
     tokens: Array<{ [key: string]: string | undefined; }>
   ): {
@@ -384,7 +384,7 @@ class Parser {
   /**
    * Recursively processes an array of tokens to build an AST optionally expecting an ending token.
    */
-  static _parseTokens(
+  private static _parseTokens(
     tokens: Array<{ [key: string]: string | undefined; }>,
     key: string,
     isRestricted = false,

@@ -35,7 +35,7 @@ class Newline extends SyntaxNode {
   /**
    * Converts the AST node to the syntax that made it.
    */
-  toSyntax(): string {
+  override toSyntax(): string {
     return `\n${this.safeToSyntax(this.sibling)}`;
   }
 }

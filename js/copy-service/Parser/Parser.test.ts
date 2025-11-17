@@ -584,12 +584,17 @@ describe('Parser', () => {
           tag: 'b'
         });
 
+        // @ts-expect-error - Accessing private method for testing
         jest.spyOn(Parser, '_tokenize');
+        // @ts-expect-error - Accessing private method for testing
         expect(Parser._tokenize(copy)).toEqual(tokens);
 
+        // @ts-expect-error - Accessing private method for testing
         jest.spyOn(Parser, '_parse');
         expect(Parser.parseSingle(key, copy)).toEqual(result);
+        // @ts-expect-error - Accessing private method for testing
         expect(Parser._tokenize).toHaveBeenCalledWith(copy);
+        // @ts-expect-error - Accessing private method for testing
         expect(Parser._parse).toHaveBeenCalledWith(tokens, key, copy);
       });
     });

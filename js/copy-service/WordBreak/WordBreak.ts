@@ -24,7 +24,7 @@ class WordBreak extends SyntaxNode {
   /**
    * True if this node can be cached after evaluation.
    */
-  isCacheable(copyService: CopyService | IntlCopyService): boolean {
+  override isCacheable(copyService: CopyService | IntlCopyService): boolean {
     if (this.sibling) {
       return this.sibling.isCacheable(copyService);
     }
@@ -35,7 +35,7 @@ class WordBreak extends SyntaxNode {
   /**
    * Converts the AST node to the syntax that made it.
    */
-  toSyntax(): string {
+  override toSyntax(): string {
     return `\b${this.safeToSyntax(this.sibling)}`;
   }
 }

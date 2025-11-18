@@ -1,12 +1,28 @@
-const Substitutions = require('../Substitutions/Substitutions').default;
-const ErrorHandler = require('../ErrorHandler/ErrorHandler').default;
+import Substitutions from '../Substitutions/Substitutions';
+import ErrorHandler from '../ErrorHandler/ErrorHandler';
+import SyntaxNode from '../SyntaxNode/SyntaxNode';
+import CopyService from '../CopyService';
+import IntlCopyService from '../IntlCopyService';
+
+type AST = SyntaxNode | null;
 
 /**
  * Provides an interface to recursively generate copy evaluated with substitutions.
  *
  * @interface
  */
-class Evaluator {
+abstract class Evaluator<TResult> {
+  readonly copyService: CopyService | IntlCopyService;
+  private evaluationCache: WeakMap<SyntaxNode, TResult>;
+
+  /**
+   * When `true`, the functional ^{}{} syntax will run the configured method when evaluating.
+   * When `false`, the copy will be returned without passing it through the function.
+   *
+   * @type {boolean}
+   */
+  allowFunctional: boolean;
+
   /**
    * Takes in a copy service and provide methods for evaluating its ASTs.
    *
@@ -14,18 +30,14 @@ class Evaluator {
    * @param root0
    * @param root0.allowFunctional
    */
-  constructor(copyService, {
-    allowFunctional = true
-  } = {}) {
+  constructor(
+    copyService: CopyService | IntlCopyService,
+    {
+      allowFunctional = true
+    }: { allowFunctional?: boolean } = {}
+  ) {
     this.copyService = copyService;
     this.evaluationCache = new WeakMap();
-
-    /**
-     * When `true`, the functional ^{}{} syntax will run the configured method when evaluating.
-     * When `false`, the copy will be returned without passing it through the function.
-     *
-     * @type {boolean}
-     */
     this.allowFunctional = allowFunctional;
   }
 
@@ -35,7 +47,7 @@ class Evaluator {
    * @param {AST} ast
    * @returns {*} The evaluated copy.
    */
-  getCached(ast) {
+  getCached(ast: SyntaxNode): TResult | undefined {
     return this.evaluationCache.get(ast);
   }
 
@@ -47,7 +59,7 @@ class Evaluator {
    * @param {AST} ast Node being cached.
    * @param {*} evaluated Fully-evaluated result for the node.
    */
-  setCacheIfCacheable(ast, evaluated) {
+  setCacheIfCacheable(ast: SyntaxNode, evaluated: TResult): void {
     if (ast.isCacheable(this.copyService)) {
       this.evaluationCache.set(ast, evaluated);
     }
@@ -61,7 +73,7 @@ class Evaluator {
    * evaluating the AST. Must either be an object or a function returning the object.
    * @returns {*} The evaluated copy.
    */
-  getCopy(key, rawSubstitutions) {
+  getCopy(key: string, rawSubstitutions?: object | (() => object)): TResult {
     const substitutions = new Substitutions(rawSubstitutions);
     const ast = this.copyService.getAstForKey(key);
 
@@ -79,12 +91,7 @@ class Evaluator {
    * the AST.
    * @returns {*} The evaluated copy.
    */
-  evalAST() {
-    this._handleError(
-      'evalAST is abstract and must be implemented by the extending class',
-      { halt: true }
-    );
-  }
+  abstract evalAST(copyPrefix: TResult, ast: AST, substitutions: Substitutions): TResult;
 
   /**
    * Returns the default copy (usually an empty string).
@@ -92,12 +99,7 @@ class Evaluator {
    * @abstract
    * @returns {*}
    */
-  getInitialResult() {
-    this._handleError(
-      'getInitialResult is abstract and must be implemented by the extending class',
-      { halt: true }
-    );
-  }
+  abstract getInitialResult(): TResult;
   /* eslint-enable jsdoc/check-param-names */
 
   /**
@@ -105,9 +107,9 @@ class Evaluator {
    *
    * @param {...any} args
    */
-  _handleError(...args) {
+  private _handleError(...args: unknown[]): void {
     ErrorHandler.handleError(this.constructor.name, ...args);
   }
 }
 
-module.exports = Evaluator;
+export default Evaluator;

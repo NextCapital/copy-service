@@ -24,14 +24,6 @@ type Token =
   | { type: Exclude<TokenValues, typeof Parser.TOKENS.TEXT | typeof Parser.TOKENS.HTML_TAG_START | typeof Parser.TOKENS.HTML_TAG_END>; };
 
 /**
- * Helper function for exhaustive type checking.
- * If this function is ever reached, it indicates an unhandled case in a type union.
- */
-function assertNever(value: never): never {
-  throw new Error(`Unexpected value: ${JSON.stringify(value)}`);
-}
-
-/**
  * Helper to throw an error and signal to TypeScript that code never returns.
  * Used when ErrorHandler.handleError with halt: true doesn't narrow types properly.
  */

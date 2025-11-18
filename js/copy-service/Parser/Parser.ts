@@ -24,15 +24,6 @@ type Token =
   | { type: Exclude<TokenValues, typeof Parser.TOKENS.TEXT | typeof Parser.TOKENS.HTML_TAG_START | typeof Parser.TOKENS.HTML_TAG_END>; };
 
 /**
- * Helper to throw an error and signal to TypeScript that code never returns.
- * Used when ErrorHandler.handleError with halt: true doesn't narrow types properly.
- */
-function throwUnexpectedToken(message: string): never {
-  ErrorHandler.handleError('Parser', message, { halt: true });
-  throw new Error(message); // Fallback to ensure never return type
-}
-
-/**
  * Parses raw json copy into ASTs.
  */
 class Parser {
@@ -138,6 +129,15 @@ class Parser {
   static parseSingle(key: string, copy: string): SyntaxNode | null {
     const tokens = this._tokenize(copy);
     return this._parse(tokens, key, copy);
+  }
+
+  /**
+   * Helper to throw an error and signal to TypeScript that code never returns.
+   * Used when ErrorHandler.handleError with halt: true doesn't narrow types properly.
+   */
+  private static throwUnexpectedToken(message: string): never {
+    ErrorHandler.handleError('Parser', message, { halt: true });
+    throw new Error(message); // Fallback to ensure never return type
   }
 
   /**
@@ -372,14 +372,14 @@ class Parser {
     const prefixRegex = new RegExp(`\\${this.KEY_DELIMITER}+`);
     const keys = _.split(key, this.KEY_DELIMITER);
     const match = relativeKey.match(prefixRegex);
-    
+
     if (!match) {
       // This should never happen given the _.startsWith check above, but be defensive
-      throwUnexpectedToken(
+      this.throwUnexpectedToken(
         `Relative key '${relativeKey}' starts with delimiter but doesn't match prefix pattern`
       );
     }
-    
+
     const parentSteps = Math.min(
       match[0].length,
       keys.length
@@ -587,7 +587,8 @@ class Parser {
     const errorMessage = isRestricted ?
       `Unexpected restricted token ${token.type}` :
       `Unexpected token ${token.type}`;
-    throwUnexpectedToken(errorMessage);
+
+    this.throwUnexpectedToken(errorMessage);
   }
 
   /**

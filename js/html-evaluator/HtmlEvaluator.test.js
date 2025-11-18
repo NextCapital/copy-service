@@ -3,7 +3,7 @@ const {
   CopyService
 } = require('../index.js');
 
-const PlainTextEvaluator = require('../plain-text-evaluator/PlainTextEvaluator');
+const PlainTextEvaluator = require('../plain-text-evaluator/PlainTextEvaluator').default;
 const HtmlEvaluator = require('./HtmlEvaluator');
 
 describe('HTMLEvaluator', () => {

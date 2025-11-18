@@ -15,7 +15,7 @@ const ErrorHandler = require('./copy-service/ErrorHandler/ErrorHandler').default
 const CopyService = require('./copy-service/CopyService');
 const IntlCopyService = require('./copy-service/IntlCopyService');
 
-const PlainTextEvaluator = require('./plain-text-evaluator/PlainTextEvaluator');
+const PlainTextEvaluator = require('./plain-text-evaluator/PlainTextEvaluator').default;
 const HtmlEvaluator = require('./html-evaluator/HtmlEvaluator');
 const ReactEvaluator = require('./react-evaluator/ReactEvaluator');
 

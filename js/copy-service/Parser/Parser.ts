@@ -15,6 +15,14 @@ import ErrorHandler from '../ErrorHandler/ErrorHandler';
 
 type leafParam = SyntaxNode | string | null | { [key: string]: leafParam; };
 
+type TokenValues = typeof Parser.TOKENS[keyof typeof Parser.TOKENS];
+
+type Token =
+  | { type: typeof Parser.TOKENS.TEXT; text: string; }
+  | { type: typeof Parser.TOKENS.HTML_TAG_START; tag: string; }
+  | { type: typeof Parser.TOKENS.HTML_TAG_END; tag: string; }
+  | { type: Exclude<TokenValues, typeof Parser.TOKENS.TEXT | typeof Parser.TOKENS.HTML_TAG_START | typeof Parser.TOKENS.HTML_TAG_END>; };
+
 /**
  * Parses raw json copy into ASTs.
  */
@@ -141,8 +149,8 @@ class Parser {
   /**
    * Turns a string into an array of tokens to be parsed.
    */
-  private static _tokenize(string: string): Array<{ [key: string]: string | undefined; }> {
-    const tokens: Array<{ [key: string]: string; }> = [];
+  private static _tokenize(string: string): Token[] {
+    const tokens: Token[] = [];
     let remainder = string;
     let withinArgs = false;
 
@@ -160,7 +168,7 @@ class Parser {
               last.text = last.text.substr(0, last.text.length - 1) + remainder[0];
               remainder = remainder.slice(1);
             } else {
-              tokens.push({ type: nonTextToken });
+              tokens.push({ type: nonTextToken } as Token);
               remainder = remainder.slice(nonTextToken.length);
             }
 
@@ -229,7 +237,7 @@ class Parser {
    * Parses an array of tokens into an AST.
    */
   private static _parse(
-    tokens: Array<{ [key: string]: string | undefined; }>,
+    tokens: Token[],
     key: string,
     string: string
   ): SyntaxNode | null | never {
@@ -261,10 +269,10 @@ class Parser {
    * Returns a parsed text token.
    */
   private static _getTextToken(
-    tokens: Array<{ [key: string]: string | undefined; }>
+    tokens: Token[]
   ): {
     text: string;
-    tokens: Array<{ [key: string]: string | undefined; }>;
+    tokens: Token[];
   } | never {
     const token = _.first(tokens);
 
@@ -286,8 +294,8 @@ class Parser {
    * Removes a close token from the passed tokens. Errors.
    */
   private static _processCloseToken(
-    tokens: Array<{ [key: string]: string | undefined; }>
-  ): Array<{ [key: string]: string | undefined; }> | never {
+    tokens: Token[]
+  ): Token[] | never {
     const token = _.first(tokens);
     if (token && token.type === this.TOKENS.CLOSE) {
       return tokens.slice(1);
@@ -304,13 +312,13 @@ class Parser {
    * Recursively parses arguments from a Functional token.
    */
   private static _parseArguments(
-    tokens: Array<{ [key: string]: string | undefined; }>
+    tokens: Token[]
   ): {
     args: string[];
-    tokens: Array<{ [key: string]: string | undefined; }>;
+    tokens: Token[];
   } | never {
     let args: string[];
-    let tokensToReturn: Array<{ [key: string]: string | undefined; }>;
+    let tokensToReturn: Token[];
 
     const textParsed = this._getTextToken(tokens);
     args = [textParsed.text.trim()];
@@ -370,10 +378,10 @@ class Parser {
    */
   private static _getReferenceKeyToken(
     key: string,
-    tokens: Array<{ [key: string]: string | undefined; }>
+    tokens: Token[]
   ): {
     text: string;
-    tokens: Array<{ [key: string]: string | undefined; }>;
+    tokens: Token[];
   } { // eslint-disable-line @stylistic/indent
     const textParsed = this._getTextToken(tokens);
     textParsed.text = this._getRelativeKey(key, textParsed.text);
@@ -385,14 +393,14 @@ class Parser {
    * Recursively processes an array of tokens to build an AST optionally expecting an ending token.
    */
   private static _parseTokens(
-    tokens: Array<{ [key: string]: string | undefined; }>,
+    tokens: Token[],
     key: string,
     isRestricted = false,
     expectedEndingToken:
       typeof this.TOKENS.SWITCH_DELIM | typeof this.TOKENS.HTML_TAG_END = this.TOKENS.SWITCH_DELIM
   ): {
     ast: SyntaxNode | null;
-    tokens: Array<{ [key: string]: string | undefined; }>;
+    tokens: Token[];
   } | never {
     if (_.isEmpty(tokens)) {
       if (isRestricted) {
@@ -500,9 +508,9 @@ class Parser {
 
       let argumentsParsed: {
         args: string[];
-        tokens: Array<{ [key: string]: string | undefined; }>;
+        tokens: Token[];
       } | undefined;
-      let parsedOptionalArgumentsTokens: Array<{ [key: string]: string | undefined; }>;
+      let parsedOptionalArgumentsTokens: Token[];
 
       if (textParsed.tokens[0].type === this.TOKENS.CLOSE) {
         parsedOptionalArgumentsTokens = this._processCloseToken(textParsed.tokens);

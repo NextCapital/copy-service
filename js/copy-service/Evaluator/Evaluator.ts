@@ -74,7 +74,7 @@ abstract class Evaluator<TResult> {
    * @returns {*} The evaluated copy.
    */
   getCopy(key: string, rawSubstitutions?: object | (() => object)): TResult {
-    const substitutions = new Substitutions(rawSubstitutions);
+    const substitutions = new Substitutions(rawSubstitutions || {});
     const ast = this.copyService.getAstForKey(key);
 
     return this.evalAST(this.getInitialResult(), ast, substitutions);
@@ -107,8 +107,8 @@ abstract class Evaluator<TResult> {
    *
    * @param {...any} args
    */
-  private _handleError(...args: unknown[]): void {
-    ErrorHandler.handleError(this.constructor.name, ...args);
+  private _handleError(error: string, options?: { halt?: boolean }): void {
+    ErrorHandler.handleError(this.constructor.name, error, options);
   }
 }
 

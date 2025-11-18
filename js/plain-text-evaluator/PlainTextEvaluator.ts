@@ -1,15 +1,17 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
-const Evaluator = require('../copy-service/Evaluator/Evaluator').default;
-const Formatting = require('../copy-service/Formatting/Formatting').default;
-const Functional = require('../copy-service/Functional/Functional').default;
-const Newline = require('../copy-service/Newline/Newline').default;
-const Reference = require('../copy-service/Reference/Reference').default;
-const RefSubstitute = require('../copy-service/RefSubstitute/RefSubstitute').default;
-const Substitute = require('../copy-service/Substitute/Substitute').default;
-const Switch = require('../copy-service/Switch/Switch').default;
-const Verbatim = require('../copy-service/Verbatim/Verbatim').default;
-const WordBreak = require('../copy-service/WordBreak/WordBreak').default;
+import Evaluator from '../copy-service/Evaluator/Evaluator';
+import Formatting from '../copy-service/Formatting/Formatting';
+import Functional from '../copy-service/Functional/Functional';
+import Newline from '../copy-service/Newline/Newline';
+import Reference from '../copy-service/Reference/Reference';
+import RefSubstitute from '../copy-service/RefSubstitute/RefSubstitute';
+import Substitute from '../copy-service/Substitute/Substitute';
+import Substitutions from '../copy-service/Substitutions/Substitutions';
+import Switch from '../copy-service/Switch/Switch';
+import SyntaxNode from '../copy-service/SyntaxNode/SyntaxNode';
+import Verbatim from '../copy-service/Verbatim/Verbatim';
+import WordBreak from '../copy-service/WordBreak/WordBreak';
 
 /**
  * Provides an interface that can register copy, determine the existence of copy, and generate copy
@@ -17,19 +19,12 @@ const WordBreak = require('../copy-service/WordBreak/WordBreak').default;
  *
  * @interface
  */
-class PlainTextEvaluator extends Evaluator {
+class PlainTextEvaluator extends Evaluator<string> {
   /* eslint-disable @stylistic/brace-style */
   /**
    * Evaluates the AST with given substitutions.
-   *
-   * @param  {string} copyPrefix    The copy string being recursively built.
-   * @param  {SyntaxNode|null} ast
-   *                                The AST to be evaluated. This AST must be constructed by Parser.
-   * @param  {object} substitutions An object containing substitutions for keys specified in the
-   *                                AST.
-   * @returns {string}               The evaluated copy.
    */
-  evalAST(copyPrefix, ast, substitutions) {
+  evalAST(copyPrefix: string, ast: SyntaxNode | null, substitutions: Substitutions): string {
     if (!ast) {
       return copyPrefix;
     }
@@ -121,39 +116,31 @@ class PlainTextEvaluator extends Evaluator {
   /**
    * Allows `HtmlEvaluator` to set this to true, enabling formatting tags to appear in the
    * result.
-   *
-   * @returns {boolean}
    */
-  allowsFormattingTags() {
+  allowsFormattingTags(): boolean {
     return false;
   }
 
   /**
-   * The output for the `Newline` AST not. Overridden by `HtmlEvaluator`.
-   *
-   * @returns {string}
+   * The output for the `Newline` AST node. Overridden by `HtmlEvaluator`.
    */
-  getNewline() {
+  getNewline(): string {
     return '\n';
   }
 
   /**
    * The output for the `WordBreak` AST node. Overridden by `HtmlEvaluator`.
-   *
-   * @returns {string}
    */
-  getWordBreak() {
+  getWordBreak(): string {
     return '';
   }
 
   /**
    * Returns the default copy (usually an empty string).
-   *
-   * @returns {*}
    */
-  getInitialResult() {
+  getInitialResult(): string {
     return '';
   }
 }
 
-module.exports = PlainTextEvaluator;
+export default PlainTextEvaluator;

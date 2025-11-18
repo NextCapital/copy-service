@@ -6,18 +6,22 @@ import SyntaxNode from '../SyntaxNode/SyntaxNode';
 
 type AST = SyntaxNode | null;
 
+interface TestEvaluatorWithPrivate {
+  _handleError: (error: string, options?: { halt?: boolean; }) => void;
+}
+
 // Concrete test implementation of abstract Evaluator
 class TestEvaluator extends Evaluator<string> {
-  evalAST(copyPrefix: string, ast: AST, substitutions: Substitutions): string {
-    this._handleError(
+  override evalAST(): string {
+    (this as unknown as TestEvaluatorWithPrivate)._handleError(
       'evalAST is abstract and must be implemented by the extending class',
       { halt: true }
     );
     return '';
   }
 
-  getInitialResult(): string {
-    this._handleError(
+  override getInitialResult(): string {
+    (this as unknown as TestEvaluatorWithPrivate)._handleError(
       'getInitialResult is abstract and must be implemented by the extending class',
       { halt: true }
     );
@@ -61,7 +65,9 @@ describe('Evaluator', () => {
       const ast = { an: 'ast' } as unknown as SyntaxNode;
 
       // Access private property for testing
-      (evaluator as any).evaluationCache.set(ast, result);
+      (evaluator as TestEvaluator & {
+        evaluationCache: WeakMap<SyntaxNode, string>;
+      }).evaluationCache.set(ast, result);
       expect(evaluator.getCached(ast)).toBe(result);
     });
   });
@@ -136,10 +142,15 @@ describe('Evaluator', () => {
 
   describe('_handleError', () => {
     test('defers to ErrorHandler.handleError', () => {
-      const args = ['some error message', { halt: true }];
+      const errorMessage = 'some error message';
+      const errorOptions = { halt: true };
       jest.spyOn(ErrorHandler, 'handleError').mockImplementation();
-      (evaluator as any)._handleError(...args);
-      expect(ErrorHandler.handleError).toHaveBeenCalledWith(TestEvaluator.name, ...args);
+      (evaluator as unknown as TestEvaluatorWithPrivate)._handleError(errorMessage, errorOptions);
+      expect(ErrorHandler.handleError).toHaveBeenCalledWith(
+        TestEvaluator.name,
+        errorMessage,
+        errorOptions
+      );
     });
   });
 });

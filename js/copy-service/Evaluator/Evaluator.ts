@@ -13,6 +13,7 @@ type AST = SyntaxNode | null;
  */
 abstract class Evaluator<TResult> {
   readonly copyService: CopyService | IntlCopyService;
+
   private evaluationCache: WeakMap<SyntaxNode, TResult>;
 
   /**
@@ -27,14 +28,14 @@ abstract class Evaluator<TResult> {
    * Takes in a copy service and provide methods for evaluating its ASTs.
    *
    * @param {CopyService|IntlCopyService} copyService
-   * @param root0
-   * @param root0.allowFunctional
+   * @param {object} options
+   * @param {boolean} options.allowFunctional
    */
   constructor(
     copyService: CopyService | IntlCopyService,
     {
       allowFunctional = true
-    }: { allowFunctional?: boolean } = {}
+    }: { allowFunctional?: boolean; } = {}
   ) {
     this.copyService = copyService;
     this.evaluationCache = new WeakMap();
@@ -80,7 +81,6 @@ abstract class Evaluator<TResult> {
     return this.evalAST(this.getInitialResult(), ast, substitutions);
   }
 
-  /* eslint-disable jsdoc/check-param-names */
   /**
    * Evaluates the AST with given substitutions.
    *
@@ -100,14 +100,15 @@ abstract class Evaluator<TResult> {
    * @returns {*}
    */
   abstract getInitialResult(): TResult;
-  /* eslint-enable jsdoc/check-param-names */
 
   /**
    * Defers to ErrorHandler.handleError with the constructor name and any args.
    *
-   * @param {...any} args
+   * @param {string} error
+   * @param {object} options
+   * @param {boolean} options.halt
    */
-  private _handleError(error: string, options?: { halt?: boolean }): void {
+  private _handleError(error: string, options?: { halt?: boolean; }): void {
     ErrorHandler.handleError(this.constructor.name, error, options);
   }
 }

@@ -13,7 +13,7 @@ import WordBreak from '../WordBreak/WordBreak';
 
 import ErrorHandler from '../ErrorHandler/ErrorHandler';
 
-type leafParam = SyntaxNode | string | null | { [key: string]: leafParam; };
+type LeafParam = SyntaxNode | string | null | { [key: string]: LeafParam; };
 
 type TokenValues = typeof Parser.TOKENS[keyof typeof Parser.TOKENS];
 
@@ -100,13 +100,13 @@ class Parser {
   /**
    * Transforms raw copy into ASTs. Will mutate the `tree` argument.
    */
-  static parseLeaves(tree: { [key: string]: leafParam; }): { [key: string]: leafParam; } {
-    _.forEach(tree, (node: leafParam, key: string) => {
+  static parseLeaves(tree: { [key: string]: LeafParam; }): { [key: string]: LeafParam; } {
+    _.forEach(tree, (node: LeafParam, key: string) => {
       if (SyntaxNode.isAST(node)) {
         // already parsed
       } else if (_.isPlainObject(node)) {
         // eslint-disable-next-line no-param-reassign
-        tree[key] = this.parseLeaves(node as { [key: string]: leafParam; });
+        tree[key] = this.parseLeaves(node as { [key: string]: LeafParam; });
       } else if (_.isString(node)) {
         const tokens = this._tokenize(node);
         // eslint-disable-next-line no-param-reassign

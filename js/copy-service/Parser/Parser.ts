@@ -24,6 +24,14 @@ type Token =
   | { type: Exclude<TokenValues, typeof Parser.TOKENS.TEXT | typeof Parser.TOKENS.HTML_TAG_START | typeof Parser.TOKENS.HTML_TAG_END>; };
 
 /**
+ * Helper function for exhaustive type checking.
+ * If this function is ever reached, it indicates an unhandled case in a type union.
+ */
+function assertNever(value: never): never {
+  throw new Error(`Unexpected value: ${JSON.stringify(value)}`);
+}
+
+/**
  * Parses raw json copy into ASTs.
  */
 class Parser {
@@ -562,6 +570,10 @@ class Parser {
       };
     }
 
+    // Unhandled token types in this context (intentionally errors):
+    // - SWITCH_DELIM, CLOSE: Should be consumed by specific parsing methods
+    // - ARGS_START, ARGS_COMMA, ARGS_END: Should be consumed by _parseArguments
+    // - HTML_TAG_END: Should be consumed when parsing HTML tags (handled above when restricted)
     const errorMessage = isRestricted ?
       `Unexpected restricted token ${token.type}` :
       `Unexpected token ${token.type}`;

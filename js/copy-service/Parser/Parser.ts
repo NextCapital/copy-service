@@ -32,6 +32,15 @@ function assertNever(value: never): never {
 }
 
 /**
+ * Helper to throw an error and signal to TypeScript that code never returns.
+ * Used when ErrorHandler.handleError with halt: true doesn't narrow types properly.
+ */
+function throwUnexpectedToken(message: string): never {
+  ErrorHandler.handleError('Parser', message, { halt: true });
+  throw new Error(message); // Fallback to ensure never return type
+}
+
+/**
  * Parses raw json copy into ASTs.
  */
 class Parser {
@@ -577,7 +586,7 @@ class Parser {
     const errorMessage = isRestricted ?
       `Unexpected restricted token ${token.type}` :
       `Unexpected token ${token.type}`;
-    ErrorHandler.handleError('Parser', errorMessage, { halt: true });
+    throwUnexpectedToken(errorMessage);
   }
 
   /**

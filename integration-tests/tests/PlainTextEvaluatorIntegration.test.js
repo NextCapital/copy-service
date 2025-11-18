@@ -1,5 +1,5 @@
 const { CopyService } = require('../../js/index.js');
-const PlainTextEvaluator = require('../../js/plain-text-evaluator/PlainTextEvaluator');
+const PlainTextEvaluator = require('../../js/plain-text-evaluator/PlainTextEvaluator').default;
 
 const copy = require('../copy');
 

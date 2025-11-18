@@ -108,7 +108,9 @@ abstract class Evaluator<T> {
    * @param {object} options
    * @param {boolean} options.halt
    */
-  private _handleError(error: string, options?: { halt?: boolean; }): void {
+  private _handleError(error: string, options?: { halt: false; } | object): void;
+  private _handleError(error: string, options?: { halt: true; }): never;
+  private _handleError(error: string, options?: { halt?: boolean; }): void | never {
     ErrorHandler.handleError(this.constructor.name, error, options);
   }
 }

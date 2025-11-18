@@ -202,7 +202,7 @@ class Parser {
 
       // Special processing for TAG and ARGS tags and default processing for TEXT tag
       const last = _.last(tokens);
-      let regexMatch = null;
+      let regexMatch: RegExpMatchArray | null = null;
 
       if (isArgsStart) {
         tokens.push({ type: this.TOKENS.ARGS_START });

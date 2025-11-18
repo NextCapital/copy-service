@@ -17,11 +17,8 @@ describe('Parser', () => {
     jest.restoreAllMocks();
   });
 
-  describe('constructor', () => {
-    test('throws error', () => {
-      expect(() => new Parser()).toThrow('Parser: Parser is a singleton');
-    });
-  });
+  // Note: Parser constructor is private, preventing instantiation at compile-time.
+  // No runtime test needed as TypeScript enforces this constraint.
 
   describe('static parseLeaves', () => {
     describe('when the tree is empty', () => {

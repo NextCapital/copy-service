@@ -581,10 +581,10 @@ class Parser {
   }
 
   /**
-   * Parser is a singleton and will error when trying to create an instance.
+   * Parser is a singleton. The constructor is private to prevent instantiation.
    */
-  constructor() {
-    ErrorHandler.handleError('Parser', 'Parser is a singleton', { halt: true });
+  private constructor() {
+    // Private constructor prevents instantiation
   }
 }
 

@@ -11,9 +11,10 @@ import {
   CopyService,
   WordBreak,
   ErrorHandler
-} from '../index.js';
+} from '../index';
 
 import PlainTextEvaluator from './PlainTextEvaluator';
+import SyntaxNode from '../copy-service/SyntaxNode/SyntaxNode';
 
 describe('PlainTextEvaluator', () => {
   let evaluator: PlainTextEvaluator;
@@ -285,12 +286,12 @@ describe('PlainTextEvaluator', () => {
           });
 
           test('logs error', () => {
-            evaluator.evalAST('', {} as any, substitutions);
+            evaluator.evalAST('', {} as unknown as SyntaxNode, substitutions);
             expect(ErrorHandler.handleError).toHaveBeenCalledWith('PlainTextEvaluator', 'Unknown node detected');
           });
 
           test('returns empty string', () => {
-            expect(evaluator.evalAST('', {} as any, substitutions)).toBe('');
+            expect(evaluator.evalAST('', {} as unknown as SyntaxNode, substitutions)).toBe('');
           });
         });
       });

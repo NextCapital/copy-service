@@ -136,7 +136,7 @@ class Parser {
    *
    * @private
    */
-  private static _validateTag(tag: string): never | void {
+  private static _validateTag(tag: string): void {
     if (!_.includes(this.ALLOWED_HTML_TAGS, tag)) {
       ErrorHandler.handleError(
         'Parser',
@@ -240,7 +240,7 @@ class Parser {
     tokens: Token[],
     key: string,
     string: string
-  ): SyntaxNode | null | never {
+  ): SyntaxNode | null {
     try {
       const {
         ast,
@@ -273,7 +273,7 @@ class Parser {
   ): {
     text: string;
     tokens: Token[];
-  } | never {
+  } {
     const token = _.first(tokens);
 
     if (token && token.type === this.TOKENS.TEXT) {
@@ -295,7 +295,7 @@ class Parser {
    */
   private static _processCloseToken(
     tokens: Token[]
-  ): Token[] | never {
+  ): Token[] {
     const token = _.first(tokens);
     if (token && token.type === this.TOKENS.CLOSE) {
       return tokens.slice(1);
@@ -316,7 +316,7 @@ class Parser {
   ): {
     args: string[];
     tokens: Token[];
-  } | never {
+  } {
     let args: string[];
     let tokensToReturn: Token[];
 
@@ -401,7 +401,7 @@ class Parser {
   ): {
     ast: SyntaxNode | null;
     tokens: Token[];
-  } | never {
+  } {
     if (_.isEmpty(tokens)) {
       if (isRestricted) {
         ErrorHandler.handleError(

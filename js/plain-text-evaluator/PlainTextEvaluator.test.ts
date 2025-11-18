@@ -1,4 +1,4 @@
-const {
+import {
   Formatting,
   Functional,
   Newline,
@@ -10,12 +10,14 @@ const {
   Substitutions,
   CopyService,
   WordBreak
-} = require('../index.js');
+} from '../index.js';
 
-const PlainTextEvaluator = require('./PlainTextEvaluator');
+import PlainTextEvaluator from './PlainTextEvaluator';
 
 describe('PlainTextEvaluator', () => {
-  let evaluator, copyService, substitutions;
+  let evaluator: PlainTextEvaluator;
+  let copyService: CopyService;
+  let substitutions: Substitutions;
 
   beforeEach(() => {
     copyService = new CopyService();

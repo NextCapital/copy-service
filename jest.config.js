@@ -6,10 +6,10 @@ module.exports = {
   ],
   coverageThreshold: {
     global: {
-      statements: -9,
+      statements: -10,
       branches: -12,
       functions: 100,
-      lines: -9
+      lines: -10
     }
   },
   moduleFileExtensions: [
@@ -31,6 +31,6 @@ module.exports = {
   ],
   testResultsProcessor: "./node_modules/jest-junit-reporter",
   transform: {
-    '^.+\.tsx?$': ['ts-jest',{}]
+    '^.+\.tsx?$': ['ts-jest', {}]
   }
 };

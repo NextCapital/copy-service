@@ -379,8 +379,17 @@ class Parser {
 
     const prefixRegex = new RegExp(`\\${this.KEY_DELIMITER}+`);
     const keys = _.split(key, this.KEY_DELIMITER);
+    const match = relativeKey.match(prefixRegex);
+    
+    if (!match) {
+      // This should never happen given the _.startsWith check above, but be defensive
+      throwUnexpectedToken(
+        `Relative key '${relativeKey}' starts with delimiter but doesn't match prefix pattern`
+      );
+    }
+    
     const parentSteps = Math.min(
-      relativeKey.match(prefixRegex)![0].length,
+      match[0].length,
       keys.length
     );
 

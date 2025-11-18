@@ -11,10 +11,10 @@ type AST = SyntaxNode | null;
  *
  * @interface
  */
-abstract class Evaluator<TResult> {
+abstract class Evaluator<T> {
   readonly copyService: CopyService | IntlCopyService;
 
-  private evaluationCache: WeakMap<SyntaxNode, TResult>;
+  private evaluationCache: WeakMap<SyntaxNode, T>;
 
   /**
    * When `true`, the functional ^{}{} syntax will run the configured method when evaluating.
@@ -48,7 +48,7 @@ abstract class Evaluator<TResult> {
    * @param {AST} ast
    * @returns {*} The evaluated copy.
    */
-  getCached(ast: SyntaxNode): TResult | undefined {
+  getCached(ast: SyntaxNode): T | undefined {
     return this.evaluationCache.get(ast);
   }
 
@@ -60,7 +60,7 @@ abstract class Evaluator<TResult> {
    * @param {AST} ast Node being cached.
    * @param {*} evaluated Fully-evaluated result for the node.
    */
-  setCacheIfCacheable(ast: SyntaxNode, evaluated: TResult): void {
+  setCacheIfCacheable(ast: SyntaxNode, evaluated: T): void {
     if (ast.isCacheable(this.copyService)) {
       this.evaluationCache.set(ast, evaluated);
     }
@@ -74,7 +74,7 @@ abstract class Evaluator<TResult> {
    * evaluating the AST. Must either be an object or a function returning the object.
    * @returns {*} The evaluated copy.
    */
-  getCopy(key: string, rawSubstitutions?: object | (() => object)): TResult {
+  getCopy(key: string, rawSubstitutions?: object | (() => object)): T {
     const substitutions = new Substitutions(rawSubstitutions || {});
     const ast = this.copyService.getAstForKey(key);
 
@@ -91,7 +91,7 @@ abstract class Evaluator<TResult> {
    * the AST.
    * @returns {*} The evaluated copy.
    */
-  abstract evalAST(copyPrefix: TResult, ast: AST, substitutions: Substitutions): TResult;
+  abstract evalAST(copyPrefix: T, ast: AST, substitutions: Substitutions): T;
 
   /**
    * Returns the default copy (usually an empty string).
@@ -99,7 +99,7 @@ abstract class Evaluator<TResult> {
    * @abstract
    * @returns {*}
    */
-  abstract getInitialResult(): TResult;
+  abstract getInitialResult(): T;
 
   /**
    * Defers to ErrorHandler.handleError with the constructor name and any args.

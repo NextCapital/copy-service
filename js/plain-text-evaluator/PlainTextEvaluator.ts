@@ -1,5 +1,6 @@
 import _ from 'lodash';
 
+import ErrorHandler from '../copy-service/ErrorHandler/ErrorHandler';
 import Evaluator from '../copy-service/Evaluator/Evaluator';
 import Formatting from '../copy-service/Formatting/Formatting';
 import Functional from '../copy-service/Functional/Functional';
@@ -61,7 +62,7 @@ class PlainTextEvaluator extends Evaluator<string> {
     } else if (ast instanceof RefSubstitute) {
       const copyKey = substitutions.get(ast.key);
       copy = this.evalAST(
-        this.getInitialResult(), this.copyService.getAstForKey(copyKey), substitutions
+        this.getInitialResult(), this.copyService.getAstForKey(copyKey as string), substitutions
       );
     }
     // Check the decider provided in substitutions, pick the correct branch, evaluate that branch,
@@ -84,7 +85,7 @@ class PlainTextEvaluator extends Evaluator<string> {
       let text = this.evalAST(this.getInitialResult(), ast.copy, substitutions);
 
       if (this.allowFunctional && method && _.isFunction(method)) {
-        text = method(text, ...ast.args);
+        text = String((method as (...args: unknown[]) => unknown)(text, ...ast.args));
       }
 
       copy = text;
@@ -101,7 +102,7 @@ class PlainTextEvaluator extends Evaluator<string> {
     }
     // Log error and stop evaluating
     else {
-      this._handleError('Unknown node detected');
+      ErrorHandler.handleError(this.constructor.name, 'Unknown node detected');
       return this.getInitialResult();
     }
 

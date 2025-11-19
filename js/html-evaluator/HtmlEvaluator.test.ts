@@ -1,13 +1,15 @@
-const {
+import {
   Substitutions,
   CopyService
-} = require('../index.js');
+} from '../index';
 
-const PlainTextEvaluator = require('../plain-text-evaluator/PlainTextEvaluator').default;
-const HtmlEvaluator = require('./HtmlEvaluator');
+import PlainTextEvaluator from '../plain-text-evaluator/PlainTextEvaluator';
+import HtmlEvaluator from './HtmlEvaluator';
 
 describe('HTMLEvaluator', () => {
-  let evaluator, copyService, substitutions;
+  let evaluator: HtmlEvaluator;
+  let copyService: CopyService;
+  let substitutions: Substitutions;
 
   beforeEach(() => {
     copyService = new CopyService();

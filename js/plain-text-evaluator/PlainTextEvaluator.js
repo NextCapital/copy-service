@@ -1,6 +1,6 @@
 const _ = require('lodash');
 
-const Evaluator = require('../copy-service/Evaluator/Evaluator');
+const Evaluator = require('../copy-service/Evaluator/Evaluator').default;
 const Formatting = require('../copy-service/Formatting/Formatting').default;
 const Functional = require('../copy-service/Functional/Functional').default;
 const Newline = require('../copy-service/Newline/Newline').default;

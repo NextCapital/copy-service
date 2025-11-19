@@ -1,6 +1,5 @@
 import _ from 'lodash';
 
-import ErrorHandler from '../copy-service/ErrorHandler/ErrorHandler';
 import Evaluator from '../copy-service/Evaluator/Evaluator';
 import Formatting from '../copy-service/Formatting/Formatting';
 import Functional from '../copy-service/Functional/Functional';
@@ -102,7 +101,7 @@ class PlainTextEvaluator extends Evaluator<string> {
     }
     // Log error and stop evaluating
     else {
-      ErrorHandler.handleError(this.constructor.name, 'Unknown node detected');
+      this._handleError('Unknown node detected');
       return this.getInitialResult();
     }
 

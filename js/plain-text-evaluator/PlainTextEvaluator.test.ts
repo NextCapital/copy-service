@@ -9,8 +9,7 @@ import {
   Verbatim,
   Substitutions,
   CopyService,
-  WordBreak,
-  ErrorHandler
+  WordBreak
 } from '../index';
 
 import PlainTextEvaluator from './PlainTextEvaluator';
@@ -282,12 +281,14 @@ describe('PlainTextEvaluator', () => {
 
         describe('when the AST is not a known AST class', () => {
           beforeEach(() => {
-            jest.spyOn(ErrorHandler, 'handleError').mockImplementation();
+            // @ts-expect-error - Accessing protected property for testing
+            jest.spyOn(evaluator, '_handleError').mockImplementation();
           });
 
           test('logs error', () => {
             evaluator.evalAST('', {} as unknown as SyntaxNode, substitutions);
-            expect(ErrorHandler.handleError).toHaveBeenCalledWith('PlainTextEvaluator', 'Unknown node detected');
+            // @ts-expect-error - Accessing protected property for testing
+            expect(evaluator._handleError).toHaveBeenCalledWith('Unknown node detected');
           });
 
           test('returns empty string', () => {

@@ -8,7 +8,7 @@ class SyntaxNode {
   /**
    * Returns `true` if the param is an AST node.
    */
-  static isAST(maybeNode: any): boolean { // eslint-disable-line @typescript-eslint/no-explicit-any
+  static isAST(maybeNode: unknown): maybeNode is SyntaxNode | null {
     return maybeNode === null || maybeNode instanceof SyntaxNode;
   }
 

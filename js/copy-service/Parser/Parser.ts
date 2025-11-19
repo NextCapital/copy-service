@@ -13,7 +13,23 @@ import WordBreak from '../WordBreak/WordBreak';
 
 import ErrorHandler from '../ErrorHandler/ErrorHandler';
 
-type leafParam = SyntaxNode | string | null | { [key: string]: leafParam; };
+type LeafParam = SyntaxNode | string | null | { [key: string]: LeafParam; };
+
+/* eslint-disable no-use-before-define */
+type TokenValues = typeof Parser.TOKENS[keyof typeof Parser.TOKENS];
+
+type Token =
+  | { type: typeof Parser.TOKENS.TEXT; text: string; }
+  | { type: typeof Parser.TOKENS.HTML_TAG_START; tag: string; }
+  | { type: typeof Parser.TOKENS.HTML_TAG_END; tag: string; }
+  | {
+    type: Exclude<
+      TokenValues,
+      typeof Parser.TOKENS.TEXT |
+      typeof Parser.TOKENS.HTML_TAG_START |
+      typeof Parser.TOKENS.HTML_TAG_END>;
+  };
+/* eslint-enable no-use-before-define */
 
 /**
  * Parses raw json copy into ASTs.
@@ -92,13 +108,13 @@ class Parser {
   /**
    * Transforms raw copy into ASTs. Will mutate the `tree` argument.
    */
-  static parseLeaves(tree: { [key: string]: leafParam; }): { [key: string]: leafParam; } {
-    _.forEach(tree, (node: leafParam, key: string) => {
+  static parseLeaves(tree: { [key: string]: LeafParam; }): { [key: string]: LeafParam; } {
+    _.forEach(tree, (node: LeafParam, key: string) => {
       if (SyntaxNode.isAST(node)) {
         // already parsed
       } else if (_.isPlainObject(node)) {
         // eslint-disable-next-line no-param-reassign
-        tree[key] = this.parseLeaves(node as { [key: string]: leafParam; });
+        tree[key] = this.parseLeaves(node as { [key: string]: LeafParam; });
       } else if (_.isString(node)) {
         const tokens = this._tokenize(node);
         // eslint-disable-next-line no-param-reassign
@@ -124,11 +140,21 @@ class Parser {
   }
 
   /**
+   * Helper to throw an error and signal to TypeScript that code never returns.
+   * Used when ErrorHandler.handleError with halt: true doesn't narrow types properly.
+   */
+  private static throwUnexpectedToken(message: string): never {
+    ErrorHandler.handleError('Parser', message, { halt: true });
+    /* istanbul ignore next */
+    throw new Error(message); // Fallback to ensure never return type
+  }
+
+  /**
    * Validates the tag is an allowed HTML tag.
    *
    * @private
    */
-  static _validateTag(tag: string): never | void {
+  private static _validateTag(tag: string): void {
     if (!_.includes(this.ALLOWED_HTML_TAGS, tag)) {
       ErrorHandler.handleError(
         'Parser',
@@ -141,8 +167,8 @@ class Parser {
   /**
    * Turns a string into an array of tokens to be parsed.
    */
-  static _tokenize(string: string): Array<{ [key: string]: string | undefined; }> {
-    const tokens: Array<{ [key: string]: string; }> = [];
+  private static _tokenize(string: string): Token[] {
+    const tokens: Token[] = [];
     let remainder = string;
     let withinArgs = false;
 
@@ -160,7 +186,7 @@ class Parser {
               last.text = last.text.substr(0, last.text.length - 1) + remainder[0];
               remainder = remainder.slice(1);
             } else {
-              tokens.push({ type: nonTextToken });
+              tokens.push({ type: nonTextToken } as Token);
               remainder = remainder.slice(nonTextToken.length);
             }
 
@@ -176,7 +202,7 @@ class Parser {
 
       // Special processing for TAG and ARGS tags and default processing for TEXT tag
       const last = _.last(tokens);
-      let regexMatch = null;
+      let regexMatch: RegExpMatchArray | null = null;
 
       if (isArgsStart) {
         tokens.push({ type: this.TOKENS.ARGS_START });
@@ -228,11 +254,11 @@ class Parser {
   /**
    * Parses an array of tokens into an AST.
    */
-  static _parse(
-    tokens: Array<{ [key: string]: string | undefined; }>,
+  private static _parse(
+    tokens: Token[],
     key: string,
     string: string
-  ): SyntaxNode | null | never {
+  ): SyntaxNode | null {
     try {
       const {
         ast,
@@ -260,12 +286,12 @@ class Parser {
   /**
    * Returns a parsed text token.
    */
-  static _getTextToken(
-    tokens: Array<{ [key: string]: string | undefined; }>
+  private static _getTextToken(
+    tokens: Token[]
   ): {
-    text: string;
-    tokens: Array<{ [key: string]: string | undefined; }>;
-  } | never {
+      text: string;
+      tokens: Token[];
+    } {
     const token = _.first(tokens);
 
     if (token && token.type === this.TOKENS.TEXT) {
@@ -285,9 +311,9 @@ class Parser {
   /**
    * Removes a close token from the passed tokens. Errors.
    */
-  static _processCloseToken(
-    tokens: Array<{ [key: string]: string | undefined; }>
-  ): Array<{ [key: string]: string | undefined; }> | never {
+  private static _processCloseToken(
+    tokens: Token[]
+  ): Token[] {
     const token = _.first(tokens);
     if (token && token.type === this.TOKENS.CLOSE) {
       return tokens.slice(1);
@@ -303,14 +329,14 @@ class Parser {
   /**
    * Recursively parses arguments from a Functional token.
    */
-  static _parseArguments(
-    tokens: Array<{ [key: string]: string | undefined; }>
+  private static _parseArguments(
+    tokens: Token[]
   ): {
-    args: string[];
-    tokens: Array<{ [key: string]: string | undefined; }>;
-  } | never {
+      args: string[];
+      tokens: Token[];
+    } {
     let args: string[];
-    let tokensToReturn: Array<{ [key: string]: string | undefined; }>;
+    let tokensToReturn: Token[];
 
     const textParsed = this._getTextToken(tokens);
     args = [textParsed.text.trim()];
@@ -347,15 +373,24 @@ class Parser {
   /**
    * Returns an absolute version of `relativeKey` built on the structure of `key`.
    */
-  static _getRelativeKey(key: string, relativeKey: string): string {
+  private static _getRelativeKey(key: string, relativeKey: string): string {
     if (!_.startsWith(relativeKey, this.KEY_DELIMITER)) {
       return relativeKey;
     }
 
     const prefixRegex = new RegExp(`\\${this.KEY_DELIMITER}+`);
     const keys = _.split(key, this.KEY_DELIMITER);
+    const match = relativeKey.match(prefixRegex);
+
+    if (!match) {
+      // This should never happen given the _.startsWith check above, but be defensive
+      this.throwUnexpectedToken(
+        `Relative key '${relativeKey}' starts with delimiter but doesn't match prefix pattern`
+      );
+    }
+
     const parentSteps = Math.min(
-      relativeKey.match(prefixRegex)![0].length,
+      match[0].length,
       keys.length
     );
 
@@ -368,12 +403,12 @@ class Parser {
   /**
    * Returns a parsed text token. Attempts to resolve relative key references.
    */
-  static _getReferenceKeyToken(
+  private static _getReferenceKeyToken(
     key: string,
-    tokens: Array<{ [key: string]: string | undefined; }>
+    tokens: Token[]
   ): {
       text: string;
-      tokens: Array<{ [key: string]: string | undefined; }>;
+      tokens: Token[];
   } { // eslint-disable-line @stylistic/indent
     const textParsed = this._getTextToken(tokens);
     textParsed.text = this._getRelativeKey(key, textParsed.text);
@@ -384,16 +419,16 @@ class Parser {
   /**
    * Recursively processes an array of tokens to build an AST optionally expecting an ending token.
    */
-  static _parseTokens(
-    tokens: Array<{ [key: string]: string | undefined; }>,
+  private static _parseTokens(
+    tokens: Token[],
     key: string,
     isRestricted = false,
     expectedEndingToken:
       typeof this.TOKENS.SWITCH_DELIM | typeof this.TOKENS.HTML_TAG_END = this.TOKENS.SWITCH_DELIM
   ): {
-    ast: SyntaxNode | null;
-    tokens: Array<{ [key: string]: string | undefined; }>;
-  } | never {
+      ast: SyntaxNode | null;
+      tokens: Token[];
+    } {
     if (_.isEmpty(tokens)) {
       if (isRestricted) {
         ErrorHandler.handleError(
@@ -500,9 +535,9 @@ class Parser {
 
       let argumentsParsed: {
         args: string[];
-        tokens: Array<{ [key: string]: string | undefined; }>;
+        tokens: Token[];
       } | undefined;
-      let parsedOptionalArgumentsTokens: Array<{ [key: string]: string | undefined; }>;
+      let parsedOptionalArgumentsTokens: Token[];
 
       if (textParsed.tokens[0].type === this.TOKENS.CLOSE) {
         parsedOptionalArgumentsTokens = this._processCloseToken(textParsed.tokens);
@@ -554,17 +589,22 @@ class Parser {
       };
     }
 
+    // Unhandled token types in this context (intentionally errors):
+    // - SWITCH_DELIM, CLOSE: Should be consumed by specific parsing methods
+    // - ARGS_START, ARGS_COMMA, ARGS_END: Should be consumed by _parseArguments
+    // - HTML_TAG_END: Should be consumed when parsing HTML tags (handled above when restricted)
     const errorMessage = isRestricted ?
       `Unexpected restricted token ${token.type}` :
       `Unexpected token ${token.type}`;
-    ErrorHandler.handleError('Parser', errorMessage, { halt: true });
+
+    this.throwUnexpectedToken(errorMessage);
   }
 
   /**
-   * Parser is a singleton and will error when trying to create an instance.
+   * Parser is a singleton. The constructor is private to prevent instantiation.
    */
-  constructor() {
-    ErrorHandler.handleError('Parser', 'Parser is a singleton', { halt: true });
+  /* istanbul ignore next */ private constructor() {
+    // Private constructor prevents instantiation
   }
 }
 

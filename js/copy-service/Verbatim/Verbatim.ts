@@ -9,12 +9,12 @@ class Verbatim extends SyntaxNode {
   /**
    * The string.
    */
-  text: string;
+  readonly text: string;
 
   /**
    * The neighboring AST.
    */
-  sibling: SyntaxNode | null;
+  readonly sibling: SyntaxNode | null;
 
   constructor(options: {
     text: string;
@@ -29,14 +29,14 @@ class Verbatim extends SyntaxNode {
   /**
    * True if this node can be cached after evaluation.
    */
-  isCacheable(copyService: CopyService | IntlCopyService): boolean {
+  override isCacheable(copyService: CopyService | IntlCopyService): boolean {
     return this.sibling ? this.sibling.isCacheable(copyService) : true;
   }
 
   /**
    * Converts the AST node to the syntax that made it.
    */
-  toSyntax(): string {
+  override toSyntax(): string {
     return `${this.text}${this.safeToSyntax(this.sibling)}`;
   }
 }

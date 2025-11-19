@@ -11,14 +11,14 @@ class Reference extends SyntaxNode {
    *
    * @type {string}
    */
-  key: string;
+  readonly key: string;
 
   /**
    * The neighboring AST.
    *
    * @type {SyntaxNode|null}
    */
-  sibling: SyntaxNode | null;
+  readonly sibling: SyntaxNode | null;
 
   constructor(options: {
     key: string;
@@ -52,7 +52,7 @@ class Reference extends SyntaxNode {
   /**
    * Converts the AST node to the syntax that made it.
    */
-  toSyntax(): string {
+  override toSyntax(): string {
     return (
       `\${${this.key}}${this.safeToSyntax(this.sibling)}`
     );

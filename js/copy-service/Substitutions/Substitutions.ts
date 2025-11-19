@@ -6,7 +6,7 @@ import ErrorHandler from '../ErrorHandler/ErrorHandler';
  * Class for handling the substitution object/function passed into `getCopy`.
  */
 class Substitutions {
-  _substitutions: object | (() => object);
+  private _substitutions: object | (() => object);
 
   /**
    * @param {object | Function} substitutions The substitutions. If a function, it should return an
@@ -40,7 +40,7 @@ class Substitutions {
    * @param {string} key Path to substitution on the substitutions object.
    * @returns {*} The value from the substitutions.
    */
-  get(key: string): any { // eslint-disable-line @typescript-eslint/no-explicit-any
+  get(key: string): unknown {
     const value = _.result(this.substitutions, key);
 
     if (_.isUndefined(value)) {
@@ -59,7 +59,7 @@ class Substitutions {
    */
   getFunction(
     key: string
-  ): (() => any) | undefined { // eslint-disable-line @typescript-eslint/no-explicit-any
+  ): (() => unknown) | undefined {
     const value = _.get(this.substitutions, key);
 
     if (_.isUndefined(value)) {

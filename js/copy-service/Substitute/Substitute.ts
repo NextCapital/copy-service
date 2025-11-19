@@ -9,14 +9,14 @@ class Substitute extends SyntaxNode {
    *
    * @type {string}
    */
-  key: string;
+  readonly key: string;
 
   /**
    * The neighboring AST.
    *
    * @type {SyntaxNode|null}
    */
-  sibling: SyntaxNode | null;
+  readonly sibling: SyntaxNode | null;
 
   constructor(options: {
     key: string;

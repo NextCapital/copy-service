@@ -26,6 +26,7 @@ describe('Substitutions', () => {
 
   describe('constructor', () => {
     test('sets _substitutions', () => {
+      // @ts-expect-error - Accessing private property for testing
       expect(substitutions._substitutions).toBe(input);
     });
   });
@@ -40,6 +41,7 @@ describe('Substitutions', () => {
       beforeEach(() => {
         result = { some: 'result' };
         func = jest.fn().mockReturnValue(result);
+        // @ts-expect-error - Accessing private property for testing
         substitutions._substitutions = func;
       });
 
@@ -48,6 +50,7 @@ describe('Substitutions', () => {
       });
 
       test('sets _substitutions to the function result', () => {
+        // @ts-expect-error - Accessing private property for testing
         expect(substitutions.substitutions).toBe(substitutions._substitutions);
       });
     });

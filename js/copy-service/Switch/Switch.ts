@@ -9,28 +9,28 @@ class Switch extends SyntaxNode {
    *
    * @type {string}
    */
-  key: string;
+  readonly key: string;
 
   /**
    * The neighboring AST.
    *
    * @type {SyntaxNode|null}
    */
-  sibling: SyntaxNode | null;
+  readonly sibling: SyntaxNode | null;
 
   /**
    * The AST to use when the decider is evaluated to truthy.
    *
    * @type {SyntaxNode|null}
    */
-  left: SyntaxNode | null;
+  readonly left: SyntaxNode | null;
 
   /**
    * The AST to use when the decider is evaluated to falsy.
    *
    * @type {SyntaxNode|null}
    */
-  right: SyntaxNode | null;
+  readonly right: SyntaxNode | null;
 
   constructor(options: {
     key: string;

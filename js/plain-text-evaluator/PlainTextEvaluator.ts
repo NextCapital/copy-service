@@ -61,7 +61,7 @@ class PlainTextEvaluator extends Evaluator<string> {
     } else if (ast instanceof RefSubstitute) {
       const copyKey = substitutions.get(ast.key);
       copy = this.evalAST(
-        this.getInitialResult(), this.copyService.getAstForKey(copyKey as string), substitutions
+        this.getInitialResult(), this.copyService.getAstForKey(copyKey), substitutions
       );
     }
     // Check the decider provided in substitutions, pick the correct branch, evaluate that branch,
@@ -80,11 +80,11 @@ class PlainTextEvaluator extends Evaluator<string> {
     }
     // Evaluate the copy of the class, ignoring the function, and append the evaluated copy.
     else if (ast instanceof Functional) {
-      const method = substitutions.getFunction(ast.key);
+      const method = substitutions.getFunction(ast.key) as (...args: unknown[]) => unknown;
       let text = this.evalAST(this.getInitialResult(), ast.copy, substitutions);
 
       if (this.allowFunctional && method && _.isFunction(method)) {
-        text = String((method as (...args: unknown[]) => unknown)(text, ...ast.args));
+        text = String((method(text, ...ast.args)));
       }
 
       copy = text;

@@ -10,21 +10,21 @@ class HtmlEvaluator extends PlainTextEvaluator {
   /**
    * `HtmlEvaluator` treats `Newline` nodes as `<br/>` tags.
    */
-  getNewline(): string {
+  override getNewline(): string {
     return '<br/>';
   }
 
   /**
    * `HtmlEvaluator` treats `WordBreak` nodes as `<wbr/>` tags.
    */
-  getWordBreak(): string {
+  override getWordBreak(): string {
     return '<wbr/>';
   }
 
   /**
    * `HtmlEvaluator` allows `Formatting` AST nodes to include their tags.
    */
-  allowsFormattingTags(): boolean {
+  override allowsFormattingTags(): boolean {
     return true;
   }
 }

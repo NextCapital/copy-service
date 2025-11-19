@@ -292,7 +292,7 @@ describe('PlainTextEvaluator', () => {
           });
 
           test('returns empty string', () => {
-            expect(evaluator.evalAST('', {} as unknown as SyntaxNode, substitutions)).toBe('');
+            expect(evaluator.evalAST('', {} as SyntaxNode, substitutions)).toBe('');
           });
         });
       });

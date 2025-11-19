@@ -4,6 +4,7 @@ import SyntaxNode from '../SyntaxNode/SyntaxNode';
 import CopyService from '../CopyService';
 import IntlCopyService from '../IntlCopyService';
 
+// TODO: Import from CopyService once that file is converted to TypeScript
 type AST = SyntaxNode | null;
 
 /**
@@ -41,8 +42,10 @@ abstract class Evaluator<T> {
   /**
    * Gets the cached evaluation result for the given ast, if it exists.
    */
-  getCached(ast: SyntaxNode): T | undefined {
-    return this.evaluationCache.get(ast);
+  getCached(ast: AST): T | undefined {
+    if (ast) {
+      return this.evaluationCache.get(ast);
+    }
   }
 
   /**
@@ -50,8 +53,8 @@ abstract class Evaluator<T> {
    *
    * NOTE: The evaluated result should be the result of fully evaluating the ast with no prefix.
    */
-  setCacheIfCacheable(ast: SyntaxNode, evaluated: T): void {
-    if (ast.isCacheable(this.copyService)) {
+  setCacheIfCacheable(ast: AST, evaluated: T): void {
+    if (ast && ast.isCacheable(this.copyService)) {
       this.evaluationCache.set(ast, evaluated);
     }
   }
@@ -82,9 +85,9 @@ abstract class Evaluator<T> {
   /**
    * Defers to ErrorHandler.handleError with the constructor name and any args.
    */
-  private _handleError(error: string, options?: { halt: false; } | object): void;
-  private _handleError(error: string, options?: { halt: true; }): never;
-  private _handleError(error: string, options?: { halt?: boolean; }): void | never {
+  protected _handleError(error: string, options?: { halt: false; } | object): void;
+  protected _handleError(error: string, options?: { halt: true; }): never;
+  protected _handleError(error: string, options?: { halt?: boolean; }): void | never {
     ErrorHandler.handleError(this.constructor.name, error, options);
   }
 }

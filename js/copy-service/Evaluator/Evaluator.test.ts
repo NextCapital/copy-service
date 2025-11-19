@@ -4,27 +4,16 @@ import CopyService from '../CopyService';
 import ErrorHandler from '../ErrorHandler/ErrorHandler';
 import SyntaxNode from '../SyntaxNode/SyntaxNode';
 
+// TODO: Import from CopyService once that file is converted to TypeScript
 type AST = SyntaxNode | null;
-
-interface TestEvaluatorWithPrivate {
-  _handleError: (error: string, options?: { halt?: boolean; }) => void;
-}
 
 // Concrete test implementation of abstract Evaluator
 class TestEvaluator extends Evaluator<string> {
   override evalAST(): string {
-    (this as unknown as TestEvaluatorWithPrivate)._handleError(
-      'evalAST is abstract and must be implemented by the extending class',
-      { halt: true }
-    );
     return '';
   }
 
   override getInitialResult(): string {
-    (this as unknown as TestEvaluatorWithPrivate)._handleError(
-      'getInitialResult is abstract and must be implemented by the extending class',
-      { halt: true }
-    );
     return '';
   }
 }
@@ -64,7 +53,8 @@ describe('Evaluator', () => {
   describe('getCached', () => {
     test('gets the result from the evaluation cache', () => {
       const result = 'result';
-      const ast = { an: 'ast', isCacheable: jest.fn().mockReturnValue(true) } as unknown as SyntaxNode;
+      const ast = new SyntaxNode();
+      jest.spyOn(ast, 'isCacheable').mockReturnValue(true);
 
       // Set the cache indirectly through setCacheIfCacheable
       evaluator.setCacheIfCacheable(ast, result);
@@ -81,7 +71,8 @@ describe('Evaluator', () => {
 
     describe('when the ast is cacheable', () => {
       test('sets the result in the cache', () => {
-        const ast = { an: 'ast', isCacheable: jest.fn().mockReturnValue(true) } as unknown as SyntaxNode;
+        const ast = new SyntaxNode();
+        jest.spyOn(ast, 'isCacheable').mockReturnValue(true);
 
         evaluator.setCacheIfCacheable(ast, result);
         expect(evaluator.getCached(ast)).toBe(result);
@@ -91,7 +82,8 @@ describe('Evaluator', () => {
 
     describe('when the ast is not cacheable', () => {
       test('does not set the result in the cache', () => {
-        const ast = { an: 'ast', isCacheable: jest.fn().mockReturnValue(false) } as unknown as SyntaxNode;
+        const ast = new SyntaxNode();
+        jest.spyOn(ast, 'isCacheable').mockReturnValue(false);
 
         evaluator.setCacheIfCacheable(ast, result);
         expect(evaluator.getCached(ast)).toBeUndefined();
@@ -106,7 +98,7 @@ describe('Evaluator', () => {
       const rawSubstitutions = { some: 'raw', substitutions: 'yo' };
 
       const initialCopy = 'initialCopy';
-      const ast = { some: 'ast' } as unknown as SyntaxNode;
+      const ast = new SyntaxNode();
 
       jest.spyOn(copyService, 'getAstForKey').mockReturnValue(ast);
       jest.spyOn(evaluator, 'getInitialResult').mockReturnValue(initialCopy);
@@ -127,28 +119,14 @@ describe('Evaluator', () => {
     });
   });
 
-  describe('evalAST', () => {
-    test('throws error', () => {
-      expect(() => evaluator.evalAST()).toThrow(
-        'evalAST is abstract and must be implemented by the extending class'
-      );
-    });
-  });
-
-  describe('getInitialResult', () => {
-    test('throws error', () => {
-      expect(() => evaluator.getInitialResult()).toThrow(
-        'getInitialResult is abstract and must be implemented by the extending class'
-      );
-    });
-  });
-
   describe('_handleError', () => {
     test('defers to ErrorHandler.handleError', () => {
       const errorMessage = 'some error message';
       const errorOptions = { halt: true };
       jest.spyOn(ErrorHandler, 'handleError').mockImplementation();
-      (evaluator as unknown as TestEvaluatorWithPrivate)._handleError(errorMessage, errorOptions);
+
+      // @ts-expect-error Accessing protected method for testing
+      evaluator._handleError(errorMessage, errorOptions);
       expect(ErrorHandler.handleError).toHaveBeenCalledWith(
         TestEvaluator.name,
         errorMessage,

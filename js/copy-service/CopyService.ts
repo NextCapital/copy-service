@@ -64,14 +64,14 @@ class CopyService {
       return {};
     }
 
-    return _.mapValues(subkeys as object, (obj, path) => {
+    return _.mapValues(subkeys as Record<string, unknown>, (obj, path) => {
       const subPath = `${key}${Parser.KEY_DELIMITER}${path}`;
       if (_.isPlainObject(obj)) {
         return this.buildSubkeys(subPath);
       }
 
       return subPath;
-    });
+    }) as Record<string, unknown>;
   }
 
   /**

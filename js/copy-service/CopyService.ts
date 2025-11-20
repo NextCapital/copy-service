@@ -49,7 +49,7 @@ class CopyService {
     // Clone deep to avoid mutating `jsonCopyConfig`
     this._registeredCopy = this._mergeParsedCopy(
       this._registeredCopy,
-      _.cloneDeep(jsonCopyConfig)
+      _.cloneDeep(jsonCopyConfig) as { [key: string]: RegisteredCopyNode; }
     );
   }
 
@@ -59,7 +59,11 @@ class CopyService {
   buildSubkeys(key: string): { [key: string]: any; } {
     const subkeys = this.getSubkeys(key);
 
-    return _.mapValues(subkeys, (obj, path) => {
+    if (!_.isPlainObject(subkeys)) {
+      return {};
+    }
+
+    return _.mapValues(subkeys as object, (obj, path) => {
       const subPath = `${key}${Parser.KEY_DELIMITER}${path}`;
       if (_.isPlainObject(obj)) {
         return this.buildSubkeys(subPath);
@@ -126,14 +130,19 @@ class CopyService {
    */
   getRegisteredCopy(_node?: RegisteredCopyNode | { [key: string]: RegisteredCopyNode; } | null): { [key: string]: any; } {
     const tree: { [key: string]: any; } = {};
+    const nodeToIterate = _node || this._registeredCopy;
 
-    _.forEach(_node || this._registeredCopy, (node, key) => {
+    if (!_.isPlainObject(nodeToIterate)) {
+      return tree;
+    }
+
+    _.forEach(nodeToIterate as object, (node: RegisteredCopyNode, key) => {
       if (_.isNil(node)) {
         tree[key] = '';
       } else if (_.isString(node)) { // not yet parsed
         tree[key] = node;
       } else if (SyntaxNode.isAST(node)) { // parsed
-        tree[key] = node.toSyntax();
+        tree[key] = node ? node.toSyntax() : '';
       } else if (_.isPlainObject(node)) {
         tree[key] = this.getRegisteredCopy(node);
       }

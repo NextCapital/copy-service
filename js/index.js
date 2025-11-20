@@ -12,7 +12,7 @@ const Evaluator = require('./copy-service/Evaluator/Evaluator');
 const Substitutions = require('./copy-service/Substitutions/Substitutions').default;
 
 const ErrorHandler = require('./copy-service/ErrorHandler/ErrorHandler').default;
-const CopyService = require('./copy-service/CopyService');
+const CopyService = require('./copy-service/CopyService').default;
 const IntlCopyService = require('./copy-service/IntlCopyService');
 
 const PlainTextEvaluator = require('./plain-text-evaluator/PlainTextEvaluator').default;

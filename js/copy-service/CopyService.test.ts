@@ -1,14 +1,12 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
-const Parser = require('./Parser/Parser').default;
-const SyntaxNode = require('./SyntaxNode/SyntaxNode').default;
-
-const ErrorHandler = require('./ErrorHandler/ErrorHandler').default;
-
-const CopyService = require('./CopyService');
+import Parser from './Parser/Parser';
+import SyntaxNode from './SyntaxNode/SyntaxNode';
+import ErrorHandler from './ErrorHandler/ErrorHandler';
+import CopyService from './CopyService';
 
 describe('CopyService', () => {
-  let copyService;
+  let copyService: CopyService;
 
   beforeEach(() => {
     copyService = new CopyService();
@@ -21,6 +19,7 @@ describe('CopyService', () => {
           const copy = { some: 'unparsed copy' };
 
           copyService = new CopyService({ copy });
+          // @ts-expect-error Accessing private property for testing
           expect(copyService._registeredCopy).toEqual(copy);
         });
       });
@@ -42,9 +41,11 @@ describe('CopyService', () => {
 
       test('does not modify _registeredCopy', () => {
         const parsedCopy = {};
+        // @ts-expect-error Accessing private property for testing
         copyService._registeredCopy = parsedCopy;
 
         copyService.registerCopy();
+        // @ts-expect-error Accessing private property for testing
         expect(copyService._registeredCopy).toBe(parsedCopy);
       });
 
@@ -62,16 +63,18 @@ describe('CopyService', () => {
             stuff: 'copy'
           }
         };
+        // @ts-expect-error Accessing private property for testing
         copyService._registeredCopy = alreadyParsedCopy;
 
         copyService.registerCopy(unparsedCopy);
+        // @ts-expect-error Accessing private property for testing
         expect(copyService._registeredCopy).toEqual(_.merge(alreadyParsedCopy, unparsedCopy));
       });
     });
   });
 
   describe('buildSubkeys', () => {
-    let parsedCopy;
+    let parsedCopy: any;
 
     beforeEach(() => {
       parsedCopy = {
@@ -84,6 +87,7 @@ describe('CopyService', () => {
         }
       };
 
+      // @ts-expect-error Accessing private property for testing
       copyService._registeredCopy = parsedCopy;
       jest.spyOn(copyService, 'getSubkeys');
     });
@@ -114,6 +118,7 @@ describe('CopyService', () => {
         more: 'stuff'
       };
       const parsedCopy = { key };
+      // @ts-expect-error Accessing private property for testing
       copyService._registeredCopy = parsedCopy;
 
       expect(copyService.getSubkeys('key')).toBe(key);
@@ -154,11 +159,13 @@ describe('CopyService', () => {
       });
 
       test('parses the key and sets it in the registered copy', () => {
+        // @ts-expect-error Accessing private property for testing
         const rawCopy = copyService._registeredCopy.some.key;
         const parsed = new SyntaxNode();
 
         jest.spyOn(Parser, 'parseSingle').mockReturnValue(parsed);
         expect(copyService.getAstForKey(key)).toBe(parsed);
+        // @ts-expect-error Accessing private property for testing
         expect(copyService._registeredCopy.some.key).toBe(parsed);
         expect(Parser.parseSingle).toHaveBeenCalledWith(key, rawCopy);
       });
@@ -186,6 +193,7 @@ describe('CopyService', () => {
       });
 
       test('returns the value as-is', () => {
+        // @ts-expect-error Accessing private property for testing
         expect(copyService.getAstForKey('some.key')).toBe(
           copyService._registeredCopy.some.key
         );
@@ -232,7 +240,7 @@ describe('CopyService', () => {
   });
 
   describe('getRegisteredCopy', () => {
-    let copy;
+    let copy: any;
 
     beforeEach(() => {
       copy = {
@@ -299,6 +307,7 @@ describe('CopyService', () => {
 
     describe('when null', () => {
       beforeEach(() => {
+        // @ts-expect-error Accessing private property for testing
         _.set(copyService._registeredCopy, 'some.blank', null);
       });
 
@@ -317,6 +326,7 @@ describe('CopyService', () => {
       const key = 'some.key';
 
       beforeEach(() => {
+        // @ts-expect-error Accessing private property for testing
         _.set(copyService._registeredCopy, key, Parser.parseSingle(key, 'some #{key} yo!'));
       });
 
@@ -330,6 +340,7 @@ describe('CopyService', () => {
     test('calls Parser.parseLeaves on the registered copy', () => {
       jest.spyOn(Parser, 'parseLeaves').mockImplementation();
       copyService.parseAllCopy();
+      // @ts-expect-error Accessing private property for testing
       expect(Parser.parseLeaves).toHaveBeenCalledWith(copyService._registeredCopy);
     });
   });

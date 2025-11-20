@@ -75,12 +75,12 @@ class ReactEvaluator extends Evaluator<React.ReactNode> {
         this.getInitialResult(), subtree, substitutions
       );
     } else if (ast instanceof Functional) {
-      const method = substitutions.getFunction(ast.key);
+      const method = substitutions.getFunction(ast.key) as (...args: unknown[]) => unknown;
       let jsx = this.evalAST(this.getInitialResult(), ast.copy, substitutions);
 
       if (this.allowFunctional && method && _.isFunction(method)) {
         // because this can return arbitrary JSX, we must wrap in a fragment
-        jsx = this._createFragment(method(jsx, ...ast.args));
+        jsx = this._createFragment(method(jsx, ...ast.args) as React.ReactNode);
       }
 
       copy = jsx;
@@ -89,9 +89,10 @@ class ReactEvaluator extends Evaluator<React.ReactNode> {
 
       if (jsx) {
         // unwrap a fragment, otherwise preserve children as-is
-        const childContent = (_.isString(jsx) || jsx.type !== React.Fragment) ?
-          jsx :
-          jsx.props.children;
+        let childContent: React.ReactNode = jsx;
+        if (React.isValidElement(jsx) && jsx.type === React.Fragment) {
+          childContent = jsx.props.children;
+        }
 
         copy = React.createElement(ast.tag, null, childContent);
       } else { // empty formatting, skip tag
@@ -157,9 +158,9 @@ class ReactEvaluator extends Evaluator<React.ReactNode> {
     }
 
     // merge the two fragments
-    if (left.type === React.Fragment) {
+    if (React.isValidElement(left) && left.type === React.Fragment) {
       // both are fragments, merge children into one fragment
-      if (right.type === React.Fragment) {
+      if (React.isValidElement(right) && right.type === React.Fragment) {
         return this._createFragment(
           left.props.children,
           right.props.children
@@ -172,7 +173,7 @@ class ReactEvaluator extends Evaluator<React.ReactNode> {
       );
     }
 
-    if (right.type === React.Fragment) {
+    if (React.isValidElement(right) && right.type === React.Fragment) {
       return this._createFragment(
         left,
         right.props.children

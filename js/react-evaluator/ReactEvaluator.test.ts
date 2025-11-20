@@ -32,6 +32,13 @@ describe('ReactEvaluator', () => {
     jest.spyOn(substitutions, 'getBoolean');
   });
 
+  /**
+   * Helper function to create a React element with null props.
+   *
+   * @param {string} tag - The HTML tag name.
+   * @param {React.ReactNode[]} content - The children content.
+   * @returns {React.ReactElement} The created React element.
+   */
   function createElement(tag: string, ...content: React.ReactNode[]): React.ReactElement {
     return React.createElement(tag, null, ...content);
   }
@@ -84,9 +91,9 @@ describe('ReactEvaluator', () => {
         jest.spyOn(evaluator, 'setCacheIfCacheable');
         expect(getStaticMarkup(copyPrefix, ast)).toBe('helloworld!');
         expect(evaluator.setCacheIfCacheable).toHaveBeenCalledWith(ast, 'world!');
-        expect(ReactDOMServer.renderToStaticMarkup(evaluator.getCached(ast) as React.ReactElement)).toBe(
-          'world!'
-        );
+        expect(
+          ReactDOMServer.renderToStaticMarkup(evaluator.getCached(ast) as React.ReactElement)
+        ).toBe('world!');
       });
     });
 
@@ -237,9 +244,9 @@ describe('ReactEvaluator', () => {
                 sibling: null
               });
 
-              expect(
-                ReactDOMServer.renderToStaticMarkup(evaluator.evalAST(null, ast, new Substitutions({ func })) as React.ReactElement)
-              ).toBe(funcText);
+              expect(ReactDOMServer.renderToStaticMarkup(
+                evaluator.evalAST(null, ast, new Substitutions({ func })) as React.ReactElement
+              )).toBe(funcText);
             });
 
             describe('when allowFunctional is false on the evaluator', () => {
@@ -258,9 +265,9 @@ describe('ReactEvaluator', () => {
                   sibling: null
                 });
 
-                expect(
-                  ReactDOMServer.renderToStaticMarkup(evaluator.evalAST(null, ast, new Substitutions({ func })) as React.ReactElement)
-                ).toBe((ast.copy as Verbatim).text);
+                expect(ReactDOMServer.renderToStaticMarkup(
+                  evaluator.evalAST(null, ast, new Substitutions({ func })) as React.ReactElement
+                )).toBe((ast.copy as Verbatim).text);
 
                 expect(func).not.toHaveBeenCalled();
               });
@@ -276,8 +283,9 @@ describe('ReactEvaluator', () => {
                 sibling: null
               });
 
-              expect(ReactDOMServer.renderToStaticMarkup(evaluator.evalAST(null, ast, substitutions) as React.ReactElement)).toBe(
-                (ast.copy as Verbatim).text
+              expect(ReactDOMServer.renderToStaticMarkup(
+                evaluator.evalAST(null, ast, substitutions) as React.ReactElement
+              )).toBe((ast.copy as Verbatim).text
               );
             });
           });
@@ -291,8 +299,9 @@ describe('ReactEvaluator', () => {
               sibling: null
             });
 
-            expect(ReactDOMServer.renderToStaticMarkup(evaluator.evalAST(null, ast, substitutions) as React.ReactElement)).toBe(
-              `<em>${(ast.copy as Verbatim).text}</em>`
+            expect(ReactDOMServer.renderToStaticMarkup(
+              evaluator.evalAST(null, ast, substitutions) as React.ReactElement
+            )).toBe(`<em>${(ast.copy as Verbatim).text}</em>`
             );
           });
 
@@ -306,8 +315,9 @@ describe('ReactEvaluator', () => {
                 sibling: null
               });
 
-              expect(ReactDOMServer.renderToStaticMarkup(evaluator.evalAST(prefix, ast, substitutions) as React.ReactElement)).toBe(
-                'prefix'
+              expect(ReactDOMServer.renderToStaticMarkup(
+                evaluator.evalAST(prefix, ast, substitutions) as React.ReactElement
+              )).toBe('prefix'
               );
             });
           });
@@ -347,9 +357,9 @@ describe('ReactEvaluator', () => {
               nestedRight: true
             });
 
-            expect(
-              ReactDOMServer.renderToStaticMarkup(evaluator.evalAST(null, ast, substitutions) as React.ReactElement)
-            ).toBe(((ast.left as Switch).right as Verbatim).text);
+            expect(ReactDOMServer.renderToStaticMarkup(
+              evaluator.evalAST(null, ast, substitutions) as React.ReactElement
+            )).toBe(((ast.left as Switch).right as Verbatim).text);
           });
         });
 

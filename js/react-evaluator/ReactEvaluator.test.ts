@@ -49,7 +49,7 @@ describe('ReactEvaluator', () => {
 
     const getStaticMarkup = (copyPrefix: React.ReactNode, ast: SyntaxNode | null): string => (
       ReactDOMServer.renderToStaticMarkup(
-        evaluator.evalAST(copyPrefix, ast, substitutions)
+        evaluator.evalAST(copyPrefix, ast, substitutions) as React.ReactElement
       )
     );
 
@@ -75,7 +75,7 @@ describe('ReactEvaluator', () => {
 
     describe('when the ast is not cached', () => {
       test('caches the fully evaluated ast, without the prefix', () => {
-        const copyPrefix = createElement(React.Fragment, 'hello');
+        const copyPrefix = React.createElement(React.Fragment, null, 'hello');
         const ast = new Verbatim({
           text: 'world',
           sibling: new Verbatim({ text: '!', sibling: null })
@@ -84,7 +84,7 @@ describe('ReactEvaluator', () => {
         jest.spyOn(evaluator, 'setCacheIfCacheable');
         expect(getStaticMarkup(copyPrefix, ast)).toBe('helloworld!');
         expect(evaluator.setCacheIfCacheable).toHaveBeenCalledWith(ast, 'world!');
-        expect(ReactDOMServer.renderToStaticMarkup(evaluator.getCached(ast))).toBe(
+        expect(ReactDOMServer.renderToStaticMarkup(evaluator.getCached(ast) as React.ReactElement)).toBe(
           'world!'
         );
       });
@@ -120,7 +120,7 @@ describe('ReactEvaluator', () => {
         describe('when the AST is a Reference', () => {
           test('returns the evaluated copy of the referenced key', () => {
             const referencedAST = new Verbatim({ text: 'some text', sibling: null });
-            copyService.getAstForKey.mockReturnValue(referencedAST);
+            (copyService.getAstForKey as jest.Mock).mockReturnValue(referencedAST);
 
             const key = 'some.key';
             const ast = new Reference({ key, sibling: null });
@@ -132,7 +132,7 @@ describe('ReactEvaluator', () => {
         describe('when the AST is a Substitute', () => {
           describe('when the substitution is not found', () => {
             test('returns the copy prefix', () => {
-              substitutions.get.mockReturnValue(null);
+              (substitutions.get as jest.Mock).mockReturnValue(null);
               const ast = new Substitute({ key: 'does.not.exist', sibling: null });
 
               expect(evaluator.evalAST(null, ast, substitutions)).toBe(null);
@@ -142,7 +142,7 @@ describe('ReactEvaluator', () => {
           describe('when the substitution is found', () => {
             test('returns the substitution as a string formatted in JSX', () => {
               const text = 'substitution';
-              substitutions.get.mockReturnValue(text);
+              (substitutions.get as jest.Mock).mockReturnValue(text);
               const ast = new Substitute({ key: 'exists', sibling: null });
 
               expect(getStaticMarkup(null, ast)).toBe(text);
@@ -151,7 +151,7 @@ describe('ReactEvaluator', () => {
 
           describe('when the substitution is an empty string', () => {
             test('returns the copy prefix', () => {
-              substitutions.get.mockReturnValue('');
+              (substitutions.get as jest.Mock).mockReturnValue('');
               const ast = new Substitute({ key: 'exists', sibling: null });
 
               expect(evaluator.evalAST(null, ast, substitutions)).toBe(null);
@@ -162,7 +162,7 @@ describe('ReactEvaluator', () => {
         describe('when the AST is a RefSubstitute', () => {
           describe('when the substitution is not found', () => {
             test('returns copy prefix', () => {
-              substitutions.get.mockReturnValue(null);
+              (substitutions.get as jest.Mock).mockReturnValue(null);
               const ast = new RefSubstitute({ key: 'does.not.exist', sibling: null });
 
               expect(evaluator.evalAST(null, ast, substitutions)).toBe(null);
@@ -172,7 +172,7 @@ describe('ReactEvaluator', () => {
           describe('when the substitution is found', () => {
             test('returns the evaluated copy of the referenced key', () => {
               const referencedAST = new Verbatim({ text: 'some text', sibling: null });
-              copyService.getAstForKey.mockReturnValue(referencedAST);
+              (copyService.getAstForKey as jest.Mock).mockReturnValue(referencedAST);
 
               const key = 'some.key';
               const ast = new RefSubstitute({ key, sibling: null });
@@ -185,7 +185,7 @@ describe('ReactEvaluator', () => {
         describe('when the AST is a Switch', () => {
           describe('when the decider is true', () => {
             test('returns the evaluated left AST of the Switch', () => {
-              substitutions.getBoolean.mockReturnValue(true);
+              (substitutions.getBoolean as jest.Mock).mockReturnValue(true);
               const ast = new Switch({
                 left: new Verbatim({ text: 'left text', sibling: null }),
                 right: new Verbatim({ text: 'right text', sibling: null }),
@@ -199,7 +199,7 @@ describe('ReactEvaluator', () => {
 
           describe('when the decider false', () => {
             test('returns the evaluated right AST of the Switch', () => {
-              substitutions.getBoolean.mockReturnValue(false);
+              (substitutions.getBoolean as jest.Mock).mockReturnValue(false);
               const ast = new Switch({
                 left: new Verbatim({ text: 'left text', sibling: null }),
                 right: new Verbatim({ text: 'right text', sibling: null }),
@@ -238,7 +238,7 @@ describe('ReactEvaluator', () => {
               });
 
               expect(
-                getStaticMarkup(evaluator.evalAST(null, ast, new Substitutions({ func })))
+                ReactDOMServer.renderToStaticMarkup(evaluator.evalAST(null, ast, new Substitutions({ func })) as React.ReactElement)
               ).toBe(funcText);
             });
 
@@ -259,7 +259,7 @@ describe('ReactEvaluator', () => {
                 });
 
                 expect(
-                  getStaticMarkup(evaluator.evalAST(null, ast, new Substitutions({ func })))
+                  ReactDOMServer.renderToStaticMarkup(evaluator.evalAST(null, ast, new Substitutions({ func })) as React.ReactElement)
                 ).toBe((ast.copy as Verbatim).text);
 
                 expect(func).not.toHaveBeenCalled();
@@ -276,7 +276,7 @@ describe('ReactEvaluator', () => {
                 sibling: null
               });
 
-              expect(getStaticMarkup(evaluator.evalAST(null, ast, substitutions))).toBe(
+              expect(ReactDOMServer.renderToStaticMarkup(evaluator.evalAST(null, ast, substitutions) as React.ReactElement)).toBe(
                 (ast.copy as Verbatim).text
               );
             });
@@ -291,14 +291,14 @@ describe('ReactEvaluator', () => {
               sibling: null
             });
 
-            expect(getStaticMarkup(evaluator.evalAST(null, ast, substitutions))).toBe(
+            expect(ReactDOMServer.renderToStaticMarkup(evaluator.evalAST(null, ast, substitutions) as React.ReactElement)).toBe(
               `<em>${(ast.copy as Verbatim).text}</em>`
             );
           });
 
           describe('when the tag is empty', () => {
             test('returns the existing prefix', () => {
-              const prefix = createElement(React.Fragment, 'prefix');
+              const prefix = React.createElement(React.Fragment, null, 'prefix');
 
               const ast = new Formatting({
                 tag: 'em',
@@ -306,7 +306,7 @@ describe('ReactEvaluator', () => {
                 sibling: null
               });
 
-              expect(getStaticMarkup(evaluator.evalAST(prefix, ast, substitutions))).toBe(
+              expect(ReactDOMServer.renderToStaticMarkup(evaluator.evalAST(prefix, ast, substitutions) as React.ReactElement)).toBe(
                 'prefix'
               );
             });
@@ -348,7 +348,7 @@ describe('ReactEvaluator', () => {
             });
 
             expect(
-              getStaticMarkup(evaluator.evalAST(null, ast, substitutions))
+              ReactDOMServer.renderToStaticMarkup(evaluator.evalAST(null, ast, substitutions) as React.ReactElement)
             ).toBe(((ast.left as Switch).right as Verbatim).text);
           });
         });

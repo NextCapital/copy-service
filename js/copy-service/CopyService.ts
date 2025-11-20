@@ -4,12 +4,22 @@ import SyntaxNode from './SyntaxNode/SyntaxNode';
 import Parser from './Parser/Parser';
 import ErrorHandler from './ErrorHandler/ErrorHandler';
 
+export type AST = SyntaxNode | null;
+
+export interface CopyFile {
+  [key: string]: string | CopyFile;
+}
+
 interface CopyServiceOptions {
-  copy?: object;
+  copy?: CopyFile;
   language?: string | null;
 }
 
-type RegisteredCopyNode = string | SyntaxNode | null | {
+interface CopySubkeys {
+  [key: string]: CopySubkeys | string | null;
+}
+
+type RegisteredCopyNode = string | AST | {
   [key: string]: RegisteredCopyNode;
 };
 
@@ -37,7 +47,7 @@ class CopyService {
    * Stores the new copy into the copy set. Copy will not be parsed immediately by default. To
    * immediately parse copy into an AST, call `parseAllCopy`.
    */
-  registerCopy(jsonCopyConfig: object): void {
+  registerCopy(jsonCopyConfig?: CopyFile): void {
     if (!_.isPlainObject(jsonCopyConfig)) {
       ErrorHandler.handleError(
         'CopyService',
@@ -50,28 +60,28 @@ class CopyService {
     // Clone deep to avoid mutating `jsonCopyConfig`
     this._registeredCopy = this._mergeParsedCopy(
       this._registeredCopy,
-      _.cloneDeep(jsonCopyConfig) as { [key: string]: RegisteredCopyNode; }
+      _.cloneDeep(jsonCopyConfig) as CopyFile
     );
   }
 
   /**
    * Recursively builds all subkeys at which copy exists.
    */
-  buildSubkeys(key: string): Record<string, unknown> {
+  buildSubkeys(key: string): CopySubkeys {
     const subkeys = this.getSubkeys(key);
 
     if (!_.isPlainObject(subkeys)) {
       return {};
     }
 
-    return _.mapValues(subkeys as Record<string, unknown>, (obj, path) => {
+    return _.mapValues(subkeys as { [key: string]: RegisteredCopyNode; }, (obj, path) => {
       const subPath = `${key}${Parser.KEY_DELIMITER}${path}`;
       if (_.isPlainObject(obj)) {
         return this.buildSubkeys(subPath);
       }
 
       return subPath;
-    }) as Record<string, unknown>;
+    });
   }
 
   /**
@@ -93,7 +103,7 @@ class CopyService {
    * copy fails to parse. In both cases, `null` will be returned. This is preferable to the page
    * blowing up.
    */
-  getAstForKey(key: string): SyntaxNode | null | undefined {
+  getAstForKey(key: string): AST | null | undefined {
     const result = _.get(this._registeredCopy, key);
 
     if (_.isString(result)) { // need to parse to an AST
@@ -128,22 +138,22 @@ class CopyService {
    * set of registered copy when copy is registered via many sources.
    */
   getRegisteredCopy(
-    _node?: RegisteredCopyNode | { [key: string]: RegisteredCopyNode; } | null
-  ): Record<string, unknown> {
-    const tree: Record<string, unknown> = {};
-    const nodeToIterate = _node || this._registeredCopy;
+    passedNode?: RegisteredCopyNode
+  ): { [key: string]: RegisteredCopyNode; } {
+    const tree: { [key: string]: RegisteredCopyNode; } = {};
+    const nodeToIterate = passedNode || this._registeredCopy;
 
     if (!_.isPlainObject(nodeToIterate)) {
       return tree;
     }
 
-    _.forEach(nodeToIterate as object, (node: RegisteredCopyNode, key) => {
+    _.forEach(nodeToIterate as { [key: string]: RegisteredCopyNode; }, (node, key) => {
       if (_.isNil(node)) {
         tree[key] = '';
       } else if (_.isString(node)) { // not yet parsed
         tree[key] = node;
       } else if (SyntaxNode.isAST(node)) { // parsed
-        tree[key] = node ? node.toSyntax() : '';
+        tree[key] = node.toSyntax();
       } else if (_.isPlainObject(node)) {
         tree[key] = this.getRegisteredCopy(node);
       }

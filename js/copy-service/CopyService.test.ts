@@ -33,7 +33,7 @@ describe('CopyService', () => {
       });
 
       test('logs error', () => {
-        copyService.registerCopy(undefined as any);
+        copyService.registerCopy(undefined as unknown as object);
         expect(ErrorHandler.handleError).toHaveBeenCalledWith(
           'CopyService', 'Copy provided in wrong format.'
         );
@@ -44,13 +44,13 @@ describe('CopyService', () => {
         // @ts-expect-error Accessing private property for testing
         copyService._registeredCopy = parsedCopy;
 
-        copyService.registerCopy(undefined as any);
+        copyService.registerCopy(undefined as unknown as object);
         // @ts-expect-error Accessing private property for testing
         expect(copyService._registeredCopy).toBe(parsedCopy);
       });
 
       test('returns undefined', () => {
-        expect(copyService.registerCopy(undefined as any)).toBeUndefined();
+        expect(copyService.registerCopy(undefined as unknown as object)).toBeUndefined();
       });
     });
 
@@ -74,7 +74,7 @@ describe('CopyService', () => {
   });
 
   describe('buildSubkeys', () => {
-    let parsedCopy: any;
+    let parsedCopy: Record<string, unknown>;
 
     beforeEach(() => {
       parsedCopy = {
@@ -160,13 +160,13 @@ describe('CopyService', () => {
 
       test('parses the key and sets it in the registered copy', () => {
         // @ts-expect-error Accessing private property for testing
-        const rawCopy = (copyService._registeredCopy.some as any).key;
+        const rawCopy = (copyService._registeredCopy.some as Record<string, unknown>).key;
         const parsed = new SyntaxNode();
 
         jest.spyOn(Parser, 'parseSingle').mockReturnValue(parsed);
         expect(copyService.getAstForKey(key)).toBe(parsed);
         // @ts-expect-error Accessing private property for testing
-        expect((copyService._registeredCopy.some as any).key).toBe(parsed);
+        expect((copyService._registeredCopy.some as Record<string, unknown>).key).toBe(parsed);
         expect(Parser.parseSingle).toHaveBeenCalledWith(key, rawCopy);
       });
 
@@ -194,7 +194,7 @@ describe('CopyService', () => {
 
       test('returns the value as-is', () => {
         // @ts-expect-error Accessing private property for testing
-        const registeredValue = (copyService._registeredCopy.some as any).key;
+        const registeredValue = (copyService._registeredCopy.some as Record<string, unknown>).key;
         expect(copyService.getAstForKey('some.key')).toBe(registeredValue);
       });
     });
@@ -239,7 +239,7 @@ describe('CopyService', () => {
   });
 
   describe('getRegisteredCopy', () => {
-    let copy: any;
+    let copy: Record<string, unknown>;
 
     beforeEach(() => {
       copy = {

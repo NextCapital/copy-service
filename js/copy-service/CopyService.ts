@@ -18,6 +18,7 @@ type RegisteredCopyNode = string | SyntaxNode | null | {
  */
 class CopyService {
   private _registeredCopy: { [key: string]: RegisteredCopyNode; };
+
   language: string | null;
 
   /**
@@ -56,7 +57,7 @@ class CopyService {
   /**
    * Recursively builds all subkeys at which copy exists.
    */
-  buildSubkeys(key: string): { [key: string]: any; } {
+  buildSubkeys(key: string): Record<string, unknown> {
     const subkeys = this.getSubkeys(key);
 
     if (!_.isPlainObject(subkeys)) {
@@ -125,11 +126,11 @@ class CopyService {
   /**
    * Returns the current merged set of of registered copy. This is helpful to get the current
    * set of registered copy when copy is registered via many sources.
-   *
-   * @param _node [PRIVATE] Node of the registered copy to get keys from when recursing.
    */
-  getRegisteredCopy(_node?: RegisteredCopyNode | { [key: string]: RegisteredCopyNode; } | null): { [key: string]: any; } {
-    const tree: { [key: string]: any; } = {};
+  getRegisteredCopy(
+    _node?: RegisteredCopyNode | { [key: string]: RegisteredCopyNode; } | null
+  ): Record<string, unknown> {
+    const tree: Record<string, unknown> = {};
     const nodeToIterate = _node || this._registeredCopy;
 
     if (!_.isPlainObject(nodeToIterate)) {

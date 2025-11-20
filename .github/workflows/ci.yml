@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [22, 20, 18]
+        node-version: [24, 22, 20]
     steps:
     - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
@@ -31,7 +31,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [22, 20, 18]
+        node-version: [24, 22, 20]
     steps:
     - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
@@ -52,7 +52,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [22, 20, 18]
+        node-version: [24, 22, 20]
     steps:
     - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
@@ -73,7 +73,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [22, 20, 18]
+        node-version: [24, 22, 20]
     steps:
     - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
@@ -94,7 +94,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [22, 20, 18]
+        node-version: [24, 22, 20]
     steps:
     - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
@@ -108,4 +108,24 @@ jobs:
         key: ${{ runner.os }}-modules-${{ hashFiles('package-lock.json') }}-${{ matrix.node-version }}
 
     - run: npm run tsc
+  tsc-test:
+    needs: dependencies-cache
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [24, 22, 20]
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+    - uses: actions/cache@v4
+      id: node-modules-cache
+      with:
+        path: '**/node_modules'
+        key: ${{ runner.os }}-modules-${{ hashFiles('package-lock.json') }}-${{ matrix.node-version }}
 
+    - run: npm run tsc:test

@@ -1,35 +1,32 @@
-const _ = require('lodash');
-const React = require('react');
+import _ from 'lodash';
+import React from 'react';
 
-const Evaluator = require('../copy-service/Evaluator/Evaluator').default;
-const Formatting = require('../copy-service/Formatting/Formatting').default;
-const Functional = require('../copy-service/Functional/Functional').default;
-const Newline = require('../copy-service/Newline/Newline').default;
-const Reference = require('../copy-service/Reference/Reference').default;
-const RefSubstitute = require('../copy-service/RefSubstitute/RefSubstitute').default;
-const Substitute = require('../copy-service/Substitute/Substitute').default;
-const Switch = require('../copy-service/Switch/Switch').default;
-const Verbatim = require('../copy-service/Verbatim/Verbatim').default;
-const WordBreak = require('../copy-service/WordBreak/WordBreak').default;
+import Evaluator from '../copy-service/Evaluator/Evaluator';
+import Formatting from '../copy-service/Formatting/Formatting';
+import Functional from '../copy-service/Functional/Functional';
+import Newline from '../copy-service/Newline/Newline';
+import Reference from '../copy-service/Reference/Reference';
+import RefSubstitute from '../copy-service/RefSubstitute/RefSubstitute';
+import Substitute from '../copy-service/Substitute/Substitute';
+import Substitutions from '../copy-service/Substitutions/Substitutions';
+import Switch from '../copy-service/Switch/Switch';
+import SyntaxNode from '../copy-service/SyntaxNode/SyntaxNode';
+import Verbatim from '../copy-service/Verbatim/Verbatim';
+import WordBreak from '../copy-service/WordBreak/WordBreak';
 
 /**
  * Provides an interface that can register copy, determine the existence of copy, and generate copy
  * recursively evaluated with substitutions.
- *
- * @interface
  */
-class ReactEvaluator extends Evaluator {
+class ReactEvaluator extends Evaluator<React.ReactNode> {
   /**
    * Evaluates the AST with given substitutions.
-   *
-   * @param  {string} copyPrefix The copy string being recursively built.
-   * @param  {SyntaxNode|null} ast
-   * The AST to be evaluated. This AST must be constructed by Parser.
-   * @param  {Substitutions} substitutions An object containing substitutions for keys specified in
-   * the AST.
-   * @returns {JSX} The evaluated copy.
    */
-  evalAST(copyPrefix, ast, substitutions) {
+  evalAST(
+    copyPrefix: React.ReactNode,
+    ast: SyntaxNode | null,
+    substitutions: Substitutions
+  ): React.ReactNode {
     if (!ast) {
       return copyPrefix;
     }
@@ -39,7 +36,7 @@ class ReactEvaluator extends Evaluator {
       return this._mergePrefixes(copyPrefix, cached);
     }
 
-    let copy;
+    let copy: React.ReactNode;
 
     if (ast instanceof Newline) {
       copy = React.createElement('br', null);
@@ -113,20 +110,15 @@ class ReactEvaluator extends Evaluator {
 
   /**
    * Returns the default copy (usually an empty string).
-   *
-   * @returns {null}
    */
-  getInitialResult() {
+  getInitialResult(): React.ReactNode {
     return null;
   }
 
   /**
    * Returns a React fragment without using JSX syntax.
-   *
-   * @param {JSX} children Valid React children.
-   * @returns {JSX}
    */
-  _createFragment(...children) {
+  private _createFragment(...children: React.ReactNode[]): React.ReactElement {
     return React.createElement(React.Fragment, null, ...children);
   }
 
@@ -148,12 +140,11 @@ class ReactEvaluator extends Evaluator {
    * - Any top-level fragment tags are specifically added by this method or functional copy
    * - Thus, it is *always* safe to merge the children of two fragments
    * - If either 'left' or 'right' is a non-fragment element, we have to wrap.
-   *
-   * @param {string|JSX} left The first prefix to merge.
-   * @param {string|JSX} right The other prefix the merge.
-   * @returns {string|JSX}
    */
-  _mergePrefixes(left, right) {
+  private _mergePrefixes(
+    left: React.ReactNode,
+    right: React.ReactNode
+  ): React.ReactNode {
     if (!right) {
       return left;
     } else if (!left) {
@@ -196,4 +187,4 @@ class ReactEvaluator extends Evaluator {
   }
 }
 
-module.exports = ReactEvaluator;
+export default ReactEvaluator;

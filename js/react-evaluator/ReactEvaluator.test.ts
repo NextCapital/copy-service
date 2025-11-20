@@ -1,7 +1,7 @@
-const React = require('react');
-const ReactDOMServer = require('react-dom/server');
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
 
-const {
+import {
   Formatting,
   Functional,
   Newline,
@@ -13,12 +13,15 @@ const {
   Substitutions,
   CopyService,
   WordBreak
-} = require('../index.js');
+} from '../index';
 
-const ReactEvaluator = require('./ReactEvaluator');
+import ReactEvaluator from './ReactEvaluator';
+import SyntaxNode from '../copy-service/SyntaxNode/SyntaxNode';
 
 describe('ReactEvaluator', () => {
-  let evaluator, copyService, substitutions;
+  let evaluator: ReactEvaluator;
+  let copyService: CopyService;
+  let substitutions: Substitutions;
 
   beforeEach(() => {
     copyService = new CopyService();
@@ -29,7 +32,7 @@ describe('ReactEvaluator', () => {
     jest.spyOn(substitutions, 'getBoolean');
   });
 
-  function createElement(tag, ...content) {
+  function createElement(tag: string, ...content: React.ReactNode[]): React.ReactElement {
     return React.createElement(tag, null, ...content);
   }
 
@@ -44,7 +47,7 @@ describe('ReactEvaluator', () => {
       jest.spyOn(copyService, 'getAstForKey');
     });
 
-    const getStaticMarkup = (copyPrefix, ast) => (
+    const getStaticMarkup = (copyPrefix: React.ReactNode, ast: SyntaxNode | null): string => (
       ReactDOMServer.renderToStaticMarkup(
         evaluator.evalAST(copyPrefix, ast, substitutions)
       )

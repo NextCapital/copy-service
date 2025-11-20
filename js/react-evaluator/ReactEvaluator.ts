@@ -14,6 +14,8 @@ import SyntaxNode from '../copy-service/SyntaxNode/SyntaxNode';
 import Verbatim from '../copy-service/Verbatim/Verbatim';
 import WordBreak from '../copy-service/WordBreak/WordBreak';
 
+type AST = SyntaxNode | null;
+
 /**
  * Provides an interface that can register copy, determine the existence of copy, and generate copy
  * recursively evaluated with substitutions.
@@ -24,7 +26,7 @@ class ReactEvaluator extends Evaluator<React.ReactNode> {
    */
   evalAST(
     copyPrefix: React.ReactNode,
-    ast: SyntaxNode | null,
+    ast: AST,
     substitutions: Substitutions
   ): React.ReactNode {
     if (!ast) {
@@ -112,7 +114,7 @@ class ReactEvaluator extends Evaluator<React.ReactNode> {
   /**
    * Returns the default copy (usually an empty string).
    */
-  getInitialResult(): React.ReactNode {
+  getInitialResult(): null {
     return null;
   }
 

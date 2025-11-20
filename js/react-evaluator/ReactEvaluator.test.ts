@@ -18,6 +18,8 @@ import {
 import ReactEvaluator from './ReactEvaluator';
 import SyntaxNode from '../copy-service/SyntaxNode/SyntaxNode';
 
+type AST = SyntaxNode | null;
+
 describe('ReactEvaluator', () => {
   let evaluator: ReactEvaluator;
   let copyService: CopyService;
@@ -54,7 +56,7 @@ describe('ReactEvaluator', () => {
       jest.spyOn(copyService, 'getAstForKey');
     });
 
-    const getStaticMarkup = (copyPrefix: React.ReactNode, ast: SyntaxNode | null): string => (
+    const getStaticMarkup = (copyPrefix: React.ReactNode, ast: AST): string => (
       ReactDOMServer.renderToStaticMarkup(
         evaluator.evalAST(copyPrefix, ast, substitutions) as React.ReactElement
       )
@@ -285,8 +287,7 @@ describe('ReactEvaluator', () => {
 
               expect(ReactDOMServer.renderToStaticMarkup(
                 evaluator.evalAST(null, ast, substitutions) as React.ReactElement
-              )).toBe((ast.copy as Verbatim).text
-              );
+              )).toBe((ast.copy as Verbatim).text);
             });
           });
         });
@@ -301,8 +302,7 @@ describe('ReactEvaluator', () => {
 
             expect(ReactDOMServer.renderToStaticMarkup(
               evaluator.evalAST(null, ast, substitutions) as React.ReactElement
-            )).toBe(`<em>${(ast.copy as Verbatim).text}</em>`
-            );
+            )).toBe(`<em>${(ast.copy as Verbatim).text}</em>`);
           });
 
           describe('when the tag is empty', () => {
@@ -317,8 +317,7 @@ describe('ReactEvaluator', () => {
 
               expect(ReactDOMServer.renderToStaticMarkup(
                 evaluator.evalAST(prefix, ast, substitutions) as React.ReactElement
-              )).toBe('prefix'
-              );
+              )).toBe('prefix');
             });
           });
         });

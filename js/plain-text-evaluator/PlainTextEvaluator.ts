@@ -51,7 +51,7 @@ class PlainTextEvaluator extends Evaluator<string> {
     // Build the copy at the referenced key and append it.
     else if (ast instanceof Reference) {
       copy = this.evalAST(
-        this.getInitialResult(), this.copyService.getAstForKey(ast.key), substitutions
+        this.getInitialResult(), this.copyService.getAstForKey(ast.key) ?? null, substitutions
       );
     }
     // Perform the substitution and append it.
@@ -61,7 +61,7 @@ class PlainTextEvaluator extends Evaluator<string> {
     } else if (ast instanceof RefSubstitute) {
       const copyKey = substitutions.get(ast.key);
       copy = this.evalAST(
-        this.getInitialResult(), this.copyService.getAstForKey(copyKey), substitutions
+        this.getInitialResult(), this.copyService.getAstForKey(copyKey) ?? null, substitutions
       );
     }
     // Check the decider provided in substitutions, pick the correct branch, evaluate that branch,

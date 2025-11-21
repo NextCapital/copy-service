@@ -48,7 +48,7 @@ class ReactEvaluator extends Evaluator<React.ReactNode> {
       copy = ast.text;
     } else if (ast instanceof Reference) {
       copy = this.evalAST(
-        this.getInitialResult(), this.copyService.getAstForKey(ast.key), substitutions
+        this.getInitialResult(), this.copyService.getAstForKey(ast.key) ?? null, substitutions
       );
     } else if (ast instanceof Substitute) {
       const value = substitutions.get(ast.key);
@@ -61,7 +61,7 @@ class ReactEvaluator extends Evaluator<React.ReactNode> {
     } else if (ast instanceof RefSubstitute) {
       const copyKey = substitutions.get(ast.key);
       copy = this.evalAST(
-        this.getInitialResult(), this.copyService.getAstForKey(copyKey), substitutions
+        this.getInitialResult(), this.copyService.getAstForKey(copyKey) ?? null, substitutions
       );
     } else if (ast instanceof Switch) {
       const decider = substitutions.getBoolean(ast.key);

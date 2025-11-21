@@ -15,11 +15,11 @@ interface CopyServiceOptions {
   language?: string | null;
 }
 
-interface CopySubkeys {
+export interface CopySubkeys {
   [key: string]: CopySubkeys | string | null;
 }
 
-type RegisteredCopyNode = string | AST | {
+export type RegisteredCopyNode = string | AST | {
   [key: string]: RegisteredCopyNode;
 };
 

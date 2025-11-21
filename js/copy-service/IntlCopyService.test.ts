@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import CopyService from './CopyService';
+import CopyService, { type CopyFile } from './CopyService';
 import ErrorHandler from './ErrorHandler/ErrorHandler';
 import IntlCopyService from './IntlCopyService';
 import Verbatim from './Verbatim/Verbatim';
@@ -45,7 +45,15 @@ describe('IntlCopyService', () => {
       test('sets it for each language', () => {
         jest.spyOn(IntlCopyService.prototype, 'registerCopy').mockImplementation();
 
-        const copy = hierarchy = {
+        const testHierarchy = {
+          'en-us': null,
+          'en-uk': 'en-us',
+          spanish: 'en-us',
+          portuguese: 'spanish',
+          german: null
+        };
+
+        const copy = {
           'en-us': { some: 'copy' },
           'en-uk': { extremely: 'chuffed' },
           spanish: { los: 'gringos' },
@@ -53,7 +61,7 @@ describe('IntlCopyService', () => {
           german: { volkswagen: 'beetle' }
         };
 
-        copyService = new IntlCopyService(language, hierarchy, { copy });
+        copyService = new IntlCopyService(language, testHierarchy, { copy });
 
         _.forEach(copy, (langCopy, lang) => {
           expect(IntlCopyService.prototype.registerCopy).toHaveBeenCalledWith(langCopy, lang);
@@ -314,8 +322,8 @@ describe('IntlCopyService', () => {
   });
 
   describe('getRegisteredCopy', () => {
-    let childCopy: object;
-    let parentCopy: object;
+    let childCopy: CopyFile;
+    let parentCopy: CopyFile;
 
     beforeEach(() => {
       parentCopy = {
@@ -403,16 +411,16 @@ describe('IntlCopyService', () => {
 
   describe('parseAllCopy', () => {
     test('calls parseAllCopy on each service', () => {
-      // @ts-expect-error Accessing private property for testing
       _.forEach(
+        // @ts-expect-error Accessing private property for testing
         copyService._services,
         (service) => jest.spyOn(service, 'parseAllCopy').mockImplementation()
       );
 
       copyService.parseAllCopy();
 
-      // @ts-expect-error Accessing private property for testing
       _.forEach(
+        // @ts-expect-error Accessing private property for testing
         copyService._services,
         (service) => expect(service.parseAllCopy).toHaveBeenCalled()
       );

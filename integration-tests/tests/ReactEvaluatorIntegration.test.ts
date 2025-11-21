@@ -1,5 +1,5 @@
 import ReactDOMServer from 'react-dom/server';
-import type { ReactElement } from 'react';
+import type { ReactNode } from 'react';
 import CopyService from '../../js/copy-service/CopyService';
 import ReactEvaluator from '../../js/react-evaluator/ReactEvaluator';
 import * as copy from '../copy.json';
@@ -19,7 +19,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
     evaluator = new ReactEvaluator(copyService);
   });
 
-  const getStaticMarkup = (jsx: ReactElement | null): string => ReactDOMServer.renderToStaticMarkup(jsx);
+  const getStaticMarkup = (jsx: ReactNode): string => ReactDOMServer.renderToStaticMarkup(jsx as any);
 
   const testCopy = ({
     key,

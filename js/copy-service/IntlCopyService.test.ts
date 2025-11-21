@@ -1,16 +1,16 @@
-const _ = require('lodash');
-
-const CopyService = require('./CopyService').default;
-
-const ErrorHandler = require('./ErrorHandler/ErrorHandler').default;
-const IntlCopyService = require('./IntlCopyService');
-const Verbatim = require('./Verbatim/Verbatim').default;
+import _ from 'lodash';
+import CopyService from './CopyService';
+import ErrorHandler from './ErrorHandler/ErrorHandler';
+import IntlCopyService from './IntlCopyService';
+import Verbatim from './Verbatim/Verbatim';
 
 /**
  * NOTE: Private methods are implicitly tested through other methods.
  */
 describe('IntlCopyService', () => {
-  let language, hierarchy, copyService;
+  let language: string;
+  let hierarchy: { [key: string]: string | null };
+  let copyService: IntlCopyService;
 
   beforeEach(() => {
     language = 'spanish';
@@ -28,12 +28,15 @@ describe('IntlCopyService', () => {
   describe('constructor', () => {
     test('sets the hierarchy and default language', () => {
       expect(copyService.language).toBe(language);
+      // @ts-expect-error Accessing private property for testing
       expect(copyService._hierarchy).toBe(hierarchy);
     });
 
     test('creates a service for each language with correct args', () => {
       _.forEach(_.keys(hierarchy), (lang) => {
+        // @ts-expect-error Accessing private property for testing
         expect(copyService._services[lang]).toBeInstanceOf(CopyService);
+        // @ts-expect-error Accessing private property for testing
         expect(copyService._services[lang].language).toBe(lang);
       });
     });
@@ -85,29 +88,34 @@ describe('IntlCopyService', () => {
   describe('getLanguageService', () => {
     describe('when no language is specified', () => {
       test('returns the service for the current language', () => {
+        // @ts-expect-error Accessing private property for testing
         expect(copyService.getLanguageService()).toBe(copyService._services[language]);
       });
     });
 
     describe('when a language is specified', () => {
       test('returns the service for the provided language', () => {
+        // @ts-expect-error Accessing private property for testing
         expect(copyService.getLanguageService('en-us')).toBe(copyService._services['en-us']);
       });
     });
   });
 
   describe('registerCopy', () => {
-    let copy = {};
+    let copy: { [key: string]: string };
 
     beforeEach(() => {
       copy = { some: 'copy' };
+      // @ts-expect-error Accessing private property for testing
       jest.spyOn(copyService._services[language], 'registerCopy').mockImplementation();
+      // @ts-expect-error Accessing private property for testing
       jest.spyOn(copyService._services['en-us'], 'registerCopy').mockImplementation();
     });
 
     describe('when no language is specified', () => {
       test('registers copy for the current language', () => {
         copyService.registerCopy(copy);
+        // @ts-expect-error Accessing private property for testing
         expect(copyService._services[language].registerCopy).toHaveBeenCalledWith(copy);
       });
     });
@@ -115,6 +123,7 @@ describe('IntlCopyService', () => {
     describe('when a language is specified', () => {
       test('registers copy for the provided language', () => {
         copyService.registerCopy(copy, 'en-us');
+        // @ts-expect-error Accessing private property for testing
         expect(copyService._services['en-us'].registerCopy).toHaveBeenCalledWith(copy);
       });
     });
@@ -305,7 +314,8 @@ describe('IntlCopyService', () => {
   });
 
   describe('getRegisteredCopy', () => {
-    let childCopy, parentCopy;
+    let childCopy: object;
+    let parentCopy: object;
 
     beforeEach(() => {
       parentCopy = {
@@ -393,6 +403,7 @@ describe('IntlCopyService', () => {
 
   describe('parseAllCopy', () => {
     test('calls parseAllCopy on each service', () => {
+      // @ts-expect-error Accessing private property for testing
       _.forEach(
         copyService._services,
         (service) => jest.spyOn(service, 'parseAllCopy').mockImplementation()
@@ -400,6 +411,7 @@ describe('IntlCopyService', () => {
 
       copyService.parseAllCopy();
 
+      // @ts-expect-error Accessing private property for testing
       _.forEach(
         copyService._services,
         (service) => expect(service.parseAllCopy).toHaveBeenCalled()

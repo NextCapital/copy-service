@@ -9,7 +9,7 @@ import Verbatim from './Verbatim/Verbatim';
  */
 describe('IntlCopyService', () => {
   let language: string;
-  let hierarchy: { [key: string]: string | null };
+  let hierarchy: { [key: string]: string | null; };
   let copyService: IntlCopyService;
 
   beforeEach(() => {
@@ -102,7 +102,7 @@ describe('IntlCopyService', () => {
   });
 
   describe('registerCopy', () => {
-    let copy: { [key: string]: string };
+    let copy: { [key: string]: string; };
 
     beforeEach(() => {
       copy = { some: 'copy' };

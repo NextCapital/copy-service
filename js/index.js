@@ -16,7 +16,7 @@ const CopyService = require('./copy-service/CopyService');
 const IntlCopyService = require('./copy-service/IntlCopyService');
 
 const PlainTextEvaluator = require('./plain-text-evaluator/PlainTextEvaluator').default;
-const HtmlEvaluator = require('./html-evaluator/HtmlEvaluator');
+const HtmlEvaluator = require('./html-evaluator/HtmlEvaluator').default;
 const ReactEvaluator = require('./react-evaluator/ReactEvaluator');
 
 module.exports = {

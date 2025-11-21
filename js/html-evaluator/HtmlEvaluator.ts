@@ -1,38 +1,30 @@
-const PlainTextEvaluator = require('../plain-text-evaluator/PlainTextEvaluator').default;
+import PlainTextEvaluator from '../plain-text-evaluator/PlainTextEvaluator';
 
 /**
  * Provides an interface that can register copy, determine the existence of copy, and generate copy
  * recursively evaluated with substitutions.
- *
- * @interface
  */
 class HtmlEvaluator extends PlainTextEvaluator {
   /**
    * `HtmlEvaluator` treats `Newline` nodes as `<br/>` tags.
-   *
-   * @returns {boolean}
    */
-  getNewline() {
+  override getNewline(): string {
     return '<br/>';
   }
 
   /**
    * `HtmlEvaluator` treats `WordBreak` nodes as `<wbr/>` tags.
-   *
-   * @returns {string}
    */
-  getWordBreak() {
+  override getWordBreak(): string {
     return '<wbr/>';
   }
 
   /**
    * `HtmlEvaluator` allows `Formatting` AST nodes to include their tags.
-   *
-   * @returns {boolean}
    */
-  allowsFormattingTags() {
+  override allowsFormattingTags(): boolean {
     return true;
   }
 }
 
-module.exports = HtmlEvaluator;
+export default HtmlEvaluator;

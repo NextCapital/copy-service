@@ -32,9 +32,9 @@
   },
   "scripts": {
     "autopublish": "auto-publish-package",
-    "build": "webpack",
+    "build": "npm run tsc",
     "clean": "rm -rf ./ts-output",
-    "ci:local": "npm run lint && npm run test && npm run build && npm run tsc && npm run tsc:test",
+    "ci:local": "npm run lint && npm run test && npm run tsc && npm run tsc:test",
     "docs": "rm -rf docs/ && jsdoc js/**/*.js -c .jsdoc.json",
     "lint": "npm run lint:js && npm run lint:ts && npm run lint:spelling",
     "lint:js": "eslint \"js/**/*.{js,jsx}\" --cache",
@@ -82,10 +82,7 @@
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "ts-jest": "^29.3.2",
-    "ts-loader": "^9.5.2",
-    "typescript": "^5.8.3",
-    "webpack": "^5.99.6",
-    "webpack-cli": "^6.0.1"
+    "typescript": "^5.8.3"
   },
   "peerDependencies": {
     "react": "^16.14.0 || ^17.0.0 || ^18.0.0",

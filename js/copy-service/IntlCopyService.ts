@@ -44,7 +44,7 @@ interface CopySubkeys {
 class IntlCopyService {
   private _hierarchy: LanguageHierarchy;
   private _services: Record<string, CopyService>;
-  language: string;
+  language!: string;
 
   /**
    * Constructor for `IntlCopyService`.
@@ -122,7 +122,7 @@ class IntlCopyService {
    */
   buildSubkeys(key: string, language?: string | null): CopySubkeys {
     const currentLanguage = language || this.language;
-    return this._mergeFromHierarchy(currentLanguage, 'buildSubkeys', key);
+    return this._mergeFromHierarchy(currentLanguage, 'buildSubkeys', key) as CopySubkeys;
   }
 
   /**
@@ -159,10 +159,14 @@ class IntlCopyService {
    * See `CopyService` documentation for `getAstForKey`. Will return the first non-null value from
    * the hierarchy, and `null` if none has an AST.
    *
+   * Note: While CopyService.getAstForKey may return undefined, IntlCopyService.getAstForKey
+   * will never actually return undefined - it converts undefined to null. The return type includes
+   * undefined for type compatibility with CopyService when used polymorphically.
+   *
    * @param key The key to get the AST for.
    * @param language Initial language to use. Will use the current if not specified.
    */
-  getAstForKey(key: string, language?: string | null): AST {
+  getAstForKey(key: string, language?: string | null): AST | undefined {
     const currentLanguage = language || this.language;
     const result = this._getFromHierarchy(
       currentLanguage,
@@ -252,7 +256,7 @@ class IntlCopyService {
     yield currentLanguage;
 
     while (this._hierarchy[currentLanguage]) {
-      currentLanguage = this._hierarchy[currentLanguage];
+      currentLanguage = this._hierarchy[currentLanguage]!;
       yield currentLanguage;
     }
   }
@@ -268,11 +272,11 @@ class IntlCopyService {
    */
   private _mergeFromHierarchy(language: string, method: string, ...args: any[]): object { // eslint-disable-line @typescript-eslint/no-explicit-any
     if (this._hierarchy[language] === null) { // root language, no merging needed
-      return this.getLanguageService(language)[method](...args);
+      return (this.getLanguageService(language) as any)[method](...args); // eslint-disable-line @typescript-eslint/no-explicit-any
     }
 
     return _.reduceRight(Array.from(this._getHierarchy(language)), (result, lang) => (
-      _.merge(result, this.getLanguageService(lang)[method](...args))
+      _.merge(result, (this.getLanguageService(lang) as any)[method](...args)) // eslint-disable-line @typescript-eslint/no-explicit-any
     ), {});
   }
 
@@ -293,7 +297,7 @@ class IntlCopyService {
 
     // eslint-disable-next-line no-restricted-syntax
     for (const lang of this._getHierarchy(language)) {
-      result = this.getLanguageService(lang)[method](...args);
+      result = (this.getLanguageService(lang) as any)[method](...args); // eslint-disable-line @typescript-eslint/no-explicit-any
       if (!skip(result)) {
         return result;
       }

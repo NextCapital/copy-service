@@ -69,7 +69,7 @@ abstract class Evaluator<T> {
     const substitutions = new Substitutions(rawSubstitutions || {});
     const ast = this.copyService.getAstForKey(key);
 
-    return this.evalAST(this.getInitialResult(), ast, substitutions);
+    return this.evalAST(this.getInitialResult(), ast ?? null, substitutions);
   }
 
   /**

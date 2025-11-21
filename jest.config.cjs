@@ -1,7 +1,6 @@
 module.exports = {
   collectCoverage: true,
   collectCoverageFrom: [
-    "js/**/*.js",
     "js/**/*.ts"
   ],
   coverageThreshold: {
@@ -24,9 +23,7 @@ module.exports = {
   restoreMocks: true,
   testEnvironment: 'node',
   testMatch: [
-    "<rootDir>/js/**/*.test.js",
     "<rootDir>/js/**/*.test.ts",
-    "<rootDir>/integration-tests/**/*.test.js",
     "<rootDir>/integration-tests/**/*.test.ts",
   ],
   testResultsProcessor: "./node_modules/jest-junit-reporter",

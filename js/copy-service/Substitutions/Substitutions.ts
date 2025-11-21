@@ -40,7 +40,7 @@ class Substitutions {
    * @param {string} key Path to substitution on the substitutions object.
    * @returns {*} The value from the substitutions.
    */
-  get(key: string): unknown {
+  get(key: string): any { // eslint-disable-line @typescript-eslint/no-explicit-any
     const value = _.result(this.substitutions, key);
 
     if (_.isUndefined(value)) {

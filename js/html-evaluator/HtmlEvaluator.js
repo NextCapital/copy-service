@@ -1,4 +1,4 @@
-const PlainTextEvaluator = require('../plain-text-evaluator/PlainTextEvaluator');
+const PlainTextEvaluator = require('../plain-text-evaluator/PlainTextEvaluator').default;
 
 /**
  * Provides an interface that can register copy, determine the existence of copy, and generate copy

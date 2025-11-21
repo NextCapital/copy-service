@@ -1,5 +1,5 @@
 const { IntlCopyService } = require('../../js/index.js');
-const PlainTextEvaluator = require('../../js/plain-text-evaluator/PlainTextEvaluator');
+const PlainTextEvaluator = require('../../js/plain-text-evaluator/PlainTextEvaluator').default;
 
 const copy = require('../copy');
 const ukCopy = require('../uk-copy');

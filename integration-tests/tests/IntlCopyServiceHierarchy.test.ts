@@ -1,21 +1,30 @@
-const { CopyService } = require('../../js/index.js');
-const HtmlEvaluator = require('../../js/html-evaluator/HtmlEvaluator').default;
+import IntlCopyService from '../../js/copy-service/IntlCopyService';
+import PlainTextEvaluator from '../../js/plain-text-evaluator/PlainTextEvaluator';
+import * as copy from '../copy.json';
+import * as ukCopy from '../uk-copy.json';
 
-const copy = require('../copy');
+interface TestCopyParams {
+  key: string;
+  substitutions?: object;
+  expectedCopy: string;
+}
 
-describe('CopyService - HtmlEvaluator Integration Tests', () => {
-  let copyService, evaluator;
+describe('IntlCopyService - Hierarchy Tests', () => {
+  let copyService: IntlCopyService;
+  let evaluator: PlainTextEvaluator;
 
   beforeEach(() => {
-    copyService = new CopyService({ copy });
-    evaluator = new HtmlEvaluator(copyService);
+    copyService = new IntlCopyService('en-uk', {'en-us': null, 'en-uk': 'en-us' }, {
+      copy: { 'en-us': copy, 'en-uk': ukCopy }
+    });
+    evaluator = new PlainTextEvaluator(copyService);
   });
 
   const testCopy = ({
     key,
     substitutions,
     expectedCopy
-  }) => {
+  }: TestCopyParams): void => {
     test('returns the expected copy', () => {
       expect(evaluator.getCopy(key, substitutions)).toBe(expectedCopy);
     });
@@ -47,7 +56,7 @@ describe('CopyService - HtmlEvaluator Integration Tests', () => {
       describe('verbatim.owner', () => {
         testCopy({
           key: 'verbatim.owner',
-          expectedCopy: 'Account Owner'
+          expectedCopy: 'Account Proprietor'
         });
       });
 
@@ -79,7 +88,7 @@ describe('CopyService - HtmlEvaluator Integration Tests', () => {
         testCopy({
           key: 'substitutions.symbol',
           substitutions: { value: 100 },
-          expectedCopy: '$100'
+          expectedCopy: '£100'
         });
       });
 
@@ -87,7 +96,7 @@ describe('CopyService - HtmlEvaluator Integration Tests', () => {
         testCopy({
           key: 'substitutions.min',
           substitutions: { value: 100 },
-          expectedCopy: 'input value must be no earlier than 100'
+          expectedCopy: 'input value must be after 100'
         });
       });
     });
@@ -104,14 +113,14 @@ describe('CopyService - HtmlEvaluator Integration Tests', () => {
         testCopy({
           key: 'references.symbol',
           substitutions: { value: 100 },
-          expectedCopy: '$100'
+          expectedCopy: '£100'
         });
       });
 
       describe('references.owner', () => {
         testCopy({
           key: 'references.owner',
-          expectedCopy: 'Account Owner'
+          expectedCopy: 'Account Proprietor'
         });
       });
     });
@@ -132,7 +141,7 @@ describe('CopyService - HtmlEvaluator Integration Tests', () => {
           testCopy({
             key: 'decisions.title',
             substitutions: { designObject: { current: true } },
-            expectedCopy: 'Current asset'
+            expectedCopy: 'Current holding'
           });
         });
 
@@ -140,7 +149,7 @@ describe('CopyService - HtmlEvaluator Integration Tests', () => {
           testCopy({
             key: 'decisions.title',
             substitutions: { designObject: { current: 1 } },
-            expectedCopy: 'Current asset'
+            expectedCopy: 'Current holding'
           });
         });
 
@@ -148,7 +157,7 @@ describe('CopyService - HtmlEvaluator Integration Tests', () => {
           testCopy({
             key: 'decisions.title',
             substitutions: { designObject: { current: false } },
-            expectedCopy: 'Proposed asset'
+            expectedCopy: 'Proposed holding'
           });
         });
 
@@ -156,13 +165,13 @@ describe('CopyService - HtmlEvaluator Integration Tests', () => {
           testCopy({
             key: 'decisions.title',
             substitutions: { designObject: { current: 0 } },
-            expectedCopy: 'Proposed asset'
+            expectedCopy: 'Proposed holding'
           });
 
           testCopy({
             key: 'decisions.title',
             substitutions: { designObject: { current: 400 } },
-            expectedCopy: 'Proposed asset'
+            expectedCopy: 'Proposed holding'
           });
         });
       });
@@ -191,14 +200,12 @@ describe('CopyService - HtmlEvaluator Integration Tests', () => {
         describe('functions.title', () => {
           testCopy({
             key: 'functions.title',
-            substitutions: {
-              makeExternalLink: (text) => `+ ${text}`
-            },
+            substitutions: { makeExternalLink: (text: string) => `+ ${text}` },
             expectedCopy: '+ learn more'
           });
 
           test('calls the passed function', () => {
-            const passedFunction = jest.fn().mockImplementation((text) => `+ ${text}`);
+            const passedFunction = jest.fn().mockImplementation((text: string) => `+ ${text}`);
             evaluator.getCopy('functions.title', { makeExternalLink: passedFunction });
             expect(passedFunction).toBeCalledWith('learn more');
           });
@@ -212,7 +219,7 @@ describe('CopyService - HtmlEvaluator Integration Tests', () => {
 
         testCopy({
           key: 'functions.title',
-          substitutions: { makeExternalLink: (text) => `+ ${text}` },
+          substitutions: { makeExternalLink: (text: string) => `+ ${text}` },
           expectedCopy: 'learn more'
         });
       });
@@ -222,15 +229,15 @@ describe('CopyService - HtmlEvaluator Integration Tests', () => {
           testCopy({
             key: 'functions.args',
             substitutions: {
-              func: (text) => `+ ${text}`,
+              func: (text: string) => `+ ${text}`,
               arg1: 'arg1',
               arg2: 'arg2'
             },
-            expectedCopy: '+ learn more'
+            expectedCopy: '+ show more'
           });
 
           test('calls the passed function with args', () => {
-            const passedFunction = jest.fn().mockImplementation((text) => `+ ${text}`);
+            const passedFunction = jest.fn().mockImplementation((text: string) => `+ ${text}`);
             const substitutions = {
               func: passedFunction,
               arg1: 'arg1',
@@ -238,7 +245,7 @@ describe('CopyService - HtmlEvaluator Integration Tests', () => {
             };
 
             evaluator.getCopy('functions.args', substitutions);
-            expect(passedFunction).toBeCalledWith('learn more', 'arg1', 'arg2');
+            expect(passedFunction).toBeCalledWith('show more', 'arg1', 'arg2');
           });
         });
       });
@@ -248,14 +255,14 @@ describe('CopyService - HtmlEvaluator Integration Tests', () => {
       describe('tags.title', () => {
         testCopy({
           key: 'tags.title',
-          expectedCopy: '<strong>Plan</strong>'
+          expectedCopy: 'Plot'
         });
       });
 
       describe('tags.nested', () => {
         testCopy({
           key: 'tags.nested',
-          expectedCopy: '<strong><em>Plan</em></strong>'
+          expectedCopy: 'Plan'
         });
       });
     });
@@ -267,7 +274,7 @@ describe('CopyService - HtmlEvaluator Integration Tests', () => {
         testCopy({
           key: 'tags.nestedReference',
           substitutions: { value: 100 },
-          expectedCopy: '<strong><em>$100</em></strong>'
+          expectedCopy: '£100'
         });
       });
     });
@@ -282,7 +289,7 @@ describe('CopyService - HtmlEvaluator Integration Tests', () => {
               sub: 'some sub',
               value: 100
             },
-            expectedCopy: '<strong><em>$100</em></strong>'
+            expectedCopy: '£100'
           });
         });
 

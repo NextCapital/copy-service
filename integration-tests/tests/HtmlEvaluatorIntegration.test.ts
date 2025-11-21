@@ -1,25 +1,27 @@
-const { IntlCopyService } = require('../../js/index.js');
-const PlainTextEvaluator = require('../../js/plain-text-evaluator/PlainTextEvaluator').default;
+import CopyService from '../../js/copy-service/CopyService';
+import HtmlEvaluator from '../../js/html-evaluator/HtmlEvaluator';
+import * as copy from '../copy.json';
 
-const copy = require('../copy');
+interface TestCopyParams {
+  key: string;
+  substitutions?: object;
+  expectedCopy: string;
+}
 
-// Uses an IntlCopyService and ensures it basically works with the evaluator
-// for a single language. This test should help detect breaking interface changes.
-describe('IntlCopyService - Basic Compatibility Tests', () => {
-  let copyService, evaluator;
+describe('CopyService - HtmlEvaluator Integration Tests', () => {
+  let copyService: CopyService;
+  let evaluator: HtmlEvaluator;
 
   beforeEach(() => {
-    copyService = new IntlCopyService('en-us', { 'en-us': null }, {
-      copy: { 'en-us': copy }
-    });
-    evaluator = new PlainTextEvaluator(copyService);
+    copyService = new CopyService({ copy });
+    evaluator = new HtmlEvaluator(copyService);
   });
 
   const testCopy = ({
     key,
     substitutions,
     expectedCopy
-  }) => {
+  }: TestCopyParams): void => {
     test('returns the expected copy', () => {
       expect(evaluator.getCopy(key, substitutions)).toBe(expectedCopy);
     });
@@ -195,12 +197,14 @@ describe('IntlCopyService - Basic Compatibility Tests', () => {
         describe('functions.title', () => {
           testCopy({
             key: 'functions.title',
-            substitutions: { makeExternalLink: (text) => `+ ${text}` },
+            substitutions: {
+              makeExternalLink: (text: string) => `+ ${text}`
+            },
             expectedCopy: '+ learn more'
           });
 
           test('calls the passed function', () => {
-            const passedFunction = jest.fn().mockImplementation((text) => `+ ${text}`);
+            const passedFunction = jest.fn().mockImplementation((text: string) => `+ ${text}`);
             evaluator.getCopy('functions.title', { makeExternalLink: passedFunction });
             expect(passedFunction).toBeCalledWith('learn more');
           });
@@ -214,17 +218,17 @@ describe('IntlCopyService - Basic Compatibility Tests', () => {
 
         testCopy({
           key: 'functions.title',
-          substitutions: { makeExternalLink: (text) => `+ ${text}` },
+          substitutions: { makeExternalLink: (text: string) => `+ ${text}` },
           expectedCopy: 'learn more'
         });
-      });
+    });
 
       describe('with arguments', () => {
         describe('functions.args', () => {
           testCopy({
             key: 'functions.args',
             substitutions: {
-              func: (text) => `+ ${text}`,
+              func: (text: string) => `+ ${text}`,
               arg1: 'arg1',
               arg2: 'arg2'
             },
@@ -232,7 +236,7 @@ describe('IntlCopyService - Basic Compatibility Tests', () => {
           });
 
           test('calls the passed function with args', () => {
-            const passedFunction = jest.fn().mockImplementation((text) => `+ ${text}`);
+            const passedFunction = jest.fn().mockImplementation((text: string) => `+ ${text}`);
             const substitutions = {
               func: passedFunction,
               arg1: 'arg1',
@@ -250,14 +254,14 @@ describe('IntlCopyService - Basic Compatibility Tests', () => {
       describe('tags.title', () => {
         testCopy({
           key: 'tags.title',
-          expectedCopy: 'Plan'
+          expectedCopy: '<strong>Plan</strong>'
         });
       });
 
       describe('tags.nested', () => {
         testCopy({
           key: 'tags.nested',
-          expectedCopy: 'Plan'
+          expectedCopy: '<strong><em>Plan</em></strong>'
         });
       });
     });
@@ -269,7 +273,7 @@ describe('IntlCopyService - Basic Compatibility Tests', () => {
         testCopy({
           key: 'tags.nestedReference',
           substitutions: { value: 100 },
-          expectedCopy: '$100'
+          expectedCopy: '<strong><em>$100</em></strong>'
         });
       });
     });
@@ -284,7 +288,7 @@ describe('IntlCopyService - Basic Compatibility Tests', () => {
               sub: 'some sub',
               value: 100
             },
-            expectedCopy: '$100'
+            expectedCopy: '<strong><em>$100</em></strong>'
           });
         });
 

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import CopyService, { type CopyFile } from './CopyService';
 import ErrorHandler from './ErrorHandler/ErrorHandler';
-import IntlCopyService from './IntlCopyService';
+import IntlCopyService, { type LanguageHierarchy } from './IntlCopyService';
 import Verbatim from './Verbatim/Verbatim';
 
 /**
@@ -9,7 +9,7 @@ import Verbatim from './Verbatim/Verbatim';
  */
 describe('IntlCopyService', () => {
   let language: string;
-  let hierarchy: { [key: string]: string | null; };
+  let hierarchy: LanguageHierarchy;
   let copyService: IntlCopyService;
 
   beforeEach(() => {
@@ -110,7 +110,7 @@ describe('IntlCopyService', () => {
   });
 
   describe('registerCopy', () => {
-    let copy: { [key: string]: string; };
+    let copy: CopyFile;
 
     beforeEach(() => {
       copy = { some: 'copy' };

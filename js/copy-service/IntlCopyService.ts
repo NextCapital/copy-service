@@ -1,18 +1,19 @@
 import _ from 'lodash';
-import CopyService, { type AST, type CopyFile } from './CopyService';
+import CopyService, {
+  type AST,
+  type CopyFile,
+  type CopySubkeys,
+  type RegisteredCopyNode
+} from './CopyService';
 import ErrorHandler from './ErrorHandler/ErrorHandler';
 
-interface LanguageHierarchy {
+export interface LanguageHierarchy {
   [language: string]: string | null;
 }
 
-interface IntlCopyServiceOptions {
+interface IntlCopyServiceAdditionalOptions {
   serviceOptions?: { copy?: CopyFile; language?: string | null; };
   copy?: { [language: string]: CopyFile; };
-}
-
-interface CopySubkeys {
-  [key: string]: CopySubkeys | string | null;
 }
 
 /**
@@ -54,7 +55,7 @@ class IntlCopyService {
   constructor(
     defaultLanguage: string,
     hierarchy: LanguageHierarchy,
-    options: IntlCopyServiceOptions = {}
+    options: IntlCopyServiceAdditionalOptions = {}
   ) {
     this._hierarchy = hierarchy;
     this.setLanguage(defaultLanguage);
@@ -115,9 +116,9 @@ class IntlCopyService {
   /**
    * See `CopyService` documentation for `getSubKeys`. Will merge results up the hierarchy tree.
    */
-  getSubkeys(key: string, language?: string | null): object | string {
+  getSubkeys(key: string, language?: string | null): RegisteredCopyNode | undefined {
     const currentLanguage = language || this.language;
-    return this._mergeFromHierarchy(currentLanguage, 'getSubkeys', key);
+    return this._mergeFromHierarchy(currentLanguage, 'getSubkeys', key) as RegisteredCopyNode | undefined;
   }
 
   /**
@@ -132,7 +133,7 @@ class IntlCopyService {
       'hasKey',
       (value) => !value, // keep looking if false
       key
-    );
+    ) as boolean;
   }
 
   /**
@@ -150,7 +151,7 @@ class IntlCopyService {
       'getAstForKey',
       (r) => _.isUndefined(r), // keep looking if undefined
       key
-    );
+    ) as AST | undefined;
 
     if (_.isUndefined(result)) {
       ErrorHandler.handleError(
@@ -171,9 +172,9 @@ class IntlCopyService {
    * This method is helpful for making clear exactly what copy will be used for each key for a
    * given language.
    */
-  getRegisteredCopy(language?: string | null): object {
+  getRegisteredCopy(language?: string | null): { [key: string]: RegisteredCopyNode; } {
     const currentLanguage = language || this.language;
-    return this._mergeFromHierarchy(currentLanguage, 'getRegisteredCopy');
+    return this._mergeFromHierarchy(currentLanguage, 'getRegisteredCopy') as { [key: string]: RegisteredCopyNode; };
   }
 
   /**
@@ -188,7 +189,7 @@ class IntlCopyService {
       'getRegisteredCopyForKey',
       (r) => _.isNil(r), // keep looking if null
       key
-    );
+    ) as string | null;
 
     if (_.isNil(result)) {
       ErrorHandler.handleError(
@@ -233,19 +234,20 @@ class IntlCopyService {
   /**
    * Calls the method with the args on each copy service in the hierarchy, merging the results
    * such that the most specific (eg: `portuguese`) overrides the most general (eg: `en-us`).
+   *
+   * The return type is unknown to force explicit casting by the caller, as `method` could return
+   * anything.
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private _mergeFromHierarchy(language: string, method: string, ...args: any[]): object {
+  private _mergeFromHierarchy(language: string, method: string, ...args: any[]): unknown { // eslint-disable-line @typescript-eslint/no-explicit-any, @stylistic/max-len
     if (this._hierarchy[language] === null) { // root language, no merging needed
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return (this.getLanguageService(language) as any)[method](...args);
+      const languageService = this.getLanguageService(language);
+      return _.invoke(languageService, method, ...args);
     }
 
     return _.reduceRight(
       Array.from(this._getHierarchy(language)),
       (result, lang) => (
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        _.merge(result, (this.getLanguageService(lang) as any)[method](...args))
+        _.merge(result, _.invoke(this.getLanguageService(lang), method, ...args))
       ),
       {}
     );
@@ -255,6 +257,9 @@ class IntlCopyService {
    * Returns the first non-skipped result from calling the method with the args in
    * each copy service in the hierarchy from leaf to root. The root result will be returned,
    * even if it is skipped.
+   *
+   * The return type is unknown to force explicit casting by the caller, as `method` could return
+   * anything.
    */
   private _getFromHierarchy(
     language: string,
@@ -263,14 +268,12 @@ class IntlCopyService {
     skip: (value: any) => boolean,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ...args: any[]
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ): any {
+  ): unknown {
     let result;
 
     // eslint-disable-next-line no-restricted-syntax
     for (const lang of this._getHierarchy(language)) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      result = (this.getLanguageService(lang) as any)[method](...args);
+      result = _.invoke(this.getLanguageService(lang), method, ...args);
       if (!skip(result)) {
         return result;
       }

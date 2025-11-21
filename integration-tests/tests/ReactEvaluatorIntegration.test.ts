@@ -1,25 +1,31 @@
-const ReactDOMServer = require('react-dom/server');
+import ReactDOMServer from 'react-dom/server';
+import type { ReactElement } from 'react';
+import CopyService from '../../js/copy-service/CopyService';
+import ReactEvaluator from '../../js/react-evaluator/ReactEvaluator';
+import * as copy from '../copy.json';
 
-const { CopyService } = require('../../js/index.js');
-const ReactEvaluator = require('../../js/react-evaluator/ReactEvaluator').default;
-
-const copy = require('../copy');
+interface TestCopyParams {
+  key: string;
+  substitutions?: object;
+  expectedCopy: string;
+}
 
 describe('CopyService - ReactEvaluator Integration Tests', () => {
-  let copyService, evaluator;
+  let copyService: CopyService;
+  let evaluator: ReactEvaluator;
 
   beforeEach(() => {
     copyService = new CopyService({ copy });
     evaluator = new ReactEvaluator(copyService);
   });
 
-  const getStaticMarkup = (jsx) => ReactDOMServer.renderToStaticMarkup(jsx);
+  const getStaticMarkup = (jsx: ReactElement | null): string => ReactDOMServer.renderToStaticMarkup(jsx);
 
   const testCopy = ({
     key,
     substitutions,
     expectedCopy
-  }) => {
+  }: TestCopyParams): void => {
     test('returns the expected copy', () => {
       const staticMarkup = getStaticMarkup(evaluator.getCopy(key, substitutions));
       expect(staticMarkup).toBe(expectedCopy);

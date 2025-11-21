@@ -1,10 +1,16 @@
-const { CopyService } = require('../../js/index.js');
-const HtmlEvaluator = require('../../js/html-evaluator/HtmlEvaluator').default;
+import CopyService from '../../js/copy-service/CopyService';
+import HtmlEvaluator from '../../js/html-evaluator/HtmlEvaluator';
+import * as copy from '../copy.json';
 
-const copy = require('../copy');
+interface TestCopyParams {
+  key: string;
+  substitutions?: object;
+  expectedCopy: string;
+}
 
 describe('CopyService - HtmlEvaluator Integration Tests', () => {
-  let copyService, evaluator;
+  let copyService: CopyService;
+  let evaluator: HtmlEvaluator;
 
   beforeEach(() => {
     copyService = new CopyService({ copy });
@@ -15,7 +21,7 @@ describe('CopyService - HtmlEvaluator Integration Tests', () => {
     key,
     substitutions,
     expectedCopy
-  }) => {
+  }: TestCopyParams): void => {
     test('returns the expected copy', () => {
       expect(evaluator.getCopy(key, substitutions)).toBe(expectedCopy);
     });
@@ -192,13 +198,13 @@ describe('CopyService - HtmlEvaluator Integration Tests', () => {
           testCopy({
             key: 'functions.title',
             substitutions: {
-              makeExternalLink: (text) => `+ ${text}`
+              makeExternalLink: (text: string) => `+ ${text}`
             },
             expectedCopy: '+ learn more'
           });
 
           test('calls the passed function', () => {
-            const passedFunction = jest.fn().mockImplementation((text) => `+ ${text}`);
+            const passedFunction = jest.fn().mockImplementation((text: string) => `+ ${text}`);
             evaluator.getCopy('functions.title', { makeExternalLink: passedFunction });
             expect(passedFunction).toBeCalledWith('learn more');
           });
@@ -212,17 +218,17 @@ describe('CopyService - HtmlEvaluator Integration Tests', () => {
 
         testCopy({
           key: 'functions.title',
-          substitutions: { makeExternalLink: (text) => `+ ${text}` },
+          substitutions: { makeExternalLink: (text: string) => `+ ${text}` },
           expectedCopy: 'learn more'
         });
-      });
+    });
 
       describe('with arguments', () => {
         describe('functions.args', () => {
           testCopy({
             key: 'functions.args',
             substitutions: {
-              func: (text) => `+ ${text}`,
+              func: (text: string) => `+ ${text}`,
               arg1: 'arg1',
               arg2: 'arg2'
             },
@@ -230,7 +236,7 @@ describe('CopyService - HtmlEvaluator Integration Tests', () => {
           });
 
           test('calls the passed function with args', () => {
-            const passedFunction = jest.fn().mockImplementation((text) => `+ ${text}`);
+            const passedFunction = jest.fn().mockImplementation((text: string) => `+ ${text}`);
             const substitutions = {
               func: passedFunction,
               arg1: 'arg1',

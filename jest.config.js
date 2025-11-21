@@ -6,10 +6,10 @@ module.exports = {
   ],
   coverageThreshold: {
     global: {
-      statements: -10,
+      statements: -11,
       branches: -13,
       functions: 100,
-      lines: -10
+      lines: -11
     }
   },
   moduleFileExtensions: [

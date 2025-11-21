@@ -1,34 +1,40 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
-const SyntaxNode = require('./SyntaxNode/SyntaxNode').default;
-const Parser = require('./Parser/Parser').default;
+import SyntaxNode from './SyntaxNode/SyntaxNode';
+import Parser from './Parser/Parser';
+import ErrorHandler from './ErrorHandler/ErrorHandler';
 
-const ErrorHandler = require('./ErrorHandler/ErrorHandler').default;
+export type AST = SyntaxNode | null;
 
-/**
- * An AST class.
- *
- * @typedef {SyntaxNode|null} AST
- */
+export interface CopyFile {
+  [key: string]: string | CopyFile;
+}
+
+interface CopyServiceOptions {
+  copy?: CopyFile;
+  language?: string | null;
+}
+
+interface CopySubkeys {
+  [key: string]: CopySubkeys | string | null;
+}
+
+type RegisteredCopyNode = string | AST | {
+  [key: string]: RegisteredCopyNode;
+};
 
 /**
  * Provides the ability to register, parse, and evaluate copy.
  */
 class CopyService {
+  private _registeredCopy: { [key: string]: RegisteredCopyNode; };
+
+  language: string | null;
+
   /**
    * Constructor for the `CopyService`.
-   *
-   * @param {object} [options]
-   * @param {object} [options.copy] Initial copy to register.
-   * @param {boolean} [options.language] If specified, defines the language this is for from
-   * `IntlCopyService`. Will be `null` otherwise.
    */
-  constructor(options = {}) {
-    /**
-     * The store of registered copy.
-     *
-     * @type {object}
-     */
+  constructor(options: CopyServiceOptions = {}) {
     this._registeredCopy = {};
     this.language = options.language || null;
 
@@ -40,10 +46,8 @@ class CopyService {
   /**
    * Stores the new copy into the copy set. Copy will not be parsed immediately by default. To
    * immediately parse copy into an AST, call `parseAllCopy`.
-   *
-   * @param  {object} jsonCopyConfig A json object containing copy.
    */
-  registerCopy(jsonCopyConfig) {
+  registerCopy(jsonCopyConfig?: CopyFile): void {
     if (!_.isPlainObject(jsonCopyConfig)) {
       ErrorHandler.handleError(
         'CopyService',
@@ -56,20 +60,21 @@ class CopyService {
     // Clone deep to avoid mutating `jsonCopyConfig`
     this._registeredCopy = this._mergeParsedCopy(
       this._registeredCopy,
-      _.cloneDeep(jsonCopyConfig)
+      _.cloneDeep(jsonCopyConfig) as CopyFile
     );
   }
 
   /**
    * Recursively builds all subkeys at which copy exists.
-   *
-   * @param  {string} key
-   * @returns {object} An object of the same structure where the value is the copy key path.
    */
-  buildSubkeys(key) {
+  buildSubkeys(key: string): CopySubkeys {
     const subkeys = this.getSubkeys(key);
 
-    return _.mapValues(subkeys, (obj, path) => {
+    if (!_.isPlainObject(subkeys)) {
+      return {};
+    }
+
+    return _.mapValues(subkeys as { [key: string]: RegisteredCopyNode; }, (obj, path) => {
       const subPath = `${key}${Parser.KEY_DELIMITER}${path}`;
       if (_.isPlainObject(obj)) {
         return this.buildSubkeys(subPath);
@@ -81,21 +86,15 @@ class CopyService {
 
   /**
    * Returns the value at a passed key.
-   *
-   * @param  {string} key
-   * @returns {object|string} The copy object or copy AST at a given key.
    */
-  getSubkeys(key) {
+  getSubkeys(key: string): RegisteredCopyNode | undefined {
     return _.get(this._registeredCopy, key);
   }
 
   /**
    * Determines if the key exists in the registered copy.
-   *
-   * @param  {string} key
-   * @returns {boolean}
    */
-  hasKey(key) {
+  hasKey(key: string): boolean {
     return !_.isNil(this.getSubkeys(key));
   }
 
@@ -103,11 +102,8 @@ class CopyService {
    * Returns the AST at a given key. Logs error if key is not found in the parsed copy, or if the
    * copy fails to parse. In both cases, `null` will be returned. This is preferable to the page
    * blowing up.
-   *
-   * @param  {string} key
-   * @returns {AST|undefined}
    */
-  getAstForKey(key) {
+  getAstForKey(key: string): AST | null | undefined {
     const result = _.get(this._registeredCopy, key);
 
     if (_.isString(result)) { // need to parse to an AST
@@ -140,14 +136,18 @@ class CopyService {
   /**
    * Returns the current merged set of of registered copy. This is helpful to get the current
    * set of registered copy when copy is registered via many sources.
-   *
-   * @param {AST} _node [PRIVATE] Node of the registered copy to get keys from when recursing.
-   * @returns {object} The registered copy, in un-parsed form.
    */
-  getRegisteredCopy(_node = null) {
-    const tree = {};
+  getRegisteredCopy(
+    passedNode?: RegisteredCopyNode
+  ): { [key: string]: RegisteredCopyNode; } {
+    const tree: { [key: string]: RegisteredCopyNode; } = {};
+    const nodeToIterate = passedNode || this._registeredCopy;
 
-    _.forEach(_node || this._registeredCopy, (node, key) => {
+    if (!_.isPlainObject(nodeToIterate)) {
+      return tree;
+    }
+
+    _.forEach(nodeToIterate as { [key: string]: RegisteredCopyNode; }, (node, key) => {
       if (_.isNil(node)) {
         tree[key] = '';
       } else if (_.isString(node)) { // not yet parsed
@@ -164,11 +164,8 @@ class CopyService {
 
   /**
    * Gets the registered copy for a given copy key.
-   *
-   * @param {string} key
-   * @returns {string|null} Registered copy at the key, or null if none.
    */
-  getRegisteredCopyForKey(key) {
+  getRegisteredCopyForKey(key: string): string | null {
     const result = _.get(this._registeredCopy, key);
 
     if (result === null) {
@@ -195,20 +192,18 @@ class CopyService {
    *
    * Notably, this will throw an error if any copy fails to parse.
    */
-  parseAllCopy() {
+  parseAllCopy(): void {
     Parser.parseLeaves(this._registeredCopy);
   }
 
   /**
    * Merges the new registered copy into the old registered copy. This will force any
    * strings or AST nodes to replace rather than merge.
-   *
-   * @param {object} existingCopy
-   * @param {object} newCopy
-   * @returns {object}
-   * @private
    */
-  _mergeParsedCopy(existingCopy, newCopy) {
+  private _mergeParsedCopy(
+    existingCopy: { [key: string]: RegisteredCopyNode; },
+    newCopy: { [key: string]: RegisteredCopyNode; }
+  ): { [key: string]: RegisteredCopyNode; } {
     if (_.isEmpty(existingCopy)) {
       return newCopy;
     }
@@ -229,4 +224,4 @@ class CopyService {
   }
 }
 
-module.exports = CopyService;
+export default CopyService;

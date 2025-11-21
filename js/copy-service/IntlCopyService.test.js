@@ -1,6 +1,6 @@
 const _ = require('lodash');
 
-const CopyService = require('./CopyService');
+const CopyService = require('./CopyService').default;
 
 const ErrorHandler = require('./ErrorHandler/ErrorHandler').default;
 const IntlCopyService = require('./IntlCopyService');

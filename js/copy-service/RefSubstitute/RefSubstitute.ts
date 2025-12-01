@@ -1,4 +1,4 @@
-import SyntaxNode from '../SyntaxNode/SyntaxNode';
+import SyntaxNode from '../SyntaxNode/SyntaxNode.js';
 
 /**
  * Represents a substitution of a copy key reference in an AST.

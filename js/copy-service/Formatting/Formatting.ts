@@ -1,7 +1,7 @@
-import SyntaxNode from '../SyntaxNode/SyntaxNode';
+import SyntaxNode from '../SyntaxNode/SyntaxNode.js';
 
-import CopyService from '../CopyService';
-import IntlCopyService from '../IntlCopyService';
+import CopyService from '../CopyService.js';
+import IntlCopyService from '../IntlCopyService.js';
 
 /**
  * Represents an HTML tag in the AST.

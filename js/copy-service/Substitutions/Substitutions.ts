@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import ErrorHandler from '../ErrorHandler/ErrorHandler';
+import ErrorHandler from '../ErrorHandler/ErrorHandler.js';
 
 /**
  * Class for handling the substitution object/function passed into `getCopy`.

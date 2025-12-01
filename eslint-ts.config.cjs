@@ -34,6 +34,12 @@ module.exports = [
 
       'class-methods-use-this': 'off',
 
+      'import/extensions': ['error', 'ignorePackages', {
+        'ts': 'never',
+        'tsx': 'never',
+        'js': 'always'
+      }],
+
       'jsdoc/require-param': 'off',
       'jsdoc/require-returns': 'off',
 

@@ -1,8 +1,8 @@
-import Verbatim from '../Verbatim/Verbatim';
+import Verbatim from '../Verbatim/Verbatim.js';
 
-import CopyService from '../CopyService';
+import CopyService from '../CopyService.js';
 
-import Formatting from './Formatting';
+import Formatting from './Formatting.js';
 
 describe('Formatting', () => {
   describe('constructor', () => {

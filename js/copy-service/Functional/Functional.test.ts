@@ -1,6 +1,6 @@
-import Verbatim from '../Verbatim/Verbatim';
+import Verbatim from '../Verbatim/Verbatim.js';
 
-import Functional from './Functional';
+import Functional from './Functional.js';
 
 describe('Functional', () => {
   describe('constructor', () => {

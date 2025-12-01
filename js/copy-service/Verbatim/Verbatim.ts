@@ -1,6 +1,6 @@
-import CopyService from '../CopyService';
-import IntlCopyService from '../IntlCopyService';
-import SyntaxNode from '../SyntaxNode/SyntaxNode';
+import CopyService from '../CopyService.js';
+import IntlCopyService from '../IntlCopyService.js';
+import SyntaxNode from '../SyntaxNode/SyntaxNode.js';
 
 /**
  * Represents text in an AST.

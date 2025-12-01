@@ -21,6 +21,9 @@ module.exports = {
     'node_modules',
     'js'
   ],
+  moduleNameMapper: {
+    '^(\\.{1,2}/.*)\\.js$': '$1'
+  },
   restoreMocks: true,
   testEnvironment: 'node',
   testMatch: [

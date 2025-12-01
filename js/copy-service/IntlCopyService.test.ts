@@ -1,8 +1,8 @@
 import _ from 'lodash';
-import CopyService, { type CopyFile } from './CopyService';
-import ErrorHandler from './ErrorHandler/ErrorHandler';
-import IntlCopyService, { type LanguageHierarchy } from './IntlCopyService';
-import Verbatim from './Verbatim/Verbatim';
+import CopyService, { type CopyFile } from './CopyService.js';
+import ErrorHandler from './ErrorHandler/ErrorHandler.js';
+import IntlCopyService, { type LanguageHierarchy } from './IntlCopyService.js';
+import Verbatim from './Verbatim/Verbatim.js';
 
 /**
  * NOTE: Private methods are implicitly tested through other methods.

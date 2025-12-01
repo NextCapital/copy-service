@@ -1,6 +1,6 @@
-import Verbatim from '../Verbatim/Verbatim';
+import Verbatim from '../Verbatim/Verbatim.js';
 
-import Switch from './Switch';
+import Switch from './Switch.js';
 
 describe('Switch', () => {
   describe('constructor', () => {

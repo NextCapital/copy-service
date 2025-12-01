@@ -1,4 +1,4 @@
-import SyntaxNode from '../SyntaxNode/SyntaxNode';
+import SyntaxNode from '../SyntaxNode/SyntaxNode.js';
 
 /**
  * Represents a logic branch in an AST.

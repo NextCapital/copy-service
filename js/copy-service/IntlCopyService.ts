@@ -4,8 +4,8 @@ import CopyService, {
   type CopyFile,
   type CopySubkeys,
   type RegisteredCopyNode
-} from './CopyService';
-import ErrorHandler from './ErrorHandler/ErrorHandler';
+} from './CopyService.js';
+import ErrorHandler from './ErrorHandler/ErrorHandler.js';
 
 export interface LanguageHierarchy {
   [language: string]: string | null;

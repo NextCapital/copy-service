@@ -1,10 +1,10 @@
 import {
   Substitutions,
   CopyService
-} from '../index';
+} from '../index.js';
 
-import PlainTextEvaluator from '../plain-text-evaluator/PlainTextEvaluator';
-import HtmlEvaluator from './HtmlEvaluator';
+import PlainTextEvaluator from '../plain-text-evaluator/PlainTextEvaluator.js';
+import HtmlEvaluator from './HtmlEvaluator.js';
 
 describe('HTMLEvaluator', () => {
   let evaluator: HtmlEvaluator;

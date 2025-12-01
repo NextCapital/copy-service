@@ -13,10 +13,10 @@ import {
   Substitutions,
   CopyService,
   WordBreak
-} from '../index';
+} from '../index.js';
 
-import ReactEvaluator from './ReactEvaluator';
-import SyntaxNode from '../copy-service/SyntaxNode/SyntaxNode';
+import ReactEvaluator from './ReactEvaluator.js';
+import SyntaxNode from '../copy-service/SyntaxNode/SyntaxNode.js';
 
 type AST = SyntaxNode | null;
 

@@ -1,4 +1,4 @@
-import SyntaxNode from '../SyntaxNode/SyntaxNode';
+import SyntaxNode from '../SyntaxNode/SyntaxNode.js';
 
 /**
  * Represents a function in an AST that can be evaluated with copy and arguments from substitutions.

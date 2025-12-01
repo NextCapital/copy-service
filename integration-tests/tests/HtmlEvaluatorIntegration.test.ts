@@ -1,35 +1,32 @@
-const ReactDOMServer = require('react-dom/server');
+import CopyService from '../../js/copy-service/CopyService';
+import HtmlEvaluator from '../../js/html-evaluator/HtmlEvaluator';
+import * as copy from '../copy.json';
+import { TestCopyParams } from './types-helper';
 
-const { CopyService } = require('../../js/index.js');
-const ReactEvaluator = require('../../js/react-evaluator/ReactEvaluator').default;
-
-const copy = require('../copy');
-
-describe('CopyService - ReactEvaluator Integration Tests', () => {
-  let copyService, evaluator;
+describe('CopyService - HtmlEvaluator Integration Tests', () => {
+  let copyService: CopyService;
+  let evaluator: HtmlEvaluator;
 
   beforeEach(() => {
     copyService = new CopyService({ copy });
-    evaluator = new ReactEvaluator(copyService);
+    evaluator = new HtmlEvaluator(copyService);
   });
-
-  const getStaticMarkup = (jsx) => ReactDOMServer.renderToStaticMarkup(jsx);
 
   const testCopy = ({
     key,
     substitutions,
     expectedCopy
-  }) => {
+  }: TestCopyParams): void => {
     test('returns the expected copy', () => {
-      const staticMarkup = getStaticMarkup(evaluator.getCopy(key, substitutions));
-      expect(staticMarkup).toBe(expectedCopy);
+      expect(evaluator.getCopy(key, substitutions)).toBe(expectedCopy);
     });
   };
 
   describe('simple copy with no more than one formatting symbol', () => {
     describe('noCopy', () => {
-      test('returns null', () => {
-        expect(evaluator.getCopy('noCopy')).toBeNull();
+      testCopy({
+        key: 'noCopy',
+        expectedCopy: ''
       });
     });
 
@@ -193,20 +190,18 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
     describe('copy with a function', () => {
       describe('with no arguments', () => {
         describe('functions.title', () => {
-          test('calls the passed function with the evaluated copy', () => {
-            const passedFunction = jest.fn();
-            evaluator.getCopy('functions.title', { makeExternalLink: passedFunction });
-            expect(passedFunction).toBeCalledWith('learn more');
+          testCopy({
+            key: 'functions.title',
+            substitutions: {
+              makeExternalLink: (text: string) => `+ ${text}`
+            },
+            expectedCopy: '+ learn more'
           });
 
-          test('returns the result of the function', () => {
-            const funcResult = 'some result';
-            const passedFunction = jest.fn().mockReturnValue(funcResult);
-
-            const staticMarkup = getStaticMarkup(
-              evaluator.getCopy('functions.title', { makeExternalLink: passedFunction })
-            );
-            expect(staticMarkup).toBe(funcResult);
+          test('calls the passed function', () => {
+            const passedFunction = jest.fn().mockImplementation((text: string) => `+ ${text}`);
+            evaluator.getCopy('functions.title', { makeExternalLink: passedFunction });
+            expect(passedFunction).toBeCalledWith('learn more');
           });
         });
       });
@@ -216,46 +211,52 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
           evaluator.allowFunctional = false;
         });
 
-        test('returns the copy without passing to the function', () => {
-          const funcResult = 'some result';
-          const passedFunction = jest.fn().mockReturnValue(funcResult);
-
-          const staticMarkup = getStaticMarkup(
-            evaluator.getCopy('functions.title', { makeExternalLink: passedFunction })
-          );
-          expect(staticMarkup).toBe('learn more');
+        testCopy({
+          key: 'functions.title',
+          substitutions: { makeExternalLink: (text: string) => `+ ${text}` },
+          expectedCopy: 'learn more'
         });
-      });
+    });
 
       describe('with arguments', () => {
         describe('functions.args', () => {
-          test('calls the passed function with the evaluated copy', () => {
-            const passedFunction = jest.fn();
+          testCopy({
+            key: 'functions.args',
+            substitutions: {
+              func: (text: string) => `+ ${text}`,
+              arg1: 'arg1',
+              arg2: 'arg2'
+            },
+            expectedCopy: '+ learn more'
+          });
+
+          test('calls the passed function with args', () => {
+            const passedFunction = jest.fn().mockImplementation((text: string) => `+ ${text}`);
             const substitutions = {
               func: passedFunction,
               arg1: 'arg1',
               arg2: 'arg2'
             };
+
             evaluator.getCopy('functions.args', substitutions);
-            expect(passedFunction).toBeCalledWith(
-              'learn more', substitutions.arg1, substitutions.arg2
-            );
+            expect(passedFunction).toBeCalledWith('learn more', 'arg1', 'arg2');
           });
+        });
+      });
+    });
 
-          test('returns the result of the function', () => {
-            const funcResult = 'some result';
-            const passedFunction = jest.fn().mockReturnValue(funcResult);
-            const substitutions = {
-              func: passedFunction,
-              arg1: 'arg1',
-              arg2: 'arg2'
-            };
+    describe('copy with HTML tags', () => {
+      describe('tags.title', () => {
+        testCopy({
+          key: 'tags.title',
+          expectedCopy: '<strong>Plan</strong>'
+        });
+      });
 
-            const staticMarkup = getStaticMarkup(
-              evaluator.getCopy('functions.args', substitutions)
-            );
-            expect(staticMarkup).toBe(funcResult);
-          });
+      describe('tags.nested', () => {
+        testCopy({
+          key: 'tags.nested',
+          expectedCopy: '<strong><em>Plan</em></strong>'
         });
       });
     });
@@ -298,26 +299,6 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
           });
         });
       });
-    });
-  });
-
-  describe('tags', () => {
-    testCopy({
-      key: 'tags.nested',
-      substitutions: { value: 100 },
-      expectedCopy: '<strong><em>Plan</em></strong>'
-    });
-
-    testCopy({
-      key: 'tags.beginAndEnd',
-      substitutions: { value: 100 },
-      expectedCopy: '<strong>begin</strong> and <em>end</em>'
-    });
-
-    testCopy({
-      key: 'tags.nestedList',
-      substitutions: { value: 100 },
-      expectedCopy: 'A list of <ul><li>uno</li><li>dos</li><li>tres</li></ul> things.'
     });
   });
 });

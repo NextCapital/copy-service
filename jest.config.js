@@ -31,6 +31,10 @@ module.exports = {
   ],
   testResultsProcessor: "./node_modules/jest-junit-reporter",
   transform: {
-    '^.+\.tsx?$': ['ts-jest', {}]
+    '^.+\.tsx?$': ['ts-jest', {
+      tsconfig: {
+        resolveJsonModule: true
+      }
+    }]
   }
 };

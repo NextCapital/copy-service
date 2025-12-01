@@ -1,34 +1,36 @@
-const { IntlCopyService } = require('../../js/index.js');
-const PlainTextEvaluator = require('../../js/plain-text-evaluator/PlainTextEvaluator').default;
+import ReactDOMServer from 'react-dom/server';
+import type { ReactNode } from 'react';
+import CopyService from '../../js/copy-service/CopyService';
+import ReactEvaluator from '../../js/react-evaluator/ReactEvaluator';
+import * as copy from '../copy.json';
+import { TestCopyParams } from './types-helper';
 
-const copy = require('../copy');
-const ukCopy = require('../uk-copy');
-
-describe('IntlCopyService - Hierarchy Tests', () => {
-  let copyService, evaluator;
+describe('CopyService - ReactEvaluator Integration Tests', () => {
+  let copyService: CopyService;
+  let evaluator: ReactEvaluator;
 
   beforeEach(() => {
-    copyService = new IntlCopyService('en-uk', {'en-us': null, 'en-uk': 'en-us' }, {
-      copy: { 'en-us': copy, 'en-uk': ukCopy }
-    });
-    evaluator = new PlainTextEvaluator(copyService);
+    copyService = new CopyService({ copy });
+    evaluator = new ReactEvaluator(copyService);
   });
+
+  const getStaticMarkup = (jsx: ReactNode): string => ReactDOMServer.renderToStaticMarkup(jsx as any);
 
   const testCopy = ({
     key,
     substitutions,
     expectedCopy
-  }) => {
+  }: TestCopyParams): void => {
     test('returns the expected copy', () => {
-      expect(evaluator.getCopy(key, substitutions)).toBe(expectedCopy);
+      const staticMarkup = getStaticMarkup(evaluator.getCopy(key, substitutions));
+      expect(staticMarkup).toBe(expectedCopy);
     });
   };
 
   describe('simple copy with no more than one formatting symbol', () => {
     describe('noCopy', () => {
-      testCopy({
-        key: 'noCopy',
-        expectedCopy: ''
+      test('returns null', () => {
+        expect(evaluator.getCopy('noCopy')).toBeNull();
       });
     });
 
@@ -50,7 +52,7 @@ describe('IntlCopyService - Hierarchy Tests', () => {
       describe('verbatim.owner', () => {
         testCopy({
           key: 'verbatim.owner',
-          expectedCopy: 'Account Proprietor'
+          expectedCopy: 'Account Owner'
         });
       });
 
@@ -82,7 +84,7 @@ describe('IntlCopyService - Hierarchy Tests', () => {
         testCopy({
           key: 'substitutions.symbol',
           substitutions: { value: 100 },
-          expectedCopy: '£100'
+          expectedCopy: '$100'
         });
       });
 
@@ -90,7 +92,7 @@ describe('IntlCopyService - Hierarchy Tests', () => {
         testCopy({
           key: 'substitutions.min',
           substitutions: { value: 100 },
-          expectedCopy: 'input value must be after 100'
+          expectedCopy: 'input value must be no earlier than 100'
         });
       });
     });
@@ -107,14 +109,14 @@ describe('IntlCopyService - Hierarchy Tests', () => {
         testCopy({
           key: 'references.symbol',
           substitutions: { value: 100 },
-          expectedCopy: '£100'
+          expectedCopy: '$100'
         });
       });
 
       describe('references.owner', () => {
         testCopy({
           key: 'references.owner',
-          expectedCopy: 'Account Proprietor'
+          expectedCopy: 'Account Owner'
         });
       });
     });
@@ -135,7 +137,7 @@ describe('IntlCopyService - Hierarchy Tests', () => {
           testCopy({
             key: 'decisions.title',
             substitutions: { designObject: { current: true } },
-            expectedCopy: 'Current holding'
+            expectedCopy: 'Current asset'
           });
         });
 
@@ -143,7 +145,7 @@ describe('IntlCopyService - Hierarchy Tests', () => {
           testCopy({
             key: 'decisions.title',
             substitutions: { designObject: { current: 1 } },
-            expectedCopy: 'Current holding'
+            expectedCopy: 'Current asset'
           });
         });
 
@@ -151,7 +153,7 @@ describe('IntlCopyService - Hierarchy Tests', () => {
           testCopy({
             key: 'decisions.title',
             substitutions: { designObject: { current: false } },
-            expectedCopy: 'Proposed holding'
+            expectedCopy: 'Proposed asset'
           });
         });
 
@@ -159,13 +161,13 @@ describe('IntlCopyService - Hierarchy Tests', () => {
           testCopy({
             key: 'decisions.title',
             substitutions: { designObject: { current: 0 } },
-            expectedCopy: 'Proposed holding'
+            expectedCopy: 'Proposed asset'
           });
 
           testCopy({
             key: 'decisions.title',
             substitutions: { designObject: { current: 400 } },
-            expectedCopy: 'Proposed holding'
+            expectedCopy: 'Proposed asset'
           });
         });
       });
@@ -192,16 +194,20 @@ describe('IntlCopyService - Hierarchy Tests', () => {
     describe('copy with a function', () => {
       describe('with no arguments', () => {
         describe('functions.title', () => {
-          testCopy({
-            key: 'functions.title',
-            substitutions: { makeExternalLink: (text) => `+ ${text}` },
-            expectedCopy: '+ learn more'
-          });
-
-          test('calls the passed function', () => {
-            const passedFunction = jest.fn().mockImplementation((text) => `+ ${text}`);
+          test('calls the passed function with the evaluated copy', () => {
+            const passedFunction = jest.fn();
             evaluator.getCopy('functions.title', { makeExternalLink: passedFunction });
             expect(passedFunction).toBeCalledWith('learn more');
+          });
+
+          test('returns the result of the function', () => {
+            const funcResult = 'some result';
+            const passedFunction = jest.fn().mockReturnValue(funcResult);
+
+            const staticMarkup = getStaticMarkup(
+              evaluator.getCopy('functions.title', { makeExternalLink: passedFunction })
+            );
+            expect(staticMarkup).toBe(funcResult);
           });
         });
       });
@@ -211,52 +217,46 @@ describe('IntlCopyService - Hierarchy Tests', () => {
           evaluator.allowFunctional = false;
         });
 
-        testCopy({
-          key: 'functions.title',
-          substitutions: { makeExternalLink: (text) => `+ ${text}` },
-          expectedCopy: 'learn more'
+        test('returns the copy without passing to the function', () => {
+          const funcResult = 'some result';
+          const passedFunction = jest.fn().mockReturnValue(funcResult);
+
+          const staticMarkup = getStaticMarkup(
+            evaluator.getCopy('functions.title', { makeExternalLink: passedFunction })
+          );
+          expect(staticMarkup).toBe('learn more');
         });
       });
 
       describe('with arguments', () => {
         describe('functions.args', () => {
-          testCopy({
-            key: 'functions.args',
-            substitutions: {
-              func: (text) => `+ ${text}`,
+          test('calls the passed function with the evaluated copy', () => {
+            const passedFunction = jest.fn();
+            const substitutions = {
+              func: passedFunction,
               arg1: 'arg1',
               arg2: 'arg2'
-            },
-            expectedCopy: '+ show more'
+            };
+            evaluator.getCopy('functions.args', substitutions);
+            expect(passedFunction).toBeCalledWith(
+              'learn more', substitutions.arg1, substitutions.arg2
+            );
           });
 
-          test('calls the passed function with args', () => {
-            const passedFunction = jest.fn().mockImplementation((text) => `+ ${text}`);
+          test('returns the result of the function', () => {
+            const funcResult = 'some result';
+            const passedFunction = jest.fn().mockReturnValue(funcResult);
             const substitutions = {
               func: passedFunction,
               arg1: 'arg1',
               arg2: 'arg2'
             };
 
-            evaluator.getCopy('functions.args', substitutions);
-            expect(passedFunction).toBeCalledWith('show more', 'arg1', 'arg2');
+            const staticMarkup = getStaticMarkup(
+              evaluator.getCopy('functions.args', substitutions)
+            );
+            expect(staticMarkup).toBe(funcResult);
           });
-        });
-      });
-    });
-
-    describe('copy with HTML tags', () => {
-      describe('tags.title', () => {
-        testCopy({
-          key: 'tags.title',
-          expectedCopy: 'Plot'
-        });
-      });
-
-      describe('tags.nested', () => {
-        testCopy({
-          key: 'tags.nested',
-          expectedCopy: 'Plan'
         });
       });
     });
@@ -268,7 +268,7 @@ describe('IntlCopyService - Hierarchy Tests', () => {
         testCopy({
           key: 'tags.nestedReference',
           substitutions: { value: 100 },
-          expectedCopy: '£100'
+          expectedCopy: '<strong><em>$100</em></strong>'
         });
       });
     });
@@ -283,7 +283,7 @@ describe('IntlCopyService - Hierarchy Tests', () => {
               sub: 'some sub',
               value: 100
             },
-            expectedCopy: '£100'
+            expectedCopy: '<strong><em>$100</em></strong>'
           });
         });
 
@@ -299,6 +299,26 @@ describe('IntlCopyService - Hierarchy Tests', () => {
           });
         });
       });
+    });
+  });
+
+  describe('tags', () => {
+    testCopy({
+      key: 'tags.nested',
+      substitutions: { value: 100 },
+      expectedCopy: '<strong><em>Plan</em></strong>'
+    });
+
+    testCopy({
+      key: 'tags.beginAndEnd',
+      substitutions: { value: 100 },
+      expectedCopy: '<strong>begin</strong> and <em>end</em>'
+    });
+
+    testCopy({
+      key: 'tags.nestedList',
+      substitutions: { value: 100 },
+      expectedCopy: 'A list of <ul><li>uno</li><li>dos</li><li>tres</li></ul> things.'
     });
   });
 });

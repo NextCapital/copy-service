@@ -1,12 +1,13 @@
-const { IntlCopyService } = require('../../js/index.js');
-const PlainTextEvaluator = require('../../js/plain-text-evaluator/PlainTextEvaluator').default;
-
-const copy = require('../copy');
+import IntlCopyService from '../../js/copy-service/IntlCopyService';
+import PlainTextEvaluator from '../../js/plain-text-evaluator/PlainTextEvaluator';
+import * as copy from '../copy.json';
+import { TestCopyParams } from './types-helper';
 
 // Uses an IntlCopyService and ensures it basically works with the evaluator
 // for a single language. This test should help detect breaking interface changes.
 describe('IntlCopyService - Basic Compatibility Tests', () => {
-  let copyService, evaluator;
+  let copyService: IntlCopyService;
+  let evaluator: PlainTextEvaluator;
 
   beforeEach(() => {
     copyService = new IntlCopyService('en-us', { 'en-us': null }, {
@@ -19,7 +20,7 @@ describe('IntlCopyService - Basic Compatibility Tests', () => {
     key,
     substitutions,
     expectedCopy
-  }) => {
+  }: TestCopyParams): void => {
     test('returns the expected copy', () => {
       expect(evaluator.getCopy(key, substitutions)).toBe(expectedCopy);
     });
@@ -195,12 +196,12 @@ describe('IntlCopyService - Basic Compatibility Tests', () => {
         describe('functions.title', () => {
           testCopy({
             key: 'functions.title',
-            substitutions: { makeExternalLink: (text) => `+ ${text}` },
+            substitutions: { makeExternalLink: (text: string) => `+ ${text}` },
             expectedCopy: '+ learn more'
           });
 
           test('calls the passed function', () => {
-            const passedFunction = jest.fn().mockImplementation((text) => `+ ${text}`);
+            const passedFunction = jest.fn().mockImplementation((text: string) => `+ ${text}`);
             evaluator.getCopy('functions.title', { makeExternalLink: passedFunction });
             expect(passedFunction).toBeCalledWith('learn more');
           });
@@ -214,7 +215,7 @@ describe('IntlCopyService - Basic Compatibility Tests', () => {
 
         testCopy({
           key: 'functions.title',
-          substitutions: { makeExternalLink: (text) => `+ ${text}` },
+          substitutions: { makeExternalLink: (text: string) => `+ ${text}` },
           expectedCopy: 'learn more'
         });
       });
@@ -224,7 +225,7 @@ describe('IntlCopyService - Basic Compatibility Tests', () => {
           testCopy({
             key: 'functions.args',
             substitutions: {
-              func: (text) => `+ ${text}`,
+              func: (text: string) => `+ ${text}`,
               arg1: 'arg1',
               arg2: 'arg2'
             },
@@ -232,7 +233,7 @@ describe('IntlCopyService - Basic Compatibility Tests', () => {
           });
 
           test('calls the passed function with args', () => {
-            const passedFunction = jest.fn().mockImplementation((text) => `+ ${text}`);
+            const passedFunction = jest.fn().mockImplementation((text: string) => `+ ${text}`);
             const substitutions = {
               func: passedFunction,
               arg1: 'arg1',

@@ -1,9 +1,9 @@
 import _ from 'lodash';
 
-import Parser from './Parser/Parser';
-import SyntaxNode from './SyntaxNode/SyntaxNode';
-import ErrorHandler from './ErrorHandler/ErrorHandler';
-import CopyService, { type AST, type CopyFile } from './CopyService';
+import Parser from './Parser/Parser.js';
+import SyntaxNode from './SyntaxNode/SyntaxNode.js';
+import ErrorHandler from './ErrorHandler/ErrorHandler.js';
+import CopyService, { type AST, type CopyFile } from './CopyService.js';
 
 describe('CopyService', () => {
   let copyService: CopyService;

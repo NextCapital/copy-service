@@ -1,4 +1,4 @@
-import PlainTextEvaluator from '../plain-text-evaluator/PlainTextEvaluator';
+import PlainTextEvaluator from '../plain-text-evaluator/PlainTextEvaluator.js';
 
 /**
  * Provides an interface that can register copy, determine the existence of copy, and generate copy

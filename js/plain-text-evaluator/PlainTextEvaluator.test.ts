@@ -10,10 +10,10 @@ import {
   Substitutions,
   CopyService,
   WordBreak
-} from '../index';
+} from '../index.js';
 
-import PlainTextEvaluator from './PlainTextEvaluator';
-import SyntaxNode from '../copy-service/SyntaxNode/SyntaxNode';
+import PlainTextEvaluator from './PlainTextEvaluator.js';
+import SyntaxNode from '../copy-service/SyntaxNode/SyntaxNode.js';
 
 describe('PlainTextEvaluator', () => {
   let evaluator: PlainTextEvaluator;

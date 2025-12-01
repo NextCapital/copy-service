@@ -1,4 +1,4 @@
-import ErrorHandler from './ErrorHandler';
+import ErrorHandler from './ErrorHandler.js';
 
 describe('ErrorHandler', () => {
   describe('handleError', () => {

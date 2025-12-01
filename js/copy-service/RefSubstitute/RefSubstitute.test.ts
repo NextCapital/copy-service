@@ -1,6 +1,6 @@
-import Verbatim from '../Verbatim/Verbatim';
+import Verbatim from '../Verbatim/Verbatim.js';
 
-import RefSubstitute from './RefSubstitute';
+import RefSubstitute from './RefSubstitute.js';
 
 describe('RefSubstitute', () => {
   describe('constructor', () => {

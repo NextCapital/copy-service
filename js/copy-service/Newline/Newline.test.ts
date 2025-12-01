@@ -1,7 +1,7 @@
-import CopyService from '../CopyService';
-import Verbatim from '../Verbatim/Verbatim';
+import CopyService from '../CopyService.js';
+import Verbatim from '../Verbatim/Verbatim.js';
 
-import Newline from './Newline';
+import Newline from './Newline.js';
 
 describe('Newline', () => {
   describe('constructor', () => {

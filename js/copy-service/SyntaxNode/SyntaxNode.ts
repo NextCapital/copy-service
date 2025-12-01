@@ -1,5 +1,5 @@
-import CopyService from '../CopyService';
-import IntlCopyService from '../IntlCopyService';
+import CopyService from '../CopyService.js';
+import IntlCopyService from '../IntlCopyService.js';
 
 /**
  * Base class for non-null AST nodes.

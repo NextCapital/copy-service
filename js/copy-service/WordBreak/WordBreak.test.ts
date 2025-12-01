@@ -1,6 +1,6 @@
-import CopyService from '../CopyService';
-import Verbatim from '../Verbatim/Verbatim';
-import WordBreak from './WordBreak';
+import CopyService from '../CopyService.js';
+import Verbatim from '../Verbatim/Verbatim.js';
+import WordBreak from './WordBreak.js';
 
 describe('WordBreak', () => {
   describe('constructor', () => {

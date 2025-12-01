@@ -1,6 +1,6 @@
-import ErrorHandler from '../ErrorHandler/ErrorHandler';
+import ErrorHandler from '../ErrorHandler/ErrorHandler.js';
 
-import Substitutions from './Substitutions';
+import Substitutions from './Substitutions.js';
 
 describe('Substitutions', () => {
   let substitutions: Substitutions;

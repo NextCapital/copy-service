@@ -1,5 +1,5 @@
-import CopyService from '../CopyService';
-import Verbatim from './Verbatim';
+import CopyService from '../CopyService.js';
+import Verbatim from './Verbatim.js';
 
 describe('Verbatim', () => {
   describe('constructor', () => {

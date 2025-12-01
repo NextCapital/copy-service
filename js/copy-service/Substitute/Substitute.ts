@@ -1,4 +1,4 @@
-import SyntaxNode from '../SyntaxNode/SyntaxNode';
+import SyntaxNode from '../SyntaxNode/SyntaxNode.js';
 
 /**
  * Represents a substitution mapped to a substitution key in an AST.

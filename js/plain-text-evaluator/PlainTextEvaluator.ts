@@ -1,17 +1,17 @@
 import _ from 'lodash';
 
-import Evaluator from '../copy-service/Evaluator/Evaluator';
-import Formatting from '../copy-service/Formatting/Formatting';
-import Functional from '../copy-service/Functional/Functional';
-import Newline from '../copy-service/Newline/Newline';
-import Reference from '../copy-service/Reference/Reference';
-import RefSubstitute from '../copy-service/RefSubstitute/RefSubstitute';
-import Substitute from '../copy-service/Substitute/Substitute';
-import Substitutions from '../copy-service/Substitutions/Substitutions';
-import Switch from '../copy-service/Switch/Switch';
-import SyntaxNode from '../copy-service/SyntaxNode/SyntaxNode';
-import Verbatim from '../copy-service/Verbatim/Verbatim';
-import WordBreak from '../copy-service/WordBreak/WordBreak';
+import Evaluator from '../copy-service/Evaluator/Evaluator.js';
+import Formatting from '../copy-service/Formatting/Formatting.js';
+import Functional from '../copy-service/Functional/Functional.js';
+import Newline from '../copy-service/Newline/Newline.js';
+import Reference from '../copy-service/Reference/Reference.js';
+import RefSubstitute from '../copy-service/RefSubstitute/RefSubstitute.js';
+import Substitute from '../copy-service/Substitute/Substitute.js';
+import Substitutions from '../copy-service/Substitutions/Substitutions.js';
+import Switch from '../copy-service/Switch/Switch.js';
+import SyntaxNode from '../copy-service/SyntaxNode/SyntaxNode.js';
+import Verbatim from '../copy-service/Verbatim/Verbatim.js';
+import WordBreak from '../copy-service/WordBreak/WordBreak.js';
 
 /**
  * Provides an interface that can register copy, determine the existence of copy, and generate copy

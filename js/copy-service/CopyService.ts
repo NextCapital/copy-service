@@ -1,8 +1,8 @@
 import _ from 'lodash';
 
-import SyntaxNode from './SyntaxNode/SyntaxNode';
-import Parser from './Parser/Parser';
-import ErrorHandler from './ErrorHandler/ErrorHandler';
+import SyntaxNode from './SyntaxNode/SyntaxNode.js';
+import Parser from './Parser/Parser.js';
+import ErrorHandler from './ErrorHandler/ErrorHandler.js';
 
 export type AST = SyntaxNode | null;
 

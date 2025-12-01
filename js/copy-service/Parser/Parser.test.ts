@@ -1,16 +1,16 @@
 import _ from 'lodash';
 
-import Formatting from '../Formatting/Formatting';
-import Functional from '../Functional/Functional';
-import Newline from '../Newline/Newline';
-import Reference from '../Reference/Reference';
-import RefSubstitute from '../RefSubstitute/RefSubstitute';
-import Substitute from '../Substitute/Substitute';
-import Switch from '../Switch/Switch';
-import Verbatim from '../Verbatim/Verbatim';
-import WordBreak from '../WordBreak/WordBreak';
+import Formatting from '../Formatting/Formatting.js';
+import Functional from '../Functional/Functional.js';
+import Newline from '../Newline/Newline.js';
+import Reference from '../Reference/Reference.js';
+import RefSubstitute from '../RefSubstitute/RefSubstitute.js';
+import Substitute from '../Substitute/Substitute.js';
+import Switch from '../Switch/Switch.js';
+import Verbatim from '../Verbatim/Verbatim.js';
+import WordBreak from '../WordBreak/WordBreak.js';
 
-import Parser from './Parser';
+import Parser from './Parser.js';
 
 describe('Parser', () => {
   afterEach(() => {

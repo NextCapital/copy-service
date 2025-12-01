@@ -1,8 +1,8 @@
-import Evaluator from './Evaluator';
-import Substitutions from '../Substitutions/Substitutions';
-import CopyService from '../CopyService';
-import ErrorHandler from '../ErrorHandler/ErrorHandler';
-import SyntaxNode from '../SyntaxNode/SyntaxNode';
+import Evaluator from './Evaluator.js';
+import Substitutions from '../Substitutions/Substitutions.js';
+import CopyService from '../CopyService.js';
+import ErrorHandler from '../ErrorHandler/ErrorHandler.js';
+import SyntaxNode from '../SyntaxNode/SyntaxNode.js';
 
 // TODO: Import from CopyService once that file is converted to TypeScript
 type AST = SyntaxNode | null;

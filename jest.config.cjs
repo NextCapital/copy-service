@@ -1,8 +1,8 @@
 module.exports = {
   collectCoverage: true,
   collectCoverageFrom: [
-    "js/**/*.js",
-    "js/**/*.ts"
+    "js/**/*.ts",
+    "!js/index.ts"
   ],
   coverageThreshold: {
     global: {
@@ -21,12 +21,13 @@ module.exports = {
     'node_modules',
     'js'
   ],
+  moduleNameMapper: {
+    '^(\\.{1,2}/.*)\\.js$': '$1'
+  },
   restoreMocks: true,
   testEnvironment: 'node',
   testMatch: [
-    "<rootDir>/js/**/*.test.js",
     "<rootDir>/js/**/*.test.ts",
-    "<rootDir>/integration-tests/**/*.test.js",
     "<rootDir>/integration-tests/**/*.test.ts",
   ],
   testResultsProcessor: "./node_modules/jest-junit-reporter",

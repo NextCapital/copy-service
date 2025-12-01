@@ -1,6 +1,6 @@
-import Reference from './Reference';
-import Verbatim from '../Verbatim/Verbatim';
-import CopyService from '../CopyService';
+import Reference from './Reference.js';
+import Verbatim from '../Verbatim/Verbatim.js';
+import CopyService from '../CopyService.js';
 
 describe('Reference', () => {
   describe('constructor', () => {

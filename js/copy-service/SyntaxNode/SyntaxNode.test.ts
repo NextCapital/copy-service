@@ -1,6 +1,6 @@
-import CopyService from '../CopyService';
+import CopyService from '../CopyService.js';
 
-import SyntaxNode from './SyntaxNode';
+import SyntaxNode from './SyntaxNode.js';
 
 describe('SyntaxNode', () => {
   let syntaxNode: SyntaxNode;

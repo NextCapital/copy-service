@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "module": "es6",
-    "moduleResolution": "node",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
 
     "allowJs": true,
     "checkJs": false,
@@ -22,12 +22,10 @@
     "forceConsistentCasingInFileNames": true
   },
   "include": [
-    "./js/**/*.js",
     "./js/**/*.ts",
     "./js/**/*.tsx"
   ],
   "exclude": [
-    "./js/**/*.test.js",
     "./js/**/*.test.ts",
     "./js/**/*.test.tsx"
   ]

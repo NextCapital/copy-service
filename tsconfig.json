@@ -22,12 +22,10 @@
     "forceConsistentCasingInFileNames": true
   },
   "include": [
-    "./js/**/*.js",
     "./js/**/*.ts",
     "./js/**/*.tsx"
   ],
   "exclude": [
-    "./js/**/*.test.js",
     "./js/**/*.test.ts",
     "./js/**/*.test.tsx"
   ]

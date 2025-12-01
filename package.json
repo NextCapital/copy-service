@@ -32,7 +32,6 @@
   },
   "scripts": {
     "autopublish": "auto-publish-package",
-    "build": "npm run tsc",
     "clean": "rm -rf ./ts-output",
     "ci:local": "npm run lint && npm run test && npm run tsc && npm run tsc:test",
     "docs": "rm -rf docs/ && jsdoc js/**/*.js -c .jsdoc.json",

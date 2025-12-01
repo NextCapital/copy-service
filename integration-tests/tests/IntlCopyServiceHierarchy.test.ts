@@ -2,12 +2,7 @@ import IntlCopyService from '../../js/copy-service/IntlCopyService';
 import PlainTextEvaluator from '../../js/plain-text-evaluator/PlainTextEvaluator';
 import * as copy from '../copy.json';
 import * as ukCopy from '../uk-copy.json';
-
-interface TestCopyParams {
-  key: string;
-  substitutions?: object;
-  expectedCopy: string;
-}
+import { TestCopyParams } from './types-helper';
 
 describe('IntlCopyService - Hierarchy Tests', () => {
   let copyService: IntlCopyService;

@@ -1,12 +1,7 @@
 import CopyService from '../../js/copy-service/CopyService';
 import HtmlEvaluator from '../../js/html-evaluator/HtmlEvaluator';
 import * as copy from '../copy.json';
-
-interface TestCopyParams {
-  key: string;
-  substitutions?: object;
-  expectedCopy: string;
-}
+import { TestCopyParams } from './types-helper';
 
 describe('CopyService - HtmlEvaluator Integration Tests', () => {
   let copyService: CopyService;

@@ -1,12 +1,7 @@
 import CopyService from '../../js/copy-service/CopyService';
 import PlainTextEvaluator from '../../js/plain-text-evaluator/PlainTextEvaluator';
 import * as copy from '../copy.json';
-
-interface TestCopyParams {
-  key: string;
-  substitutions?: object;
-  expectedCopy: string;
-}
+import { TestCopyParams } from './types-helper';
 
 describe('CopyService - PlainTextEvaluator Integration Tests', () => {
   let copyService: CopyService;

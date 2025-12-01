@@ -1,12 +1,7 @@
 import IntlCopyService from '../../js/copy-service/IntlCopyService';
 import PlainTextEvaluator from '../../js/plain-text-evaluator/PlainTextEvaluator';
 import * as copy from '../copy.json';
-
-interface TestCopyParams {
-  key: string;
-  substitutions?: object;
-  expectedCopy: string;
-}
+import { TestCopyParams } from './types-helper';
 
 // Uses an IntlCopyService and ensures it basically works with the evaluator
 // for a single language. This test should help detect breaking interface changes.

@@ -3,12 +3,7 @@ import type { ReactNode } from 'react';
 import CopyService from '../../js/copy-service/CopyService';
 import ReactEvaluator from '../../js/react-evaluator/ReactEvaluator';
 import * as copy from '../copy.json';
-
-interface TestCopyParams {
-  key: string;
-  substitutions?: object;
-  expectedCopy: string;
-}
+import { TestCopyParams } from './types-helper';
 
 describe('CopyService - ReactEvaluator Integration Tests', () => {
   let copyService: CopyService;

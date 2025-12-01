@@ -1,15 +1,14 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "module": "umd",
 
     "allowJs": true,
     "checkJs": false,
     "jsx": "react-jsx",
     "noEmit": true,
 
-    "module": "es6",
-    "moduleResolution": "node",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
 
     "strict": true,
     "noImplicitAny": false,

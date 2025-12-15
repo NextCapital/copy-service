@@ -43,16 +43,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nextcapital/copy-service.git"
+    "url": "git+https://github.com/NextCapital/copy-service.git"
   },
   "author": {
     "name": "NextCapital Group",
     "url": "https://nextcapital.com"
   },
   "bugs": {
-    "url": "https://github.com/nextcapital/copy-service/issues"
+    "url": "https://github.com/NextCapital/copy-service/issues"
   },
-  "homepage": "https://github.com/nextcapital/copy-service#readme",
+  "homepage": "https://github.com/NextCapital/copy-service#readme",
   "dependencies": {
     "lodash": "^4.17.21"
   },

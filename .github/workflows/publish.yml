@@ -4,6 +4,9 @@ on:
     branches:
       - main
 
+permissions:
+  id-token: write # Required for OIDC authentication
+
 jobs:
   test:
     name: Publish NPM Package
@@ -14,7 +17,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
       - name: Cache dependencies
         uses: actions/cache@v4
         with:
@@ -26,8 +29,4 @@ jobs:
       - name: Build with tsc
         run: npm run tsc
       - name: Publish
-        uses: JS-DevTools/npm-publish@v3
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          access: public
-          strategy: all
+        run: npm publish --access public

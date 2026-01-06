@@ -1,28 +1,16 @@
 {
+  "extends": "./tsconfig.json",
   "compilerOptions": {
-    "target": "es6",
-    "module": "umd",
-
-    "allowJs": true,
-    "checkJs": false,
-    "jsx": "react-jsx",
-    "noEmit": true,
-
-    "module": "es6",
+    "module": "commonjs",
     "moduleResolution": "node",
-
-    "strict": true,
     "noImplicitAny": false,
-    "useUnknownInCatchVariables": false,
-
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "noEmit": true,
+    "declaration": false,
+    "emitDeclarationOnly": false
   },
   "include": [
     "./**/*.test.ts",
     "./**/*.test.tsx"
-  ]
+  ],
+  "exclude": []
 }

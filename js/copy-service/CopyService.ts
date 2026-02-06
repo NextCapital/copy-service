@@ -13,6 +13,7 @@ export interface CopyFile {
 interface CopyServiceOptions {
   copy?: CopyFile;
   language?: string | null;
+  errorOnMissingRefs?: boolean | null;
 }
 
 export interface CopySubkeys {
@@ -31,12 +32,16 @@ class CopyService {
 
   language: string | null;
 
+  errorOnMissingRefs: boolean;
+
   /**
    * Constructor for the `CopyService`.
    */
   constructor(options: CopyServiceOptions = {}) {
     this._registeredCopy = {};
     this.language = options.language || null;
+
+    this.errorOnMissingRefs = options.errorOnMissingRefs || false;
 
     if (options.copy) {
       this.registerCopy(options.copy);
@@ -121,7 +126,8 @@ class CopyService {
       if (!this.language) {
         ErrorHandler.handleError(
           'CopyService',
-          `No AST found for copy key: ${key}. Returning null...`
+          `No AST found for copy key: ${key}. Returning null...`,
+          { halt: this.errorOnMissingRefs }
         );
       }
 
@@ -181,7 +187,11 @@ class CopyService {
     }
 
     if (!this.language) {
-      ErrorHandler.handleError('CopyService', `No AST found for copy key: ${key}. Returning null...`);
+      ErrorHandler.handleError(
+        'CopyService',
+        `No AST found for copy key: ${key}. Returning null...`,
+        { halt: this.errorOnMissingRefs }
+      );
     }
 
     return null;

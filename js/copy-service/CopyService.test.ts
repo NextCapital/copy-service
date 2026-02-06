@@ -23,6 +23,18 @@ describe('CopyService', () => {
           expect(copyService._registeredCopy).toEqual(copy);
         });
       });
+
+      describe('errorOnMissingRefs option', () => {
+        test('sets errorOnMissingRefs with the passed value', () => {
+          copyService = new CopyService({ errorOnMissingRefs: true });
+          expect(copyService.errorOnMissingRefs).toBe(true);
+        });
+
+        test('sets errorOnMissingRefs to false if not passed', () => {
+          copyService = new CopyService();
+          expect(copyService.errorOnMissingRefs).toBe(false);
+        });
+      });
     });
   });
 
@@ -222,13 +234,32 @@ describe('CopyService', () => {
         });
       });
 
-      test('warns and returns null', () => {
-        expect(copyService.getAstForKey('some.key')).toBeNull();
+      describe('when errorOnMissingRefs is false', () => {
+        test('warns and returns null', () => {
+          expect(copyService.getAstForKey('some.key')).toBeNull();
 
-        expect(ErrorHandler.handleError).toHaveBeenCalledWith(
-          'CopyService',
-          'No AST found for copy key: some.key. Returning null...'
-        );
+          expect(ErrorHandler.handleError).toHaveBeenCalledWith(
+            'CopyService',
+            'No AST found for copy key: some.key. Returning null...',
+            { halt: false }
+          );
+        });
+      });
+
+      describe('when errorOnMissingRefs is true', () => {
+        beforeEach(() => {
+          copyService.errorOnMissingRefs = true;
+        });
+
+        test('errors and will halt', () => {
+          expect(copyService.getAstForKey('some.key')).toBeNull();
+
+          expect(ErrorHandler.handleError).toHaveBeenCalledWith(
+            'CopyService',
+            'No AST found for copy key: some.key. Returning null...',
+            { halt: true }
+          );
+        });
       });
     });
 
@@ -243,13 +274,36 @@ describe('CopyService', () => {
         });
       });
 
-      test('warns and returns null', () => {
-        expect(copyService.getAstForKey('some.key')).toBeNull();
+      describe('when errorOnMissingRefs is false', () => {
+        test('warns and returns null', () => {
+          expect(copyService.getAstForKey('some.key')).toBeNull();
 
-        expect(ErrorHandler.handleError).toHaveBeenCalledWith(
-          'CopyService',
-          'No AST found for copy key: some.key. Returning null...'
-        );
+          expect(ErrorHandler.handleError).toHaveBeenCalledWith(
+            'CopyService',
+            'No AST found for copy key: some.key. Returning null...',
+            { halt: false }
+          );
+        });
+      });
+
+      describe('when errorOnMissingRefs is true', () => {
+        beforeEach(() => {
+          copyService.errorOnMissingRefs = true;
+
+          jest.spyOn(ErrorHandler, 'handleError').mockImplementation(() => {
+            throw new Error();
+          });
+        });
+
+        test('errors and will halt', () => {
+          expect(() => copyService.getAstForKey('some.key')).toThrow();
+
+          expect(ErrorHandler.handleError).toHaveBeenCalledWith(
+            'CopyService',
+            'No AST found for copy key: some.key. Returning null...',
+            { halt: true }
+          );
+        });
       });
     });
   });
@@ -299,13 +353,36 @@ describe('CopyService', () => {
     });
 
     describe('when not found', () => {
-      test('returns null and logs a warning', () => {
-        expect(copyService.getRegisteredCopyForKey('some.fake')).toBeNull();
+      describe('when errorOnMissingRefs is false', () => {
+        test('returns null and logs a warning', () => {
+          expect(copyService.getRegisteredCopyForKey('some.fake')).toBeNull();
 
-        expect(ErrorHandler.handleError).toHaveBeenCalledWith(
-          'CopyService',
-          'No AST found for copy key: some.fake. Returning null...'
-        );
+          expect(ErrorHandler.handleError).toHaveBeenCalledWith(
+            'CopyService',
+            'No AST found for copy key: some.fake. Returning null...',
+            { halt: false }
+          );
+        });
+      });
+
+      describe('when errorOnMissingRefs is true', () => {
+        beforeEach(() => {
+          copyService.errorOnMissingRefs = true;
+
+          jest.spyOn(ErrorHandler, 'handleError').mockImplementation(() => {
+            throw new Error();
+          });
+        });
+
+        test('returns null and logs a warning', () => {
+          expect(() => copyService.getRegisteredCopyForKey('some.fake')).toThrow();
+
+          expect(ErrorHandler.handleError).toHaveBeenCalledWith(
+            'CopyService',
+            'No AST found for copy key: some.fake. Returning null...',
+            { halt: true }
+          );
+        });
       });
     });
 
@@ -315,7 +392,8 @@ describe('CopyService', () => {
 
         expect(ErrorHandler.handleError).toHaveBeenCalledWith(
           'CopyService',
-          'No AST found for copy key: some.deep. Returning null...'
+          'No AST found for copy key: some.deep. Returning null...',
+          { halt: false }
         );
       });
     });

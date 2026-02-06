@@ -68,6 +68,18 @@ describe('IntlCopyService', () => {
         });
       });
     });
+
+    describe('errorOnMissingRefs option', () => {
+      test('sets errorOnMissingRefs with the passed value', () => {
+        copyService = new IntlCopyService(language, hierarchy, { errorOnMissingRefs: true });
+        expect(copyService.errorOnMissingRefs).toBe(true);
+      });
+
+      test('sets errorOnMissingRefs to false if not passed', () => {
+        copyService = new IntlCopyService(language, hierarchy);
+        expect(copyService.errorOnMissingRefs).toBe(false);
+      });
+    });
   });
 
   describe('setLanguage', () => {
@@ -304,12 +316,36 @@ describe('IntlCopyService', () => {
       expect(ErrorHandler.handleError).not.toHaveBeenCalled();
     });
 
-    test('returns null and handles error when all languages have missing copy', () => {
-      expect(copyService.getAstForKey('example.fake')).toBeNull();
-      expect(ErrorHandler.handleError).toHaveBeenCalledWith(
-        'IntlCopyService',
-        'No AST found for copy key for any language: example.fake. Returning null...'
-      );
+    describe('when all languages have missing copy', () => {
+      describe('when errorOnMissingRefs is false', () => {
+        test('returns null and handles error', () => {
+          expect(copyService.getAstForKey('example.fake')).toBeNull();
+          expect(ErrorHandler.handleError).toHaveBeenCalledWith(
+            'IntlCopyService',
+            'No AST found for copy key for any language: example.fake. Returning null...',
+            { halt: false }
+          );
+        });
+      });
+
+      describe('when errorOnMissingRefs is true', () => {
+        beforeEach(() => {
+          copyService.errorOnMissingRefs = true;
+
+          jest.spyOn(ErrorHandler, 'handleError').mockImplementation(() => {
+            throw new Error();
+          });
+        });
+
+        test('returns null and handles error', () => {
+          expect(() => copyService.getAstForKey('example.fake')).toThrow();
+          expect(ErrorHandler.handleError).toHaveBeenCalledWith(
+            'IntlCopyService',
+            'No AST found for copy key for any language: example.fake. Returning null...',
+            { halt: true }
+          );
+        });
+      });
     });
 
     describe('when a language is specified', () => {
@@ -394,12 +430,36 @@ describe('IntlCopyService', () => {
       expect(ErrorHandler.handleError).not.toHaveBeenCalled();
     });
 
-    test('returns null and logs an error if no language has copy', () => {
-      expect(copyService.getRegisteredCopyForKey('example.fake')).toBeNull();
-      expect(ErrorHandler.handleError).toHaveBeenCalledWith(
-        'IntlCopyService',
-        'No AST found for copy key for any language: example.fake. Returning null...'
-      );
+    describe('when no languages have copy', () => {
+      describe('when errorOnMissingRefs is false', () => {
+        test('returns null and logs an error if no language has copy', () => {
+          expect(copyService.getRegisteredCopyForKey('example.fake')).toBeNull();
+          expect(ErrorHandler.handleError).toHaveBeenCalledWith(
+            'IntlCopyService',
+            'No AST found for copy key for any language: example.fake. Returning null...',
+            { halt: false }
+          );
+        });
+      });
+
+      describe('when errorOnMissingRefs is true', () => {
+        beforeEach(() => {
+          copyService.errorOnMissingRefs = true;
+
+          jest.spyOn(ErrorHandler, 'handleError').mockImplementation(() => {
+            throw new Error();
+          });
+        });
+
+        test('logs an error if no language has copy', () => {
+          expect(() => copyService.getRegisteredCopyForKey('example.fake')).toThrow();
+          expect(ErrorHandler.handleError).toHaveBeenCalledWith(
+            'IntlCopyService',
+            'No AST found for copy key for any language: example.fake. Returning null...',
+            { halt: true }
+          );
+        });
+      });
     });
 
     describe('when a language is provided', () => {

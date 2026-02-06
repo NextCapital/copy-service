@@ -14,6 +14,7 @@ export interface LanguageHierarchy {
 interface IntlCopyServiceAdditionalOptions {
   serviceOptions?: { copy?: CopyFile; language?: string | null; };
   copy?: { [language: string]: CopyFile; };
+  errorOnMissingRefs?: boolean | null;
 }
 
 /**
@@ -49,6 +50,8 @@ class IntlCopyService {
 
   language!: string;
 
+  errorOnMissingRefs: boolean;
+
   /**
    * Constructor for `IntlCopyService`.
    */
@@ -70,6 +73,8 @@ class IntlCopyService {
     _.forEach(options.copy, (copy, lang) => {
       this.registerCopy(copy, lang);
     });
+
+    this.errorOnMissingRefs = options.errorOnMissingRefs || false;
   }
 
   /**
@@ -156,7 +161,8 @@ class IntlCopyService {
     if (_.isUndefined(result)) {
       ErrorHandler.handleError(
         'IntlCopyService',
-        `No AST found for copy key for any language: ${key}. Returning null...`
+        `No AST found for copy key for any language: ${key}. Returning null...`,
+        { halt: this.errorOnMissingRefs }
       );
 
       return null;
@@ -194,7 +200,8 @@ class IntlCopyService {
     if (_.isNil(result)) {
       ErrorHandler.handleError(
         'IntlCopyService',
-        `No AST found for copy key for any language: ${key}. Returning null...`
+        `No AST found for copy key for any language: ${key}. Returning null...`,
+        { halt: this.errorOnMissingRefs }
       );
     }
 

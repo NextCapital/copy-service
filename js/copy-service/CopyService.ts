@@ -187,7 +187,11 @@ class CopyService {
     }
 
     if (!this.language) {
-      ErrorHandler.handleError('CopyService', `No AST found for copy key: ${key}. Returning null...`);
+      ErrorHandler.handleError(
+        'CopyService',
+        `No AST found for copy key: ${key}. Returning null...`,
+        { halt: this.errorOnMissingRefs }
+      );
     }
 
     return null;

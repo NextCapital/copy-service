@@ -10,7 +10,7 @@ What is "copy"? Basically, any human-readable text visible in your application U
 
 ## Installation
 
-```
+```sh
 npm install --save @nextcapital/copy-service
 ```
 
@@ -123,7 +123,7 @@ The copy service allows for dynamic interpolation of values into the final evalu
 
 **Note**: Most substitutions do not require calculations and can be directly provided on the substitutions object. However, some values require expensive calculations (i.e. take a long time to calculate). For this, there are two solutions. First, instead of passing a substitution object, you can pass a function returning a substitution object. The function will not be invoked until a piece of copy requiring a substitution is requested. The substitution object returned by this function will be cached and reused for subsequent substitutions. This allows multiple parts of a copy key to use the same cached value without double-calculating it. Second, a function can be passed as an individual substitution using the syntax defined below, which will not be called until the piece of copy is requested.
 
-#### Example
+#### Substitution Example
 
 ```json
 {
@@ -140,17 +140,17 @@ The valid `substitutionKey` paths for these attributes are `value` and `nested.d
 
 #### Syntax
 
-| Syntax                                       | Description                                                  |
-| -------------------------------------------- | ------------------------------------------------------------ |
-| `${some.copy.key.to.reference}`              | Interpolates another piece of copy. Works recursively.       |
-| `${..relative.reference}`                    | References support dot syntax (like file paths) for relative references.      |
-| `#{substitutionKey}`                         | Interpolates a substitution.                                 |
-| `#{substitution.deep.key}`                   | Interpolates a substitution using a deep key reference.                                 |
-| `%{substitutionKey}`                         | Grabs a copy key reference from the substitutions and interpolates the referenced copy. Relative references are not supported here. |
-| `*{left}{right}{substitutionKey}`            | Interpolates left or right copy based on the value of the substitution (i.e. basic logic switch). If the substitution evaluates to a truthy value or the number 1, the left copy will be interpolated. If  the substitution evaluates to a falsy value or the number 0, the right copy will be interpolated. |
-| `^{COPY}{substitutionKey}`*                  | Passes COPY to a function that returns copy. Allows for extremely flexible interpolation and evaluation of copy. Useful for inserting links, formatting, etc... |
+| Syntax | Description |
+| --- | --- |
+| `${some.copy.key.to.reference}` | Interpolates another piece of copy. Works recursively. |
+| `${..relative.reference}` | References support dot syntax (like file paths) for relative references. |
+| `#{substitutionKey}` | Interpolates a substitution. |
+| `#{substitution.deep.key}` | Interpolates a substitution using a deep key reference. |
+| `%{substitutionKey}` | Grabs a copy key reference from the substitutions and interpolates the referenced copy. Relative references are not supported here. |
+| `*{left}{right}{substitutionKey}` | Interpolates left or right copy based on the value of the substitution (i.e. basic logic switch). If the substitution evaluates to a truthy value or the number 1, the left copy will be interpolated. If  the substitution evaluates to a falsy value or the number 0, the right copy will be interpolated. |
+| `^{COPY}{substitutionKey}`* | Passes COPY to a function that returns copy. Allows for extremely flexible interpolation and evaluation of copy. Useful for inserting links, formatting, etc... |
 | `^{COPY}{substitutionKey}[arg1, arg2, ...]`* | Passes COPY and arguments to a function that returns copy. Arguments are passed as string literals (e.g. the boolean `true` will be passed as the string `'true'`). |
-| `<html>COPY</html>`*^                        | Interpolates HTML formatting tags. Valid tags are listed below. Invalid tags will be ignored. |
+| `<html>COPY</html>`*^ | Interpolates HTML formatting tags. Valid tags are listed below. Invalid tags will be ignored. |
 
 \* This syntax is not executed when the evaluator has the `allowFunctional` option set to `false`. These evaluators will simply return the `COPY` inside of the syntax tags.
 
@@ -236,6 +236,7 @@ In either case, the copy service should support all use cases for internationali
 See [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ### Maintainers
+
 [Jonathan Pierce (@nc-piercej)](https://github.com/nc-piercej)
 [Mike Kreiser (@nc-kreiserm)](https://github.com/nc-kreiserm)
 
@@ -249,7 +250,7 @@ The grammar is not left-recursive and therefore recursive-descent (easily) parsa
 
 Writing an LR parser would be significantly more difficult, so best to avoid complex grammars.
 
-```
+```text
 COPY :: *{ RESTRAINED RESTRAINED VERBATIM } COPY | ${ VERBATIM } COPY | #{ VERBATIM } COPY | VERBATIM COPY | ^{ RESTRAINED VERBATIM } COPY | ^{ RESTRAINED VERBATIM }[ ARGUMENTS | COPY nil
 
 RESTRAINED :: *{ RESTRAINED RESTRAINED VERBATIM } RESTRAINED | ${ VERBATIM } RESTRAINED | #{ VERBATIM } RESTRAINED | ^{ RESTRAINED VERBATIM } RESTRAINED | VERBATIM RESTRAINED | | ^{ RESTRAINED VERBATIM }[ ARGUMENTS | }{ ARGUMENTS: VERBATIM ] | VERBATIM , ARGUMENTS

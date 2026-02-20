@@ -9,12 +9,14 @@ Version 7.0.0 of `@nextcapital/copy-service` has migrated from CommonJS to ES Mo
 ### Import Syntax
 
 **Before (CommonJS):**
+
 ```javascript
 const { CopyService } = require('@nextcapital/copy-service');
 const HtmlEvaluator = require('@nextcapital/copy-service/HtmlEvaluator').default;
 ```
 
 **After (ESM):**
+
 ```javascript
 import { CopyService } from '@nextcapital/copy-service';
 import HtmlEvaluator from '@nextcapital/copy-service/HtmlEvaluator';

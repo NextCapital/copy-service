@@ -1,4 +1,5 @@
-## Developer Certificate of Origin
+# Developer Certificate of Origin
+
 By contributing to NextCapital Group, You accept and agree to the following terms and conditions for Your present and future Contributions submitted to NextCapital Group Except for the license granted herein to NextCapital Group and recipients of software distributed by NextCapital Group, You reserve all right, title, and interest in and to Your Contributions.
 
 Developer Certificate of Origin Version 1.1
@@ -19,7 +20,9 @@ By making a contribution to this project, I certify that:
 (c) The contribution was provided directly to me by some other  person who certified (a), (b) or (c) and I have not modified it.
 
 (d) I understand and agree that this project and the contribution are public and that a record of the contribution (including all personal information I submit with it, including my sign-off) is maintained indefinitely and may be redistributed consistent with this project or the open source license(s) involved.
+
 ## License
+
 All documentation content is licensed to this project under [Creative Commons: CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/legalcode).
 
 All contributions to this project are licensed under the following license:
@@ -29,5 +32,3 @@ MIT License
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-

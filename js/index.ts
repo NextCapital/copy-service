@@ -13,7 +13,14 @@ export { default as Substitutions } from './copy-service/Substitutions/Substitut
 
 export { default as ErrorHandler } from './copy-service/ErrorHandler/ErrorHandler.js';
 export { default as CopyService } from './copy-service/CopyService.js';
+export type {
+  AST,
+  CopyFile,
+  CopySubkeys,
+  RegisteredCopyNode
+} from './copy-service/CopyService.js';
 export { default as IntlCopyService } from './copy-service/IntlCopyService.js';
+export type { LanguageHierarchy } from './copy-service/IntlCopyService.js';
 
 export { default as PlainTextEvaluator } from './plain-text-evaluator/PlainTextEvaluator.js';
 export { default as HtmlEvaluator } from './html-evaluator/HtmlEvaluator.js';

@@ -1,6 +1,6 @@
 {
   "name": "@nextcapital/copy-service",
-  "version": "7.1.0",
+  "version": "7.1.1",
   "description": "A modern library for UI copy management.",
   "license": "Apache-2.0",
   "type": "module",

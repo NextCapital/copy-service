@@ -79,7 +79,7 @@
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "ts-jest": "^29.4.6",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.3"
   },
   "peerDependencies": {
     "react": "^16.14.0 || ^17.0.0 || ^18.0.0",

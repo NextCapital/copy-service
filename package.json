@@ -69,7 +69,7 @@
     "@types/react-dom": "^16.9.25",
     "@typescript-eslint/parser": "^8.58.0",
     "babel-jest": "^30.3.0",
-    "cspell": "^8.19.2",
+    "cspell": "^9.7.0",
     "eslint": "^9.39.4",
     "eslint-plugin-import": "^2.32.0",
     "jest": "^30.3.0",

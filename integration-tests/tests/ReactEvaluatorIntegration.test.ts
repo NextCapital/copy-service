@@ -197,7 +197,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
           test('calls the passed function with the evaluated copy', () => {
             const passedFunction = jest.fn();
             evaluator.getCopy('functions.title', { makeExternalLink: passedFunction });
-            expect(passedFunction).toBeCalledWith('learn more');
+            expect(passedFunction).toHaveBeenCalledWith('learn more');
           });
 
           test('returns the result of the function', () => {
@@ -238,7 +238,7 @@ describe('CopyService - ReactEvaluator Integration Tests', () => {
               arg2: 'arg2'
             };
             evaluator.getCopy('functions.args', substitutions);
-            expect(passedFunction).toBeCalledWith(
+            expect(passedFunction).toHaveBeenCalledWith(
               'learn more', substitutions.arg1, substitutions.arg2
             );
           });

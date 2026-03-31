@@ -208,7 +208,7 @@ describe('CopyService - PlainTextEvaluator Integration Tests', () => {
           test('calls the passed function', () => {
             const passedFunction = jest.fn().mockImplementation((text: string) => `+ ${text}`);
             evaluator.getCopy('functions.title', { makeExternalLink: passedFunction });
-            expect(passedFunction).toBeCalledWith('learn more');
+            expect(passedFunction).toHaveBeenCalledWith('learn more');
           });
         });
       });
@@ -246,7 +246,7 @@ describe('CopyService - PlainTextEvaluator Integration Tests', () => {
             };
 
             evaluator.getCopy('functions.args', substitutions);
-            expect(passedFunction).toBeCalledWith('learn more', 'arg1', 'arg2');
+            expect(passedFunction).toHaveBeenCalledWith('learn more', 'arg1', 'arg2');
           });
         });
       });

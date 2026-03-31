@@ -202,7 +202,7 @@ describe('IntlCopyService - Hierarchy Tests', () => {
           test('calls the passed function', () => {
             const passedFunction = jest.fn().mockImplementation((text: string) => `+ ${text}`);
             evaluator.getCopy('functions.title', { makeExternalLink: passedFunction });
-            expect(passedFunction).toBeCalledWith('learn more');
+            expect(passedFunction).toHaveBeenCalledWith('learn more');
           });
         });
       });
@@ -240,7 +240,7 @@ describe('IntlCopyService - Hierarchy Tests', () => {
             };
 
             evaluator.getCopy('functions.args', substitutions);
-            expect(passedFunction).toBeCalledWith('show more', 'arg1', 'arg2');
+            expect(passedFunction).toHaveBeenCalledWith('show more', 'arg1', 'arg2');
           });
         });
       });

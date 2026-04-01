@@ -15,21 +15,19 @@ import ErrorHandler from '../ErrorHandler/ErrorHandler.js';
 
 type LeafParam = SyntaxNode | string | null | { [key: string]: LeafParam; };
 
-/* eslint-disable no-use-before-define */
 type TokenValues = typeof Parser.TOKENS[keyof typeof Parser.TOKENS];
 
 type Token =
-  | { type: typeof Parser.TOKENS.TEXT; text: string; }
-  | { type: typeof Parser.TOKENS.HTML_TAG_START; tag: string; }
-  | { type: typeof Parser.TOKENS.HTML_TAG_END; tag: string; }
-  | {
+  | { type: typeof Parser.TOKENS.TEXT; text: string; } |
+  { type: typeof Parser.TOKENS.HTML_TAG_START; tag: string; } |
+  { type: typeof Parser.TOKENS.HTML_TAG_END; tag: string; } |
+  {
     type: Exclude<
       TokenValues,
       typeof Parser.TOKENS.TEXT |
       typeof Parser.TOKENS.HTML_TAG_START |
       typeof Parser.TOKENS.HTML_TAG_END>;
   };
-/* eslint-enable no-use-before-define */
 
 /**
  * Parses raw json copy into ASTs.
@@ -289,9 +287,9 @@ class Parser {
   private static _getTextToken(
     tokens: Token[]
   ): {
-      text: string;
-      tokens: Token[];
-    } {
+    text: string;
+    tokens: Token[];
+  } {
     const token = _.first(tokens);
 
     if (token && token.type === this.TOKENS.TEXT) {
@@ -332,9 +330,9 @@ class Parser {
   private static _parseArguments(
     tokens: Token[]
   ): {
-      args: string[];
-      tokens: Token[];
-    } {
+    args: string[];
+    tokens: Token[];
+  } {
     let args: string[];
     let tokensToReturn: Token[];
 
@@ -407,9 +405,9 @@ class Parser {
     key: string,
     tokens: Token[]
   ): {
-      text: string;
-      tokens: Token[];
-  } { // eslint-disable-line @stylistic/indent
+    text: string;
+    tokens: Token[];
+  } {
     const textParsed = this._getTextToken(tokens);
     textParsed.text = this._getRelativeKey(key, textParsed.text);
 
@@ -426,9 +424,9 @@ class Parser {
     expectedEndingToken:
       typeof this.TOKENS.SWITCH_DELIM | typeof this.TOKENS.HTML_TAG_END = this.TOKENS.SWITCH_DELIM
   ): {
-      ast: SyntaxNode | null;
-      tokens: Token[];
-    } {
+    ast: SyntaxNode | null;
+    tokens: Token[];
+  } {
     if (_.isEmpty(tokens)) {
       if (isRestricted) {
         ErrorHandler.handleError(

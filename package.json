@@ -74,7 +74,6 @@
     "eslint-plugin-import": "^2.32.0",
     "jest": "^30.3.0",
     "jest-junit-reporter": "^1.1.0",
-    "license-checker-rseidelsohn": "^4.4.2",
     "markdownlint-cli": "^0.48.0",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",

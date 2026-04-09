@@ -55,7 +55,7 @@
   },
   "homepage": "https://github.com/NextCapital/copy-service#readme",
   "dependencies": {
-    "lodash": "^4.18.0"
+    "lodash": "^4.18.1"
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",

@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Copy Service DSL defines the syntax for copy strings stored in JSON files. Copy strings can include references, substitutions, conditionals, functionals, and HTML formatting. The DSL exists because copy is stored as data (JSON), not executable code — template literals are not available.
+The Copy Service DSL defines the syntax for copy strings stored in JSON files. The DSL exists because copy is stored as data (JSON), not executable code — template literals are not available.
 
 ## Syntax Summary
 

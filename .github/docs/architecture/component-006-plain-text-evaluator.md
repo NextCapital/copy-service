@@ -51,7 +51,7 @@ this.setCacheIfCacheable(ast, evaluated);
 return copyPrefix + evaluated;
 ```
 
-The cached value includes the sibling chain's result, not just the current node. This means a single cache hit can skip evaluation of the entire remaining chain.
+The cached value includes the sibling chain's result, so a single cache hit skips evaluation of the entire remaining chain.
 
 ### Override Points
 

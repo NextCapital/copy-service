@@ -9,7 +9,7 @@
 
 ## Purpose
 
-The Substitutions class provides lazy-evaluated, type-safe access to runtime values that evaluators interpolate into copy. It exists because: (1) substitution objects may be expensive to compute, so they should be lazily evaluated; (2) individual substitution values may be functions themselves; and (3) missing substitutions need consistent error handling.
+The Substitutions class provides lazy-evaluated, type-safe access to runtime values that evaluators interpolate into copy. It exists because: (1) substitution objects may be expensive to compute; (2) individual substitution values may be functions; and (3) missing substitutions need consistent error handling.
 
 ## Responsibilities
 
@@ -34,7 +34,7 @@ get substitutions(): object {
 }
 ```
 
-The substitutions source can be either an object or a function returning an object. The function is called at most once — on first property access — and the result replaces the function. This allows expensive computation to be deferred until copy actually needs substitutions.
+The substitutions source can be either an object or a function returning an object. The function is called at most once — on first property access — and the result replaces the function.
 
 ### Key Methods
 

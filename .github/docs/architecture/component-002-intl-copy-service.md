@@ -9,7 +9,7 @@
 
 ## Purpose
 
-IntlCopyService wraps one `CopyService` per language and falls back through a parent-language hierarchy when a translation is missing. This ensures partially-translated languages (e.g., Portuguese) fall back to parent languages (Spanish → English) rather than showing blank text.
+IntlCopyService wraps one `CopyService` per language and falls back through a parent-language hierarchy when a translation is missing.
 
 ## Responsibilities
 

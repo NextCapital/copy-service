@@ -31,7 +31,7 @@ After evaluating an AST node and its sibling chain:
 - If `ast.isCacheable(copyService)` returns `true` → store the result in the WeakMap
 - On subsequent evaluation, check the WeakMap first → if present, return cached result
 
-**Why WeakMap?** When copy is re-registered and AST nodes are replaced, the old nodes are garbage-collected. WeakMap keys are weak references, so the cached entries are also garbage-collected automatically. No manual cache invalidation is needed.
+**Why WeakMap?** When copy is re-registered and AST nodes are replaced, the old nodes are garbage-collected. WeakMap keys are weak references, so cached entries are garbage-collected automatically — no manual invalidation needed.
 
 ## Cacheability Rules
 
@@ -41,7 +41,7 @@ A node is cacheable if and only if it and its entire sibling chain contain NO su
 
 **Conditionally cacheable:** `Verbatim`, `Reference`, `Formatting`, `Newline`, `WordBreak` — cacheable if their sibling (and any child ASTs) are also cacheable. `Reference` additionally requires the referenced AST to be cacheable.
 
-**Important: The cached value includes the entire sibling chain.** When `setCacheIfCacheable(ast, evaluated)` is called, `evaluated` is the result of `evalAST(copy, ast.sibling, subs)` — meaning it includes this node's output PLUS all following siblings. A cache hit at any point skips the entire remaining chain.
+**Important: The cached value includes the entire sibling chain.** When `setCacheIfCacheable(ast, evaluated)` is called, `evaluated` is the result of `evalAST(copy, ast.sibling, subs)` — it includes this node's output plus all following siblings.
 
 ## Sequence Diagram
 

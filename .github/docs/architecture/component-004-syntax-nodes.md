@@ -27,7 +27,7 @@ class SyntaxNode {
 
 ## AST Node Types
 
-All nodes share a common structure: each has a `sibling` property (the next node in the linked list) and node-specific data properties. The `sibling` chain forms the horizontal structure; node-specific properties form the vertical structure.
+All nodes share a common structure: a `sibling` property (the next node in the linked list) and node-specific data properties.
 
 ### Verbatim
 

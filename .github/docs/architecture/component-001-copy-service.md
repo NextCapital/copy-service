@@ -9,7 +9,7 @@
 
 ## Purpose
 
-CopyService is the central store for all registered copy. It receives raw JSON copy files, stores them, and provides on-demand parsing into ASTs that evaluators consume. It exists because copy must be registered from multiple sources (base copy, tenant overrides), merged deterministically, and parsed lazily for performance.
+CopyService is the central store for registered copy — it receives raw JSON copy files, merges them, and provides on-demand parsing into ASTs that evaluators consume. It exists because copy must be registered from multiple sources (base copy, tenant overrides), merged deterministically, and parsed lazily for performance.
 
 ## Responsibilities
 

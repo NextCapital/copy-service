@@ -125,7 +125,7 @@ Calling `registerCopy()` multiple times merges new copy into existing copy using
 
 ### Why a custom DSL instead of template literals?
 
-Copy lives in JSON files — not code files. Template literals require JavaScript execution context. The DSL is designed to be evaluated at runtime from static JSON, which can be loaded from APIs, files, or bundled assets without code execution.
+Copy lives in JSON files — not code files. Template literals require JavaScript execution context. The DSL evaluates at runtime from static JSON, which can be loaded from APIs, files, or bundled assets.
 
 ### Why recursive-descent parsing?
 
@@ -133,7 +133,7 @@ The grammar is not left-recursive, making recursive-descent straightforward. An 
 
 ### Why sibling pointers instead of children arrays?
 
-Performance. The evaluator recursively walks the AST via tail-call-like patterns: `evalAST(copy, ast.sibling, subs)`. Arrays would require iteration and allocation. The sibling-pointer design produces zero intermediate arrays during evaluation.
+Performance. The evaluator recursively walks the AST via tail-call-like patterns: `evalAST(copy, ast.sibling, subs)`. Arrays would require iteration and allocation; sibling pointers produce none.
 
 ### Why `PlainTextEvaluator` and `HtmlEvaluator` share a class hierarchy?
 

@@ -67,7 +67,7 @@ IntlCopyService has two hierarchy traversal strategies:
 
 Used by: `getAstForKey`, `hasKey`, `getRegisteredCopyForKey`
 
-Walks the hierarchy leaf-to-root, returns the first result that passes the skip predicate. Efficient for lookups — stops as soon as a value is found.
+Walks the hierarchy leaf-to-root, returning the first result that passes the skip predicate.
 
 ### `_mergeFromHierarchy` (merge-all)
 

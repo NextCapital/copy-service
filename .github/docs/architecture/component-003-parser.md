@@ -9,7 +9,7 @@
 
 ## Purpose
 
-The Parser transforms raw copy strings written in the Copy Service DSL into Abstract Syntax Trees (ASTs) of `SyntaxNode` subclasses. It exists because copy is authored as human-readable strings in JSON files, but must be structured data for evaluators to process efficiently. The parser converts DSL syntax (references, substitutions, switches, functions, formatting) into a typed tree structure.
+The Parser transforms raw copy strings written in the Copy Service DSL into Abstract Syntax Trees (ASTs) of `SyntaxNode` subclasses. It exists because copy is authored as human-readable strings in JSON files, but must be structured data for evaluators to process efficiently.
 
 ## Responsibilities
 
@@ -27,7 +27,7 @@ The Parser transforms raw copy strings written in the Copy Service DSL into Abst
 
 ## Internal Structure
 
-The Parser is a static-only class (no instances). All methods are static.
+The Parser is a static-only class — all methods are static, none require instantiation.
 
 ### Token System
 
@@ -156,7 +156,7 @@ Resolution: count leading dots, remove that many segments from the current key p
 
 ### Error Handling
 
-Parse errors call `ErrorHandler.handleError` with `halt: true`, which throws. The `_parse` wrapper catches errors and re-throws with context (original string). This ensures parse errors include the original copy string for debugging.
+Parse errors call `ErrorHandler.handleError` with `halt: true`, which throws. The `_parse` wrapper catches errors and re-throws with context (original string).
 
 ## Gotchas
 

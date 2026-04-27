@@ -231,6 +231,17 @@ We reccomend two strategies for internationalization, each with their benefits a
 
 In either case, the copy service should support all use cases for internationalization. Whenever passing in substitutions that may need i18n support (eg: formatted dates), make sure those substitutions are also properly localized.
 
+## Deep-Dive Documentation
+
+For architecture details, component design, runtime flows, and AI-agent-optimized reference documentation, see [`.github/docs/architecture/`](.github/docs/architecture/README.md). This includes:
+
+- Architecture overview and component inventory
+- DSL syntax reference
+- Runtime flow documentation (copy evaluation, i18n fallback, caching)
+- Developer onboarding guide
+- Tutorial for building custom evaluators
+- Glossary of proprietary terms
+
 ## Contributing to Copy Service
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md)

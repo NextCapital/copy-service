@@ -65,7 +65,8 @@ private _mergePrefixes(left: React.ReactNode, right: React.ReactNode): React.Rea
     return this._createFragment(left.props.children, right);
   }
 
-  // Any + Fragment or Element + Element = wrap in Fragment
+  // Non-Fragment + Fragment = merge into Fragment's children
+  // Non-Fragment + Non-Fragment = wrap both in new Fragment
   // ...
 }
 ```

@@ -18,46 +18,6 @@ ErrorHandler provides a single, consistent mechanism for error reporting across 
 - Silences all non-halting errors in production and test environments
 - Provides `isInDevMode()` check
 
-## Internal Structure
-
-```typescript
-// js/copy-service/ErrorHandler/ErrorHandler.ts
-class ErrorHandler {
-  static handleError(name: string, error: string, options?: { halt?: boolean }): void | never {
-    const message = `${name}: ${error}`;
-    if (options.halt) {
-      throw new Error(message);  // always throws regardless of environment
-    } else if (this.isInDevMode() && process.env.NODE_ENV !== 'test') {
-      console.error(message);  // only logs in development
-    }
-  }
-
-  static isInDevMode(): boolean {
-    return process.env.NODE_ENV !== 'production';
-  }
-}
-```
-
-### Error Behavior Matrix
-
-| `options.halt` | `NODE_ENV` | Behavior |
-|:---:|:---:|---|
-| `true` | any | **Throws** `Error` |
-| `false`/omitted | `development` | Logs to `console.error` |
-| `false`/omitted | `test` | Silent (no output) |
-| `false`/omitted | `production` | Silent (no output) |
-
-### TypeScript Overloads
-
-The method uses function overloads for type safety:
-
-```typescript
-static handleError(name: string, error: string, options?: { halt: false } | object): void;
-static handleError(name: string, error: string, options?: { halt: true }): never;
-```
-
-When `halt: true` is passed, TypeScript knows the function never returns, enabling the compiler to understand control flow after error calls.
-
 ## Who Calls It
 
 | Component | Error Cases | Halt? |

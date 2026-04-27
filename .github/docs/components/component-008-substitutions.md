@@ -20,40 +20,6 @@ The Substitutions class provides lazy-evaluated, type-safe access to runtime val
 - Converts values to booleans for Switch nodes via `getBoolean()`
 - Reports missing substitutions via ErrorHandler
 
-## Internal Structure
-
-### Lazy Evaluation
-
-```typescript
-// js/copy-service/Substitutions/Substitutions.ts#L26-L41
-get substitutions(): object {
-  if (_.isFunction(this._substitutions)) {
-    this._substitutions = this._substitutions();  // call once, cache result
-  }
-  return this._substitutions;
-}
-```
-
-The substitutions source can be either an object or a function returning an object. The function is called at most once — on first property access — and the result replaces the function.
-
-### Key Methods
-
-| Method | Behavior | Used By |
-|--------|----------|---------|
-| `get(key)` | `_.result(subs, key)` — if value is a function, calls it | Substitute, RefSubstitute nodes |
-| `getFunction(key)` | `_.get(subs, key)` — returns function without calling it, warns if not a function | Functional nodes |
-| `getBoolean(key)` | Calls `get(key)`, then: number `1` → `true`, other numbers → `false`, else `Boolean(value)` | Switch nodes |
-
-### Missing Value Handling
-
-When a key is not found:
-
-1. Logs a warning via `ErrorHandler.handleError()` (non-halting)
-2. Returns `''` (empty string) from `get()` (which becomes `false` from `getBoolean()`)
-3. Returns `undefined` from `getFunction()`
-
-This design ensures missing substitutions produce empty text rather than crashing the page.
-
 ## Gotchas
 
 1. **`getBoolean()` treats `1` as truthy, but `2` as falsy.** This is intentional for pluralization: the number `1` means "singular" (left branch of Switch), while `0`, `2`, `3`, etc. mean "plural" (right branch). Non-number values use standard JavaScript truthiness.

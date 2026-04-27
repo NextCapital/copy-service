@@ -70,7 +70,7 @@ When `halt: true` is passed, TypeScript knows the function never returns, enabli
 
 ## Gotchas
 
-1. **`ErrorHandler` with `halt: true` is used by the Parser as `throwUnexpectedToken()`.** The Parser has a helper that calls `handleError` with `halt: true` followed by a `throw` statement as a TypeScript fallback to ensure the `never` return type — `js/copy-service/Parser/Parser.ts#L133-L137`.
+1. **`ErrorHandler` with `halt: true` is used by the Parser as `throwUnexpectedToken()`.** The Parser has a helper that calls `handleError` with `halt: true` followed by a `throw` statement as a TypeScript fallback to ensure the `never` return type — `js/copy-service/Parser/Parser.ts#L144-L150`.
 
 2. **Non-halting errors produce NO output in tests.** The `NODE_ENV !== 'test'` check means errors during testing are completely silent. Test files use `jest.spyOn(ErrorHandler, 'handleError')` to verify error calls.
 

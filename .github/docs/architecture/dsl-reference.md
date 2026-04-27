@@ -263,5 +263,5 @@ For the formal grammar and parser design rationale, see [component-003-parser.md
 - `README.md#L100-L200` — DSL syntax documentation with examples
 - `js/copy-service/Parser/Parser.ts#L38-L55` — Token definitions
 - `js/copy-service/Parser/Parser.ts#L87-L90` — Allowed HTML tags
-- `js/copy-service/Substitutions/Substitutions.ts#L97-L107` — `getBoolean()` rules
+- `js/copy-service/Substitutions/Substitutions.ts#L103-L113` — `getBoolean()` rules
 - `integration-tests/copy.json` — Reference copy file exercising all syntax

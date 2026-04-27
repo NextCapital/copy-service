@@ -27,7 +27,7 @@ Node dispatch is similar to `PlainTextEvaluator` but returns React nodes: — `j
 | `WordBreak` | `React.createElement('wbr', null)` |
 | `Verbatim` | `ast.text` (strings are valid React nodes) |
 | `Reference` | Recursively evaluates the referenced AST |
-| `Substitute` | `substitutions.get(key).toString()` — returns `null` for empty/nil |
+| `Substitute` | `substitutions.get(key)` — guarded by nil/empty check before `.toString()`, returns `null` for nil or empty string |
 | `RefSubstitute` | Gets copy key from substitutions, evaluates that key |
 | `Switch` | Evaluates left or right branch based on `getBoolean()` |
 | `Functional` | Calls the function, wraps result in a Fragment (because functions can return arbitrary JSX) |
@@ -36,7 +36,7 @@ Node dispatch is similar to `PlainTextEvaluator` but returns React nodes: — `j
 
 ### `_mergePrefixes()` — The Key Algorithm
 
-Merging two React nodes is non-trivial. String concatenation doesn't work because React nodes can be elements, strings, or null. The `_mergePrefixes()` method handles all combinations: — `js/react-evaluator/ReactEvaluator.ts#L140-L192`
+Merging two React nodes is non-trivial. String concatenation doesn't work because React nodes can be elements, strings, or null. The `_mergePrefixes()` method handles all combinations: — `js/react-evaluator/ReactEvaluator.ts#L147-L193`
 
 **Rules:**
 1. If either side is null/falsy → return the other side
@@ -100,6 +100,6 @@ Returns `null` (not `''`). React's initial empty state is `null`, not an empty s
 
 - `js/react-evaluator/ReactEvaluator.ts#L1-L193` — Full implementation
 - `js/react-evaluator/ReactEvaluator.ts#L30-L120` — `evalAST()` with all node types
-- `js/react-evaluator/ReactEvaluator.ts#L140-L192` — `_mergePrefixes()` Fragment merging
+- `js/react-evaluator/ReactEvaluator.ts#L147-L193` — `_mergePrefixes()` Fragment merging
 - `js/react-evaluator/ReactEvaluator.test.ts` — 402 LOC of unit tests
 - `integration-tests/tests/ReactEvaluatorIntegration.test.ts` — Integration tests

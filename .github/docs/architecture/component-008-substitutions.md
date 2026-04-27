@@ -25,7 +25,7 @@ The Substitutions class provides lazy-evaluated, type-safe access to runtime val
 ### Lazy Evaluation
 
 ```typescript
-// js/copy-service/Substitutions/Substitutions.ts#L27-L33
+// js/copy-service/Substitutions/Substitutions.ts#L26-L41
 get substitutions(): object {
   if (_.isFunction(this._substitutions)) {
     this._substitutions = this._substitutions();  // call once, cache result
@@ -40,7 +40,7 @@ The substitutions source can be either an object or a function returning an obje
 
 | Method | Behavior | Used By |
 |--------|----------|---------|
-| `get(key)` | `_.result(subs, key)` — if value is a function, calls it | Substitute, RefSubstitute, Switch nodes |
+| `get(key)` | `_.result(subs, key)` — if value is a function, calls it | Substitute, RefSubstitute nodes |
 | `getFunction(key)` | `_.get(subs, key)` — returns function without calling it, warns if not a function | Functional nodes |
 | `getBoolean(key)` | Calls `get(key)`, then: number `1` → `true`, other numbers → `false`, else `Boolean(value)` | Switch nodes |
 
@@ -65,8 +65,8 @@ This design ensures missing substitutions produce empty text rather than crashin
 ## Evidence
 
 - `js/copy-service/Substitutions/Substitutions.ts#L1-L114` — Full implementation
-- `js/copy-service/Substitutions/Substitutions.ts#L27-L33` — Lazy evaluation getter
-- `js/copy-service/Substitutions/Substitutions.ts#L44-L51` — `get()` with `_.result()`
-- `js/copy-service/Substitutions/Substitutions.ts#L59-L77` — `getFunction()` with validation
-- `js/copy-service/Substitutions/Substitutions.ts#L97-L107` — `getBoolean()` with `1`-is-singular rule
+- `js/copy-service/Substitutions/Substitutions.ts#L26-L41` — Lazy evaluation getter
+- `js/copy-service/Substitutions/Substitutions.ts#L43-L57` — `get()` with `_.result()`
+- `js/copy-service/Substitutions/Substitutions.ts#L60-L85` — `getFunction()` with validation
+- `js/copy-service/Substitutions/Substitutions.ts#L103-L113` — `getBoolean()` with `1`-is-singular rule
 - `js/copy-service/Substitutions/Substitutions.test.ts` — 124 LOC of unit tests

@@ -25,7 +25,7 @@ When `getAstForKey(key)` is called:
 
 ### Layer 2: Evaluation Cache (WeakMap)
 
-**Location:** `Evaluator.evaluationCache: WeakMap<SyntaxNode, T>` — `js/copy-service/Evaluator/Evaluator.ts#L24`
+**Location:** `Evaluator.evaluationCache: WeakMap<SyntaxNode, T>` — `js/copy-service/Evaluator/Evaluator.ts#L18`
 
 After evaluating an AST node and its sibling chain:
 - If `ast.isCacheable(copyService)` returns `true` → store the result in the WeakMap
@@ -93,7 +93,7 @@ The evaluation of Reference's result is cached independently, so even though the
 ## Evidence
 
 - `js/copy-service/CopyService.ts#L112-L119` — In-place AST replacement (parse cache)
-- `js/copy-service/Evaluator/Evaluator.ts#L24` — WeakMap declaration
+- `js/copy-service/Evaluator/Evaluator.ts#L18` — WeakMap declaration
 - `js/copy-service/Evaluator/Evaluator.ts#L49-L64` — `getCached()` and `setCacheIfCacheable()`
 - `js/plain-text-evaluator/PlainTextEvaluator.ts#L36-L38` — Cache check in evalAST
 - `js/plain-text-evaluator/PlainTextEvaluator.ts#L116-L117` — Cache storage after evaluation

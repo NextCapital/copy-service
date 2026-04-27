@@ -72,12 +72,16 @@ The grammar is not left-recursive, enabling recursive-descent parsing:
 COPY       :: *{ RESTRAINED RESTRAINED VERBATIM } COPY
             | ${ VERBATIM } COPY
             | #{ VERBATIM } COPY
-            | VERBATIM COPY
+            | %{ VERBATIM #{ VERBATIM } } COPY
             | ^{ RESTRAINED VERBATIM } COPY
             | ^{ RESTRAINED VERBATIM }[ ARGUMENTS
+            | <tag> RESTRAINED COPY
+            | \n COPY
+            | \b COPY
+            | VERBATIM COPY
             | COPY nil
 
-RESTRAINED :: (same productions as COPY, but terminated by }{ or HTML_TAG_END)
+RESTRAINED :: (same productions as COPY, but terminated by }{ or </tag>)
 
 ARGUMENTS  :: VERBATIM , ARGUMENTS
             | VERBATIM ] COPY

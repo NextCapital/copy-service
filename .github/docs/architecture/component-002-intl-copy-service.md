@@ -93,9 +93,9 @@ Two internal methods handle hierarchy resolution:
 
 The generator avoids array allocations — critical for `getAstForKey()` which is called frequently during page renders. — `js/copy-service/IntlCopyService.ts#L208-L220`
 
-**`_getFromHierarchy(language, method, skip, ...args)`** — Calls a method on each `CopyService` in the hierarchy, returning the first result not skipped by the `skip` predicate. Used by `getAstForKey()` (skip `undefined`), `hasKey()` (skip falsy), and `getRegisteredCopyForKey()` (skip `null`/`undefined`/`undefined`). — `js/copy-service/IntlCopyService.ts#L238-L258`
+**`_getFromHierarchy(language, method, skip, ...args)`** — Calls a method on each `CopyService` in the hierarchy, returning the first result not skipped by the `skip` predicate. Used by `getAstForKey()` (skip `undefined`), `hasKey()` (skip falsy), and `getRegisteredCopyForKey()` (skip `null`/`undefined`/`undefined`). — `js/copy-service/IntlCopyService.ts#L271-L291`
 
-**`_mergeFromHierarchy(language, method, ...args)`** — Calls a method on each `CopyService` and merges results using `lodash.merge`, with root language results as the base and specific languages overriding. Optimizes the root language case (no merging needed). — `js/copy-service/IntlCopyService.ts#L226-L240`
+**`_mergeFromHierarchy(language, method, ...args)`** — Calls a method on each `CopyService` and merges results using `lodash.merge`, with root language results as the base and specific languages overriding. Optimizes the root language case (no merging needed). — `js/copy-service/IntlCopyService.ts#L248-L269`
 
 ### getAstForKey Resolution
 
@@ -118,7 +118,7 @@ This design means `undefined` vs `null` carries semantic meaning:
 - `js/copy-service/IntlCopyService.ts#L1-L293` — Full implementation
 - `js/copy-service/IntlCopyService.ts#L25-L47` — Class-level JSDoc with hierarchy example
 - `js/copy-service/IntlCopyService.ts#L197-L220` — Generator-based hierarchy traversal
-- `js/copy-service/IntlCopyService.ts#L226-L258` — `_mergeFromHierarchy` and `_getFromHierarchy`
+- `js/copy-service/IntlCopyService.ts#L248-L291` — `_mergeFromHierarchy` and `_getFromHierarchy`
 - `js/copy-service/IntlCopyService.test.ts` — 489 LOC of unit tests
 - `integration-tests/tests/IntlCopyServiceHierarchy.test.ts` — Hierarchy integration tests
 - `integration-tests/tests/IntlCopyServiceBasicCompatibility.test.ts` — API compatibility tests

@@ -104,6 +104,6 @@ Transform.evaluator -> Output.text
 
 - `js/copy-service/Evaluator/Evaluator.ts#L68-L76` — `getCopy()` entry point
 - `js/copy-service/CopyService.ts#L107-L131` — `getAstForKey()` lazy parsing
-- `js/copy-service/Parser/Parser.ts#L106-L113` — `parseSingle()`
+- `js/copy-service/Parser/Parser.ts#L135-L168` — `parseSingle()`
 - `js/plain-text-evaluator/PlainTextEvaluator.ts#L30-L118` — `evalAST()` node dispatch
 - `js/copy-service/Substitutions/Substitutions.ts#L27-L33` — Lazy substitution evaluation

@@ -84,7 +84,7 @@ The `undefined`/`null` distinction is critical:
 | Return Value | Meaning | Who Produces It |
 |:---:|---|---|
 | `undefined` | "Key not found in this language — try parent" | `CopyService.getAstForKey()` when `language` is set |
-| `null` | "Key found but copy is empty" or "Parse produced null AST" | `CopyService.getAstForKey()` |
+| `null` | "Key found but parse failed" | `CopyService.getAstForKey()` |
 | `SyntaxNode` | "Key found and parsed successfully" | `CopyService.getAstForKey()` |
 
 `CopyService` returns `undefined` (instead of logging an error and returning `null`) specifically when its `language` property is set. This signals to `IntlCopyService` that the key was simply not registered for this particular language — not that it's globally missing.

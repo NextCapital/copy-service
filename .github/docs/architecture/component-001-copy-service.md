@@ -98,7 +98,7 @@ When `getAstForKey(key)` is called:
 1. Retrieves the value at `key` from `_registeredCopy` using `lodash.get`
 2. If the value is a **string**: parses it via `Parser.parseSingle()`, replaces the string in-place with the resulting AST, and returns the AST — `js/copy-service/CopyService.ts#L112-L119`
 3. If the value is an **AST node**: returns it directly (already parsed)
-4. If the value is `undefined` or not an AST: logs an error and returns `null` (or `undefined` when `language` is set, to allow `IntlCopyService` to differentiate)
+4. If the value is `undefined` or not an AST: when `language` is not set, logs an error and returns `null`; when `language` is set, silently returns `undefined` (to allow `IntlCopyService` to continue fallback)
 
 This in-place replacement means parsing only happens once per key. Subsequent access returns the cached AST.
 

@@ -93,7 +93,7 @@ Two internal methods handle hierarchy resolution:
 
 The generator avoids array allocations — critical for `getAstForKey()` which is called frequently during page renders. — `js/copy-service/IntlCopyService.ts#L208-L220`
 
-**`_getFromHierarchy(language, method, skip, ...args)`** — Calls a method on each `CopyService` in the hierarchy, returning the first result not skipped by the `skip` predicate. Used by `getAstForKey()` (skip `undefined`), `hasKey()` (skip `false`), and `getRegisteredCopyForKey()` (skip `null`/`undefined`/`undefined`). — `js/copy-service/IntlCopyService.ts#L238-L258`
+**`_getFromHierarchy(language, method, skip, ...args)`** — Calls a method on each `CopyService` in the hierarchy, returning the first result not skipped by the `skip` predicate. Used by `getAstForKey()` (skip `undefined`), `hasKey()` (skip falsy), and `getRegisteredCopyForKey()` (skip `null`/`undefined`/`undefined`). — `js/copy-service/IntlCopyService.ts#L238-L258`
 
 **`_mergeFromHierarchy(language, method, ...args)`** — Calls a method on each `CopyService` and merges results using `lodash.merge`, with root language results as the base and specific languages overriding. Optimizes the root language case (no merging needed). — `js/copy-service/IntlCopyService.ts#L226-L240`
 
@@ -107,7 +107,7 @@ The generator avoids array allocations — critical for `getAstForKey()` which i
 
 This design means `undefined` vs `null` carries semantic meaning:
 - `undefined` = "key not found in this language, try parent"
-- `null` = "key found but parsed to empty AST"
+- `null` = "key found but parse failed (exception in Parser)"
 
 ## Cross-Cutting Concerns
 

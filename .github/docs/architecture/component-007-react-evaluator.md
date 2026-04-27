@@ -90,7 +90,7 @@ Returns `null` (not `''`). React's initial empty state is `null`, not an empty s
 
 ## Gotchas
 
-1. **Functional results are always wrapped in a Fragment.** User-provided functions can return arbitrary JSX (elements, strings, arrays). The Fragment wrapper normalizes all return values into a consistent type.
+1. **Functional results are wrapped in a Fragment when `allowFunctional` is true and the substitution resolves to a function.** When either condition fails, the inner copy is returned as-is without a Fragment wrapper.
 
 2. **`Substitute` returns `null` for empty/nil values**, not an empty string. In React, `null` renders nothing, while `''` could produce an empty text node.
 

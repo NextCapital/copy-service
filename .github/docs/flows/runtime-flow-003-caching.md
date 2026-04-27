@@ -35,7 +35,7 @@ After evaluating an AST node and its sibling chain:
 
 ## Cacheability Rules
 
-A node is cacheable if and only if it and its entire sibling chain contain NO substitution-dependent nodes. See [component-004-syntax-nodes.md](component-004-syntax-nodes.md) for the full cacheability table.
+A node is cacheable if and only if it and its entire sibling chain contain NO substitution-dependent nodes. See [component-004-syntax-nodes.md](../components/component-004-syntax-nodes.md) for the full cacheability table.
 
 **Never cacheable:** `Substitute`, `RefSubstitute`, `Switch`, `Functional` — all depend on runtime substitutions.
 

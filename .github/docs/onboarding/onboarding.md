@@ -16,7 +16,7 @@ JSON copy file → CopyService (stores) → Parser (tokenize + parse) → AST �
 2. **Parse** happens lazily on first access (DSL string → AST)
 3. **Evaluate** the AST with an evaluator to produce output
 
-See [Architecture README](README.md) for the full architecture diagram and component inventory.
+See [Architecture README](../README.md) for the full architecture diagram and component inventory.
 
 ## Quick Start
 
@@ -92,7 +92,7 @@ Every source file has a co-located `.test.ts` file.
 
 ### 1. The DSL
 
-Copy strings use a custom syntax. See [dsl-reference.md](dsl-reference.md) for the full reference. Quick summary:
+Copy strings use a custom syntax. See [dsl-reference.md](../guides/dsl-reference.md) for the full reference. Quick summary:
 
 | Pattern | Syntax | Example |
 |---------|--------|---------|
@@ -104,7 +104,7 @@ Copy strings use a custom syntax. See [dsl-reference.md](dsl-reference.md) for t
 
 ### 2. AST Nodes
 
-Each syntax element maps to a `SyntaxNode` subclass. The parser creates a linked list of nodes via `sibling` pointers. See [component-004-syntax-nodes.md](component-004-syntax-nodes.md).
+Each syntax element maps to a `SyntaxNode` subclass. The parser creates a linked list of nodes via `sibling` pointers. See [component-004-syntax-nodes.md](../components/component-004-syntax-nodes.md).
 
 ### 3. Evaluators
 
@@ -122,7 +122,7 @@ evaluator.getCopy(key: string, substitutions?: object | (() => object)): T
 
 ### 4. Internationalization
 
-For multi-language support, use `IntlCopyService` instead of `CopyService`. See [component-002-intl-copy-service.md](component-002-intl-copy-service.md) and [runtime-flow-002-intl-fallback.md](runtime-flow-002-intl-fallback.md) for details.
+For multi-language support, use `IntlCopyService` instead of `CopyService`. See [component-002-intl-copy-service.md](../components/component-002-intl-copy-service.md) and [runtime-flow-002-intl-fallback.md](../flows/runtime-flow-002-intl-fallback.md) for details.
 
 ```typescript
 import { IntlCopyService } from '@nextcapital/copy-service';
@@ -149,8 +149,8 @@ const evaluator = new PlainTextEvaluator(service);
 
 ### Adding a New Feature
 
-1. **New syntax element:** Requires a new SyntaxNode subclass, Parser changes, and handler in ALL evaluators. See the [Extension Points](README.md#extension-points) table.
-2. **New evaluator:** Extend `Evaluator<T>` or `PlainTextEvaluator`. See [tutorial-new-evaluator.md](tutorial-new-evaluator.md).
+1. **New syntax element:** Requires a new SyntaxNode subclass, Parser changes, and handler in ALL evaluators. See the [Extension Points](../README.md#extension-points) table.
+2. **New evaluator:** Extend `Evaluator<T>` or `PlainTextEvaluator`. See [tutorial-new-evaluator.md](../guides/tutorial-new-evaluator.md).
 3. **New HTML tag:** Add to `Parser.ALLOWED_HTML_TAGS`. No other changes needed.
 
 ### Test Coverage
@@ -172,7 +172,7 @@ Merging rules: strings replace, objects merge recursively.
 
 ### Lazy Substitutions
 
-For expensive-to-compute substitutions, pass a function. See [component-008-substitutions.md](component-008-substitutions.md) for details.
+For expensive-to-compute substitutions, pass a function. See [component-008-substitutions.md](../components/component-008-substitutions.md) for details.
 
 ```typescript
 evaluator.getCopy('key', () => ({
@@ -194,9 +194,9 @@ evaluator.getCopy('terms', {
 
 ## Where to Learn More
 
-- [Architecture README](README.md) — Full architecture overview
-- [DSL Reference](dsl-reference.md) — Complete syntax documentation
-- [Glossary](glossary.md) — Proprietary term definitions
+- [Architecture README](../README.md) — Full architecture overview
+- [DSL Reference](../guides/dsl-reference.md) — Complete syntax documentation
+- [Glossary](../guides/glossary.md) — Proprietary term definitions
 - [README.md](../../../README.md) — Installation, usage examples, comparison to i18next
 - [CONTRIBUTING.md](../../../CONTRIBUTING.md) — Contribution guidelines
 - [MIGRATION.md](../../../MIGRATION.md) — ESM migration guide (v6 → v7)

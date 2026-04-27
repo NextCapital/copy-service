@@ -256,7 +256,7 @@ Word breaks (`\b`) hint to the browser where long words can be broken. They prod
 
 ## Grammar (Formal)
 
-For the formal grammar and parser design rationale, see [component-003-parser.md](component-003-parser.md#grammar).
+For the formal grammar and parser design rationale, see [component-003-parser.md](../components/component-003-parser.md#grammar).
 
 ## Evidence
 

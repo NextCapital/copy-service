@@ -233,7 +233,7 @@ In either case, the copy service should support all use cases for internationali
 
 ## Deep-Dive Documentation
 
-For architecture details, component design, runtime flows, and AI-agent-optimized reference documentation, see [`.github/docs/architecture/`](.github/docs/architecture/README.md). This includes:
+For architecture details, component design, runtime flows, and AI-agent-optimized reference documentation, see [`.github/docs/`](.github/docs/README.md). This includes:
 
 - Architecture overview and component inventory
 - DSL syntax reference

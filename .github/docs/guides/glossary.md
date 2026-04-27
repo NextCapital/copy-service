@@ -33,4 +33,4 @@ Terms unique to the Copy Service codebase. Standard TypeScript/React terms are n
 
 ## Evidence
 
-- All terms are derived from class names, property names, and code comments in the source files listed in [README.md](README.md) Component Inventory.
+- All terms are derived from class names, property names, and code comments in the source files listed in [README.md](../README.md) Component Inventory.

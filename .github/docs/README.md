@@ -61,36 +61,36 @@ Evaluators.Evaluator -> AST Layer.nodes: "walks AST"
 
 | Component | Responsibility | Location | Depends On |
 |-----------|---------------|----------|------------|
-| [CopyService](components/component-001-copy-service.md) | Register, store, and lazy-parse copy into ASTs | `js/copy-service/CopyService.ts` | Parser, SyntaxNode, ErrorHandler |
-| [IntlCopyService](components/component-002-intl-copy-service.md) | Multi-language wrapper with fallback hierarchy | `js/copy-service/IntlCopyService.ts` | CopyService, ErrorHandler |
-| [Parser](components/component-003-parser.md) | Tokenize DSL strings and parse into ASTs | `js/copy-service/Parser/Parser.ts` | All SyntaxNode subclasses, ErrorHandler |
-| [SyntaxNode](components/component-004-syntax-nodes.md) | Base class and 9 AST node types | `js/copy-service/SyntaxNode/SyntaxNode.ts` | — |
-| [Evaluator](components/component-005-evaluator.md) | Abstract base for AST evaluation | `js/copy-service/Evaluator/Evaluator.ts` | Substitutions, SyntaxNode, CopyService |
-| [PlainTextEvaluator](components/component-006-plain-text-evaluator.md) | Evaluates AST to plain text strings | `js/plain-text-evaluator/PlainTextEvaluator.ts` | Evaluator, all SyntaxNode subclasses |
-| [HtmlEvaluator](components/component-006-plain-text-evaluator.md#htmlevaluator) | Evaluates AST to HTML strings | `js/html-evaluator/HtmlEvaluator.ts` | PlainTextEvaluator |
-| [ReactEvaluator](components/component-007-react-evaluator.md) | Evaluates AST to React JSX | `js/react-evaluator/ReactEvaluator.ts` | Evaluator, all SyntaxNode subclasses |
-| [Substitutions](components/component-008-substitutions.md) | Lazy-resolve substitution values from user input | `js/copy-service/Substitutions/Substitutions.ts` | ErrorHandler |
-| [ErrorHandler](components/component-009-error-handler.md) | Centralized error logging and halting | `js/copy-service/ErrorHandler/ErrorHandler.ts` | — |
+| [CopyService](components/copy-service.md) | Register, store, and lazy-parse copy into ASTs | `js/copy-service/CopyService.ts` | Parser, SyntaxNode, ErrorHandler |
+| [IntlCopyService](components/intl-copy-service.md) | Multi-language wrapper with fallback hierarchy | `js/copy-service/IntlCopyService.ts` | CopyService, ErrorHandler |
+| [Parser](components/parser.md) | Tokenize DSL strings and parse into ASTs | `js/copy-service/Parser/Parser.ts` | All SyntaxNode subclasses, ErrorHandler |
+| [SyntaxNode](components/syntax-nodes.md) | Base class and 9 AST node types | `js/copy-service/SyntaxNode/SyntaxNode.ts` | — |
+| [Evaluator](components/evaluator.md) | Abstract base for AST evaluation | `js/copy-service/Evaluator/Evaluator.ts` | Substitutions, SyntaxNode, CopyService |
+| [PlainTextEvaluator](components/plain-text-evaluator.md) | Evaluates AST to plain text strings | `js/plain-text-evaluator/PlainTextEvaluator.ts` | Evaluator, all SyntaxNode subclasses |
+| [HtmlEvaluator](components/plain-text-evaluator.md#htmlevaluator) | Evaluates AST to HTML strings | `js/html-evaluator/HtmlEvaluator.ts` | PlainTextEvaluator |
+| [ReactEvaluator](components/react-evaluator.md) | Evaluates AST to React JSX | `js/react-evaluator/ReactEvaluator.ts` | Evaluator, all SyntaxNode subclasses |
+| [Substitutions](components/substitutions.md) | Lazy-resolve substitution values from user input | `js/copy-service/Substitutions/Substitutions.ts` | ErrorHandler |
+| [ErrorHandler](components/error-handler.md) | Centralized error logging and halting | `js/copy-service/ErrorHandler/ErrorHandler.ts` | — |
 
 ## Document Index
 
 ### Component Deep-Dives
 
-- [component-001-copy-service.md](components/component-001-copy-service.md) — Copy registration, storage, and lazy parsing
-- [component-002-intl-copy-service.md](components/component-002-intl-copy-service.md) — Multi-language support and hierarchy fallback
-- [component-003-parser.md](components/component-003-parser.md) — Tokenizer and recursive-descent parser
-- [component-004-syntax-nodes.md](components/component-004-syntax-nodes.md) — All 9 AST node types
-- [component-005-evaluator.md](components/component-005-evaluator.md) — Abstract evaluator base class
-- [component-006-plain-text-evaluator.md](components/component-006-plain-text-evaluator.md) — PlainTextEvaluator and HtmlEvaluator
-- [component-007-react-evaluator.md](components/component-007-react-evaluator.md) — ReactEvaluator and JSX fragment merging
-- [component-008-substitutions.md](components/component-008-substitutions.md) — Substitution resolution
-- [component-009-error-handler.md](components/component-009-error-handler.md) — Error handling strategy
+- [copy-service.md](components/copy-service.md) — Copy registration, storage, and lazy parsing
+- [intl-copy-service.md](components/intl-copy-service.md) — Multi-language support and hierarchy fallback
+- [parser.md](components/parser.md) — Tokenizer and recursive-descent parser
+- [syntax-nodes.md](components/syntax-nodes.md) — All 9 AST node types
+- [evaluator.md](components/evaluator.md) — Abstract evaluator base class
+- [plain-text-evaluator.md](components/plain-text-evaluator.md) — PlainTextEvaluator and HtmlEvaluator
+- [react-evaluator.md](components/react-evaluator.md) — ReactEvaluator and JSX fragment merging
+- [substitutions.md](components/substitutions.md) — Substitution resolution
+- [error-handler.md](components/error-handler.md) — Error handling strategy
 
 ### Runtime Flows
 
-- [runtime-flow-001-copy-evaluation.md](flows/runtime-flow-001-copy-evaluation.md) — End-to-end: register → parse → evaluate
-- [runtime-flow-002-intl-fallback.md](flows/runtime-flow-002-intl-fallback.md) — Language hierarchy resolution
-- [runtime-flow-003-caching.md](flows/runtime-flow-003-caching.md) — Lazy parsing and evaluation caching
+- [copy-evaluation.md](flows/copy-evaluation.md) — End-to-end: register → parse → evaluate
+- [intl-fallback.md](flows/intl-fallback.md) — Language hierarchy resolution
+- [caching.md](flows/caching.md) — Lazy parsing and evaluation caching
 
 ### Guides
 
@@ -107,15 +107,15 @@ The system separates parsing (converting DSL strings to ASTs) from evaluation (c
 
 ### Lazy Parsing
 
-Copy strings are NOT parsed when registered. They remain as raw strings until first accessed via `getAstForKey()`, avoiding startup overhead. See [runtime-flow-003-caching.md](flows/runtime-flow-003-caching.md) for the full caching strategy.
+Copy strings are NOT parsed when registered. They remain as raw strings until first accessed via `getAstForKey()`, avoiding startup overhead. See [caching.md](flows/caching.md) for the full caching strategy.
 
 ### Sibling-Linked AST
 
-AST nodes form a singly-linked list via `sibling` pointers rather than a children array. Tree depth comes from node-specific child properties (`copy`, `left`, `right`). This design minimizes object allocations. See [component-004-syntax-nodes.md](components/component-004-syntax-nodes.md) for details.
+AST nodes form a singly-linked list via `sibling` pointers rather than a children array. Tree depth comes from node-specific child properties (`copy`, `left`, `right`). This design minimizes object allocations. See [syntax-nodes.md](components/syntax-nodes.md) for details.
 
 ### Evaluation Caching
 
-The `Evaluator` base class uses a `WeakMap<SyntaxNode, T>` to cache evaluation results for cacheable (substitution-free) AST subtrees. See [runtime-flow-003-caching.md](flows/runtime-flow-003-caching.md).
+The `Evaluator` base class uses a `WeakMap<SyntaxNode, T>` to cache evaluation results for cacheable (substitution-free) AST subtrees. See [caching.md](flows/caching.md).
 
 ### Copy Merging
 
@@ -137,11 +137,11 @@ Performance. The evaluator recursively walks the AST via tail-call-like patterns
 
 ### Why `PlainTextEvaluator` and `HtmlEvaluator` share a class hierarchy?
 
-`HtmlEvaluator` is a thin subclass that overrides only three output methods. See [component-006-plain-text-evaluator.md](components/component-006-plain-text-evaluator.md).
+`HtmlEvaluator` is a thin subclass that overrides only three output methods. See [plain-text-evaluator.md](components/plain-text-evaluator.md).
 
 ### Why `ReactEvaluator` doesn't extend `PlainTextEvaluator`?
 
-`ReactEvaluator` returns `React.ReactNode`, requiring Fragment-based merging instead of string concatenation. See [component-007-react-evaluator.md](components/component-007-react-evaluator.md).
+`ReactEvaluator` returns `React.ReactNode`, requiring Fragment-based merging instead of string concatenation. See [react-evaluator.md](components/react-evaluator.md).
 
 ## Key Files
 

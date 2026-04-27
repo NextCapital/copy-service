@@ -6,8 +6,8 @@ The built-in evaluators cover plain text, HTML, and React JSX. For other formats
 
 ## Prerequisites
 
-- Familiarity with the [AST node types](../components/component-004-syntax-nodes.md)
-- Understanding of the [evaluation flow](../flows/runtime-flow-001-copy-evaluation.md)
+- Familiarity with the [AST node types](../components/syntax-nodes.md)
+- Understanding of the [evaluation flow](../flows/copy-evaluation.md)
 
 ## Step 1: Create the Evaluator File
 

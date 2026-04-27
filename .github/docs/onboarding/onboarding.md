@@ -104,7 +104,7 @@ Copy strings use a custom syntax. See [dsl-reference.md](../guides/dsl-reference
 
 ### 2. AST Nodes
 
-Each syntax element maps to a `SyntaxNode` subclass. The parser creates a linked list of nodes via `sibling` pointers. See [component-004-syntax-nodes.md](../components/component-004-syntax-nodes.md).
+Each syntax element maps to a `SyntaxNode` subclass. The parser creates a linked list of nodes via `sibling` pointers. See [syntax-nodes.md](../components/syntax-nodes.md).
 
 ### 3. Evaluators
 
@@ -122,7 +122,7 @@ evaluator.getCopy(key: string, substitutions?: object | (() => object)): T
 
 ### 4. Internationalization
 
-For multi-language support, use `IntlCopyService` instead of `CopyService`. See [component-002-intl-copy-service.md](../components/component-002-intl-copy-service.md) and [runtime-flow-002-intl-fallback.md](../flows/runtime-flow-002-intl-fallback.md) for details.
+For multi-language support, use `IntlCopyService` instead of `CopyService`. See [intl-copy-service.md](../components/intl-copy-service.md) and [intl-fallback.md](../flows/intl-fallback.md) for details.
 
 ```typescript
 import { IntlCopyService } from '@nextcapital/copy-service';
@@ -172,7 +172,7 @@ Merging rules: strings replace, objects merge recursively.
 
 ### Lazy Substitutions
 
-For expensive-to-compute substitutions, pass a function. See [component-008-substitutions.md](../components/component-008-substitutions.md) for details.
+For expensive-to-compute substitutions, pass a function. See [substitutions.md](../components/substitutions.md) for details.
 
 ```typescript
 evaluator.getCopy('key', () => ({

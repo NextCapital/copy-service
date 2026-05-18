@@ -40,6 +40,10 @@ npm install --save @nextcapital/copy-service
   - A single shared copy service can be used with many evaluators
   - Overall, the system is designed to minimize array and object allocations. This reduces GC pressure when rendering lots of copy on a page.
 
+## Deep-Dive Documentation
+
+For architecture details, component design, runtime flows, and AI-agent-optimized reference documentation, see [`.github/docs/`](.github/docs/README.md).
+
 ### Comparison to i18next / i18next-react
 
 Copy Service and `i18next`/`i18next-react` are broadly comparable. Both are libraries for defining a copy store, including copy by references to keys in this store, and evaluating an AST to interpolated/formatted copy.
@@ -230,17 +234,6 @@ We reccomend two strategies for internationalization, each with their benefits a
   - This is probably the best solution when running natively on node (as is the case when server-side rendering).
 
 In either case, the copy service should support all use cases for internationalization. Whenever passing in substitutions that may need i18n support (eg: formatted dates), make sure those substitutions are also properly localized.
-
-## Deep-Dive Documentation
-
-For architecture details, component design, runtime flows, and AI-agent-optimized reference documentation, see [`.github/docs/`](.github/docs/README.md). This includes:
-
-- Architecture overview and component inventory
-- DSL syntax reference
-- Runtime flow documentation (copy evaluation, i18n fallback, caching)
-- Developer onboarding guide
-- Tutorial for building custom evaluators
-- Glossary of proprietary terms
 
 ## Contributing to Copy Service
 

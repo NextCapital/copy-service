@@ -57,8 +57,6 @@ References support relative paths using `.` prefixes, similar to file paths:
 
 `section.intro` evaluates to `"Welcome to the app"`
 
-**Implementation:** Parser resolves relative paths to absolute paths at parse time using `_getRelativeKey()` — `js/copy-service/Parser/Parser.ts#L372-L396`
-
 ## Substitution
 
 **Syntax:** `#{substitution.key.path}`
@@ -86,14 +84,6 @@ Individual substitution values can be functions — they are called automaticall
 evaluator.getCopy('balance', {
   amount: () => expensiveFormatting(rawAmount) // called only if #{amount} is in the copy
 });
-```
-
-The entire substitutions object can also be a function:
-
-```typescript
-evaluator.getCopy('balance', () => ({
-  amount: computedValue // function called only when a substitution is needed
-}));
 ```
 
 ## Ref Substitution
@@ -141,8 +131,8 @@ The decider value uses `Substitutions.getBoolean()`:
 
 | Value | Result | Branch |
 |:---:|:---:|:---:|
-| `1` | `true` | Left (singular) |
-| `0`, `2`, `3`, ... | `false` | Right (plural) |
+| `1` | `true` | Left |
+| `0`, `2`, `3`, ... | `false` | Right |
 | `true` | `true` | Left |
 | `false`, `null`, `undefined`, `''` | `false` | Right |
 | Non-empty string | `true` | Left |
@@ -257,11 +247,3 @@ Word breaks (`\b`) hint to the browser where long words can be broken. They prod
 ## Grammar (Formal)
 
 For the formal grammar and parser design rationale, see [parser.md](../components/parser.md#grammar).
-
-## Evidence
-
-- `README.md#L100-L200` — DSL syntax documentation with examples
-- `js/copy-service/Parser/Parser.ts#L38-L55` — Token definitions
-- `js/copy-service/Parser/Parser.ts#L87-L90` — Allowed HTML tags
-- `js/copy-service/Substitutions/Substitutions.ts#L103-L113` — `getBoolean()` rules
-- `integration-tests/copy.json` — Reference copy file exercising all syntax

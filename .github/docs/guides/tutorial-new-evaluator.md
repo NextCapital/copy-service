@@ -1,12 +1,8 @@
 # Tutorial: Building a Custom Evaluator
 
-## Why Build a Custom Evaluator?
-
-The built-in evaluators cover plain text, HTML, and React JSX. For other formats (Markdown, terminal ANSI, Slack blocks), build a custom evaluator against the shared AST.
-
 ## Prerequisites
 
-- Familiarity with the [AST node types](../components/syntax-nodes.md)
+- Familiarity with the [DSL syntax and node types](../guides/dsl-reference.md)
 - Understanding of the [evaluation flow](../flows/copy-evaluation.md)
 
 ## Step 1: Create the Evaluator File
@@ -215,10 +211,3 @@ See `js/plain-text-evaluator/PlainTextEvaluator.test.ts` for the canonical unit 
 - [ ] Export added to `js/index.ts`
 - [ ] Unit tests cover all node types
 - [ ] Integration tests use `integration-tests/copy.json`
-
-## Evidence
-
-- `js/plain-text-evaluator/PlainTextEvaluator.ts` — Canonical string evaluator
-- `js/html-evaluator/HtmlEvaluator.ts` — Minimal subclass example (30 LOC)
-- `js/react-evaluator/ReactEvaluator.ts` — Non-string evaluator example
-- `js/copy-service/Evaluator/Evaluator.ts` — Abstract base class contract

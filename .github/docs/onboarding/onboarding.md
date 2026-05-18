@@ -104,7 +104,7 @@ Copy strings use a custom syntax. See [dsl-reference.md](../guides/dsl-reference
 
 ### 2. AST Nodes
 
-Each syntax element maps to a `SyntaxNode` subclass. The parser creates a linked list of nodes via `sibling` pointers. See [syntax-nodes.md](../components/syntax-nodes.md).
+Each syntax element maps to a `SyntaxNode` subclass. The parser creates a linked list of nodes via `sibling` pointers. See [dsl-reference.md](../guides/dsl-reference.md).
 
 ### 3. Evaluators
 
@@ -122,7 +122,7 @@ evaluator.getCopy(key: string, substitutions?: object | (() => object)): T
 
 ### 4. Internationalization
 
-For multi-language support, use `IntlCopyService` instead of `CopyService`. See [intl-copy-service.md](../components/intl-copy-service.md) and [intl-fallback.md](../flows/intl-fallback.md) for details.
+For multi-language support, use `IntlCopyService` instead of `CopyService`. See [copy-service.md](../components/copy-service.md) and [intl-fallback.md](../flows/intl-fallback.md) for details.
 
 ```typescript
 import { IntlCopyService } from '@nextcapital/copy-service';
@@ -136,43 +136,22 @@ service.registerCopy(spanishCopy, "es");
 const evaluator = new PlainTextEvaluator(service);
 ```
 
-## Development Workflow
-
-### Commands
-
-| Command | Purpose |
-|---------|---------|
-| `npm test` | Run all tests (unit + integration) |
-| `npm run lint` | Run ESLint + cspell + markdownlint |
-| `npm run tsc` | Type-check and compile to `ts-output/` |
-| `npm run ci:local` | Full CI pipeline: lint → test → tsc → tsc:test |
-
-### Adding a New Feature
-
-1. **New syntax element:** Requires a new SyntaxNode subclass, Parser changes, and handler in ALL evaluators. See the [Extension Points](../README.md#extension-points) table.
-2. **New evaluator:** Extend `Evaluator<T>` or `PlainTextEvaluator`. See [tutorial-new-evaluator.md](../guides/tutorial-new-evaluator.md).
-3. **New HTML tag:** Add to `Parser.ALLOWED_HTML_TAGS`. No other changes needed.
-
-### Test Coverage
-
-100% function coverage is required. Each source file has a co-located test file. Integration tests in `integration-tests/` exercise full end-to-end flows using the reference copy file at `integration-tests/copy.json`.
-
 ## Common Patterns
 
-### Tenant Overrides
+### Overrides
 
-Register base copy first, then tenant-specific overrides:
+Register base copy first, then overrides:
 
 ```typescript
 copyService.registerCopy(baseCopy);     // generic copy
-copyService.registerCopy(tenantCopy);   // overrides specific keys
+copyService.registerCopy(overrideCopy);   // overrides specific keys
 ```
 
 Merging rules: strings replace, objects merge recursively.
 
 ### Lazy Substitutions
 
-For expensive-to-compute substitutions, pass a function. See [substitutions.md](../components/substitutions.md) for details.
+For expensive-to-compute substitutions, pass a function. See [dsl-reference.md](../guides/dsl-reference.md#substitution) for details.
 
 ```typescript
 evaluator.getCopy('key', () => ({

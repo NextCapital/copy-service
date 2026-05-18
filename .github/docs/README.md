@@ -11,7 +11,6 @@ The library exists to solve three problems that standard i18n tools handle poorl
 - **Version:** 7.2.1
 - **Language:** TypeScript (ESM)
 - **Entry point:** `js/index.ts` → compiled to `ts-output/index.js`
-- **LOC:** ~2,300 source, ~3,500 unit tests, ~1,600 integration tests
 - **Dependencies:** `lodash` (runtime), `react`/`react-dom` (peer)
 
 ## Architecture Diagram
@@ -54,37 +53,15 @@ Evaluators: {
 Copy Store.CopyService -> Parser.parser: "lazy parse on\nfirst access"
 Parser.parser -> AST Layer.nodes: "builds AST from tokens"
 Evaluators.Evaluator -> Copy Store.CopyService: "reads ASTs"
-Evaluators.Evaluator -> AST Layer.nodes: "walks AST"
 ```
-
-## Component Inventory
-
-| Component | Responsibility | Location | Depends On |
-|-----------|---------------|----------|------------|
-| [CopyService](components/copy-service.md) | Register, store, and lazy-parse copy into ASTs | `js/copy-service/CopyService.ts` | Parser, SyntaxNode, ErrorHandler |
-| [IntlCopyService](components/intl-copy-service.md) | Multi-language wrapper with fallback hierarchy | `js/copy-service/IntlCopyService.ts` | CopyService, ErrorHandler |
-| [Parser](components/parser.md) | Tokenize DSL strings and parse into ASTs | `js/copy-service/Parser/Parser.ts` | All SyntaxNode subclasses, ErrorHandler |
-| [SyntaxNode](components/syntax-nodes.md) | Base class and 9 AST node types | `js/copy-service/SyntaxNode/SyntaxNode.ts` | — |
-| [Evaluator](components/evaluator.md) | Abstract base for AST evaluation | `js/copy-service/Evaluator/Evaluator.ts` | Substitutions, SyntaxNode, CopyService |
-| [PlainTextEvaluator](components/plain-text-evaluator.md) | Evaluates AST to plain text strings | `js/plain-text-evaluator/PlainTextEvaluator.ts` | Evaluator, all SyntaxNode subclasses |
-| [HtmlEvaluator](components/plain-text-evaluator.md#htmlevaluator) | Evaluates AST to HTML strings | `js/html-evaluator/HtmlEvaluator.ts` | PlainTextEvaluator |
-| [ReactEvaluator](components/react-evaluator.md) | Evaluates AST to React JSX | `js/react-evaluator/ReactEvaluator.ts` | Evaluator, all SyntaxNode subclasses |
-| [Substitutions](components/substitutions.md) | Lazy-resolve substitution values from user input | `js/copy-service/Substitutions/Substitutions.ts` | ErrorHandler |
-| [ErrorHandler](components/error-handler.md) | Centralized error logging and halting | `js/copy-service/ErrorHandler/ErrorHandler.ts` | — |
 
 ## Document Index
 
 ### Component Deep-Dives
 
-- [copy-service.md](components/copy-service.md) — Copy registration, storage, and lazy parsing
-- [intl-copy-service.md](components/intl-copy-service.md) — Multi-language support and hierarchy fallback
+- [copy-service.md](components/copy-service.md) — CopyService and IntlCopyService
 - [parser.md](components/parser.md) — Tokenizer and recursive-descent parser
-- [syntax-nodes.md](components/syntax-nodes.md) — All 9 AST node types
-- [evaluator.md](components/evaluator.md) — Abstract evaluator base class
-- [plain-text-evaluator.md](components/plain-text-evaluator.md) — PlainTextEvaluator and HtmlEvaluator
-- [react-evaluator.md](components/react-evaluator.md) — ReactEvaluator and JSX fragment merging
-- [substitutions.md](components/substitutions.md) — Substitution resolution
-- [error-handler.md](components/error-handler.md) — Error handling strategy
+- [evaluators.md](components/evaluators.md) — All evaluators: base class, PlainText, HTML, and React
 
 ### Runtime Flows
 
@@ -111,7 +88,7 @@ Copy strings are NOT parsed when registered. They remain as raw strings until fi
 
 ### Sibling-Linked AST
 
-AST nodes form a singly-linked list via `sibling` pointers rather than a children array. Tree depth comes from node-specific child properties (`copy`, `left`, `right`). This design minimizes object allocations. See [syntax-nodes.md](components/syntax-nodes.md) for details.
+AST nodes form a singly-linked list via `sibling` pointers rather than a children array. Tree depth comes from node-specific child properties (`copy`, `left`, `right`). This design minimizes object allocations. See [dsl-reference.md](guides/dsl-reference.md) for the full node type listing.
 
 ### Evaluation Caching
 
@@ -135,31 +112,6 @@ The grammar is not left-recursive, making recursive-descent straightforward. An 
 
 Performance. The evaluator recursively walks the AST via tail-call-like patterns: `evalAST(copy, ast.sibling, subs)`. Arrays would require iteration and allocation; sibling pointers produce none.
 
-### Why `PlainTextEvaluator` and `HtmlEvaluator` share a class hierarchy?
-
-`HtmlEvaluator` is a thin subclass that overrides only three output methods. See [plain-text-evaluator.md](components/plain-text-evaluator.md).
-
-### Why `ReactEvaluator` doesn't extend `PlainTextEvaluator`?
-
-`ReactEvaluator` returns `React.ReactNode`, requiring Fragment-based merging instead of string concatenation. See [react-evaluator.md](components/react-evaluator.md).
-
-## Key Files
-
-| File | Role |
-|------|------|
-| `js/index.ts` | Package entry point — re-exports all public API |
-| `js/copy-service/CopyService.ts` | Copy registration, lazy parsing, copy merging |
-| `js/copy-service/IntlCopyService.ts` | Multi-language copy service with hierarchy fallback |
-| `js/copy-service/Parser/Parser.ts` | Tokenizer and recursive-descent parser (609 LOC) |
-| `js/copy-service/SyntaxNode/SyntaxNode.ts` | Base class for AST nodes |
-| `js/copy-service/Evaluator/Evaluator.ts` | Abstract evaluator with WeakMap caching |
-| `js/plain-text-evaluator/PlainTextEvaluator.ts` | String output evaluator |
-| `js/html-evaluator/HtmlEvaluator.ts` | HTML output evaluator (extends PlainTextEvaluator) |
-| `js/react-evaluator/ReactEvaluator.ts` | React JSX output evaluator |
-| `js/copy-service/Substitutions/Substitutions.ts` | Substitution value resolution |
-| `js/copy-service/ErrorHandler/ErrorHandler.ts` | Centralized error handling |
-| `integration-tests/copy.json` | Reference copy file for integration tests |
-
 ## Extension Points
 
 | Extension Type | Directory | Convention | Canonical Example | Also Update |
@@ -167,8 +119,6 @@ Performance. The evaluator recursively walks the AST via tail-call-like patterns
 | New Evaluator | `js/<name>-evaluator/` | `<Name>Evaluator.ts` | `js/plain-text-evaluator/PlainTextEvaluator.ts` | `js/index.ts` (re-export), `package.json` exports |
 | New SyntaxNode | `js/copy-service/<Name>/` | `<Name>.ts` | `js/copy-service/Verbatim/Verbatim.ts` | `Parser.ts` (token + parse logic), all evaluators (handle new node type), `js/index.ts` |
 | New HTML tag | — | — | `Parser.ALLOWED_HTML_TAGS` in `js/copy-service/Parser/Parser.ts` | — |
-
-See [tutorial-new-evaluator.md](guides/tutorial-new-evaluator.md) for a step-by-step guide.
 
 ## Gotchas and Edge Cases
 
@@ -186,48 +136,8 @@ See [tutorial-new-evaluator.md](guides/tutorial-new-evaluator.md) for a step-by-
 
 7. **Escape special characters with backslash.** DSL syntax characters (`${`, `#{`, `%{`, `*{`, `^{`) can be escaped with `\` to produce literal text. The tokenizer handles this in `_tokenize()`.
 
-## Testing and Quality
-
-- **Test types:** Unit tests (Jest, `js/**/*.test.ts`) + integration tests (`integration-tests/**/*.test.ts`)
-- **Coverage:** 100% function coverage required; near-100% statement/branch coverage
-- **Patterns:** Each source file has a co-located `.test.ts` file. Integration tests exercise full register → parse → evaluate flows.
-- **Run:** `npm test` (unit + integration), `npm run lint` (ESLint + cspell + markdownlint), `npm run tsc` (type-check + compile)
-
-## Build, Deploy, and CI/CD
-
-- **Build:** `npm run tsc` compiles TypeScript to `ts-output/` (ESM)
-- **CI:** `npm run ci:local` runs lint → test → tsc → tsc:test
-- **Publish:** `ts-output/` directory is published to npm (`"files": ["ts-output"]`)
-- **Package exports:** Main entry + subpath exports for each evaluator
-
-## Configuration and Environment
-
-| Setting | Location | Purpose |
-|---------|----------|---------|
-| `NODE_ENV` | `process.env` | Controls error logging — `'production'` silences dev warnings, `'test'` silences console errors |
-| `errorOnMissingRefs` | `CopyService` constructor | When `true`, missing copy keys throw instead of returning `null` |
-| `allowFunctional` | `Evaluator` constructor | When `false`, `^{}{}` syntax returns inner copy without calling the function |
-
 ## Related Documentation
 
 - [README.md](../../README.md) — Getting started, installation, usage examples, DSL syntax
 - [CONTRIBUTING.md](../../CONTRIBUTING.md) — Contribution workflow, code style, commit conventions
 - [MIGRATION.md](../../MIGRATION.md) — ESM migration guide (v6 → v7)
-
-## Unknowns and Open Questions
-
-| # | Severity | Claim | Context | Suggested Action |
-|---|----------|-------|---------|------------------|
-| 1 | LOW | Grammar comment says "many bothans died" suggesting the grammar was hard-won | README grammar section | Cosmetic — no action needed |
-
-## Documentation Coverage Summary
-
-| Metric | Value |
-|--------|-------|
-| **Areas Documented** | 14 sections with full coverage |
-| **Areas Partially Covered** | 0 |
-| **Areas Unknown** | 0 |
-| **Total Evidence Citations** | 45+ file paths cited |
-| **Total UNVERIFIED Markers** | 0 |
-| **Confidence Distribution** | HIGH: 14 |
-| **Coverage Scan Status** | 12/12 applicable categories Clear |

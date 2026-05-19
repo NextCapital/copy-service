@@ -1,6 +1,7 @@
 .DS_Store
 coverage/
 docs/
+!.github/docs/
 dist/
 node_modules/
 test-report.xml
